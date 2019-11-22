@@ -153,13 +153,6 @@ message PeersRequest {
 
 message Empty {}
 
-message RetransmitRequestMessage {
-  string id = 1;
-  uint32 element_type = 2;
-  google.protobuf.UInt64Value since = 3;
-  uint32 network_id = 4;
-}
-
 message GRPCSkovStats {
   uint32 gs_block_receipt = 1; // in seconds
   uint32 gs_block_entry = 2; // in us
@@ -230,7 +223,6 @@ service P2P {
   rpc TpsTest(TpsRequest) returns (SuccessResponse) {}
   rpc DumpStart(DumpRequest) returns (SuccessResponse) {}
   rpc DumpStop(Empty) returns (SuccessResponse) {}
-  rpc RetransmitRequest(RetransmitRequestMessage) returns (SuccessResponse) {}
   rpc GetSkovStats(Empty) returns (SuccesfulStructResponse) {}
   rpc HookTransaction(TransactionHash) returns (SuccessfulJsonPayloadResponse) {}
   rpc GetBakerPrivateData(Empty) returns (SuccessfulJsonPayloadResponse) {}
