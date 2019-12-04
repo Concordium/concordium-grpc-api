@@ -41,6 +41,8 @@ message PeerStatsResponse {
     bool valid_latency  = 5;
   }
   repeated PeerStats peerstats = 1;
+  uint64 avg_bps_in = 2;
+  uint64 avg_bps_out = 3;
 }
 
 message SendMessageRequest {
