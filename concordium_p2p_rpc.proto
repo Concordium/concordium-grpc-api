@@ -164,12 +164,6 @@ message GRPCSkovStats {
   uint32 gs_finalization_query = 6; // in us
 }
 
-message SuccesfulStructResponse {
-  oneof payload {
-    GRPCSkovStats gs_stats = 1;
-  }
-}
-
 service P2P {
   // Suggest this peer connects to submitted peer details
   rpc PeerConnect (PeerConnectRequest) returns (SuccessResponse) {}
