@@ -225,7 +225,6 @@ service P2P {
   rpc TpsTest(TpsRequest) returns (SuccessResponse) {}
   rpc DumpStart(DumpRequest) returns (SuccessResponse) {}
   rpc DumpStop(Empty) returns (SuccessResponse) {}
-  rpc GetSkovStats(Empty) returns (SuccesfulStructResponse) {}
   rpc HookTransaction(TransactionHash) returns (SuccessfulJsonPayloadResponse) {}
   rpc GetBakerPrivateData(Empty) returns (SuccessfulJsonPayloadResponse) {}
 }
