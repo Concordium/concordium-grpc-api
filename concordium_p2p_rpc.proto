@@ -45,13 +45,6 @@ message PeerStatsResponse {
   uint64 avg_bps_out = 3;
 }
 
-message SendMessageRequest {
-  google.protobuf.StringValue node_id = 1;
-  google.protobuf.Int32Value network_id = 2;
-  google.protobuf.BytesValue message = 3;
-  google.protobuf.BoolValue broadcast = 4;
-}
-
 message MessageDirect {
   bytes data = 1;
 }
@@ -155,17 +148,8 @@ message PeersRequest {
 
 message Empty {}
 
-message GRPCSkovStats {
-  uint32 gs_block_receipt = 1; // in seconds
-  uint32 gs_block_entry = 2; // in us
-  uint32 gs_block_query = 3; // in us
-  uint32 gs_finalization_receipt = 4; // in seconds
-  uint32 gs_finalization_entry = 5; // in us
-  uint32 gs_finalization_query = 6; // in us
-}
-
 service P2P {
-  // Suggest this peer connects to submitted peer details
+  // Suggest to a peer to connect to the submitted peer details
   rpc PeerConnect (PeerConnectRequest) returns (SuccessResponse) {}
   // Peer uptime in milliseconds
   rpc PeerUptime(Empty) returns (NumberResponse) {}
@@ -175,14 +159,10 @@ service P2P {
   rpc PeerTotalReceived(Empty) returns(NumberResponse) {}
   // Peer client software version
   rpc PeerVersion(Empty) returns (StringResponse) {}
-  rpc SendMessage(SendMessageRequest) returns (SuccessResponse) {}
   // Stats for connected peers
   rpc PeerStats(PeersRequest) returns (PeerStatsResponse) {}
   // List of connected peers
   rpc PeerList(PeersRequest) returns (PeerListResponse) {}
-  rpc SubscriptionStart(Empty) returns (SuccessResponse) {}
-  rpc SubscriptionStop(Empty) returns (SuccessResponse) {}
-  rpc SubscriptionPoll(Empty) returns (P2PNetworkMessage) {}
   rpc BanNode(PeerElement) returns (SuccessResponse) {}
   rpc UnbanNode(PeerElement) returns (SuccessResponse) {}
   rpc JoinNetwork(NetworkChangeRequest) returns (SuccessResponse) {}
