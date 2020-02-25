@@ -99,12 +99,6 @@ message GetModuleSourceRequest {
   string module_ref = 2;
 }
 
-message TpsRequest {
-  uint32 network_id = 1;
-  string id = 2;
-  string directory = 3;
-}
-
 message DumpRequest {
   string file = 1;
   bool raw = 2;
@@ -162,7 +156,6 @@ service P2P {
 
   rpc GetBannedPeers(Empty) returns (PeerListResponse) {}
   rpc Shutdown(Empty) returns (BoolResponse) {}
-  rpc TpsTest(TpsRequest) returns (BoolResponse) {}
   rpc DumpStart(DumpRequest) returns (BoolResponse) {}
   rpc DumpStop(Empty) returns (BoolResponse) {}
   rpc HookTransaction(TransactionHash) returns (JsonResponse) {}
