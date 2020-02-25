@@ -62,7 +62,7 @@ message NodeInfoResponse {
 }
 
 message SuccessfulJsonPayloadResponse {
-  string json_value = 1;
+  string value = 1;
 }
 
 message BlockHash {
@@ -84,7 +84,7 @@ message SendTransactionRequest {
 }
 
 message SuccessfulBytePayloadResponse {
-  bytes payload = 1;
+  bytes value = 1;
 }
 
 message GetAddressInfoRequest {
