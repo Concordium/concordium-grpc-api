@@ -4,16 +4,26 @@ import "google/protobuf/wrappers.proto";
 
 package concordium;
 
+message Empty {}
+
 message NumberResponse {
   uint64 value = 1;
 }
 
-message SuccessResponse {
+message BoolResponse {
   bool value = 1;
 }
 
 message StringResponse {
   string value = 1;
+}
+
+message JsonResponse {
+  string value = 1;
+}
+
+message BytesResponse {
+  bytes value = 1;
 }
 
 message PeerConnectRequest {
@@ -61,10 +71,6 @@ message NodeInfoResponse {
   google.protobuf.StringValue beta_username = 50;
 }
 
-message SuccessfulJsonPayloadResponse {
-  string value = 1;
-}
-
 message BlockHash {
   string block_hash = 1;
 }
@@ -81,10 +87,6 @@ message BlockHashAndAmount {
 message SendTransactionRequest {
   uint32 network_id = 1;
   bytes payload = 2;
-}
-
-message SuccessfulBytePayloadResponse {
-  bytes value = 1;
 }
 
 message GetAddressInfoRequest {
@@ -112,11 +114,9 @@ message PeersRequest {
   bool include_bootstrappers = 1;
 }
 
-message Empty {}
-
 service P2P {
   // Suggest to a peer to connect to the submitted peer details
-  rpc PeerConnect (PeerConnectRequest) returns (SuccessResponse) {}
+  rpc PeerConnect (PeerConnectRequest) returns (BoolResponse) {}
   // Peer uptime in milliseconds
   rpc PeerUptime(Empty) returns (NumberResponse) {}
   // Peer total number of sent packets
@@ -129,42 +129,42 @@ service P2P {
   rpc PeerStats(PeersRequest) returns (PeerStatsResponse) {}
   // List of connected peers
   rpc PeerList(PeersRequest) returns (PeerListResponse) {}
-  rpc BanNode(PeerElement) returns (SuccessResponse) {}
-  rpc UnbanNode(PeerElement) returns (SuccessResponse) {}
-  rpc JoinNetwork(NetworkChangeRequest) returns (SuccessResponse) {}
-  rpc LeaveNetwork(NetworkChangeRequest) returns (SuccessResponse) {}
+  rpc BanNode(PeerElement) returns (BoolResponse) {}
+  rpc UnbanNode(PeerElement) returns (BoolResponse) {}
+  rpc JoinNetwork(NetworkChangeRequest) returns (BoolResponse) {}
+  rpc LeaveNetwork(NetworkChangeRequest) returns (BoolResponse) {}
   // Get information about the running Node
   rpc NodeInfo(Empty) returns (NodeInfoResponse) {}
   // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getconsensusstatus
-  rpc GetConsensusStatus(Empty) returns (SuccessfulJsonPayloadResponse) {}
+  rpc GetConsensusStatus(Empty) returns (JsonResponse) {}
   // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getblockinfo
-  rpc GetBlockInfo(BlockHash) returns (SuccessfulJsonPayloadResponse) {}
+  rpc GetBlockInfo(BlockHash) returns (JsonResponse) {}
   // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getancestors
-  rpc GetAncestors(BlockHashAndAmount) returns (SuccessfulJsonPayloadResponse) {}
+  rpc GetAncestors(BlockHashAndAmount) returns (JsonResponse) {}
   // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getbranches
-  rpc GetBranches(Empty) returns (SuccessfulJsonPayloadResponse) {}
+  rpc GetBranches(Empty) returns (JsonResponse) {}
   // Submit a local transaction
-  rpc SendTransaction(SendTransactionRequest) returns (SuccessResponse) {}
+  rpc SendTransaction(SendTransactionRequest) returns (BoolResponse) {}
 
   // Start the baker in the consensus module
-  rpc StartBaker(Empty) returns (SuccessResponse) {}
+  rpc StartBaker(Empty) returns (BoolResponse) {}
   // Stop the baker in the consensus module
-  rpc StopBaker(Empty) returns (SuccessResponse) {}
+  rpc StopBaker(Empty) returns (BoolResponse) {}
 
-  rpc GetAccountList(BlockHash) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetInstances(BlockHash) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetAccountInfo(GetAddressInfoRequest) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetInstanceInfo(GetAddressInfoRequest) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetRewardStatus(BlockHash) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetBirkParameters(BlockHash) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetModuleList(BlockHash) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetModuleSource(GetModuleSourceRequest) returns (SuccessfulBytePayloadResponse) {}
+  rpc GetAccountList(BlockHash) returns (JsonResponse) {}
+  rpc GetInstances(BlockHash) returns (JsonResponse) {}
+  rpc GetAccountInfo(GetAddressInfoRequest) returns (JsonResponse) {}
+  rpc GetInstanceInfo(GetAddressInfoRequest) returns (JsonResponse) {}
+  rpc GetRewardStatus(BlockHash) returns (JsonResponse) {}
+  rpc GetBirkParameters(BlockHash) returns (JsonResponse) {}
+  rpc GetModuleList(BlockHash) returns (JsonResponse) {}
+  rpc GetModuleSource(GetModuleSourceRequest) returns (BytesResponse) {}
 
   rpc GetBannedPeers(Empty) returns (PeerListResponse) {}
-  rpc Shutdown(Empty) returns (SuccessResponse) {}
-  rpc TpsTest(TpsRequest) returns (SuccessResponse) {}
-  rpc DumpStart(DumpRequest) returns (SuccessResponse) {}
-  rpc DumpStop(Empty) returns (SuccessResponse) {}
-  rpc HookTransaction(TransactionHash) returns (SuccessfulJsonPayloadResponse) {}
-  rpc GetBakerPrivateData(Empty) returns (SuccessfulJsonPayloadResponse) {}
+  rpc Shutdown(Empty) returns (BoolResponse) {}
+  rpc TpsTest(TpsRequest) returns (BoolResponse) {}
+  rpc DumpStart(DumpRequest) returns (BoolResponse) {}
+  rpc DumpStop(Empty) returns (BoolResponse) {}
+  rpc HookTransaction(TransactionHash) returns (JsonResponse) {}
+  rpc GetBakerPrivateData(Empty) returns (JsonResponse) {}
 }
