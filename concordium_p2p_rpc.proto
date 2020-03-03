@@ -162,7 +162,6 @@ service P2P {
   rpc Shutdown(Empty) returns (BoolResponse) {}
   rpc DumpStart(DumpRequest) returns (BoolResponse) {}
   rpc DumpStop(Empty) returns (BoolResponse) {}
-  rpc HookTransaction(TransactionHash) returns (JsonResponse) {}
   rpc GetBakerPrivateData(Empty) returns (JsonResponse) {}
   //! Query for the status of a transaction by its hash
   rpc GetTransactionStatus(TransactionHash) returns (JsonResponse) {}
