@@ -169,7 +169,7 @@ service P2P {
   //! Query for transactions in a block by its hash
   rpc GetTransactionStatusInBlock(BlockHash) returns (JsonResponse) {}
   //! Query for non-finalized transactions present on an account by the account address
-  rpc GetAccountNonFinalizedTransactions(AccountAddress) return (JsonResponse) {}
+  rpc GetAccountNonFinalizedTransactions(AccountAddress) returns (JsonResponse) {}
   //! Request a summary for a block by its hash
   rpc GetBlockSummary(BlockHash) returns (JsonResponse) {}
 }
