@@ -112,6 +112,11 @@ message PeersRequest {
   bool include_bootstrappers = 1;
 }
 
+message GetTransactionStatusInBlockRequest {
+  string transaction_hash = 1;
+  string block_hash = 2;
+}
+
 service P2P {
   //! Suggest to a peer to connect to the submitted peer details
   rpc PeerConnect (PeerConnectRequest) returns (BoolResponse) {}
@@ -166,7 +171,7 @@ service P2P {
   //! Query for the status of a transaction by its hash
   rpc GetTransactionStatus(TransactionHash) returns (JsonResponse) {}
   //! Query for transactions in a block by its hash
-  rpc GetTransactionStatusInBlock(BlockHash) returns (JsonResponse) {}
+  rpc GetTransactionStatusInBlock(GetTransactionStatusInBlockRequest) returns (JsonResponse) {}
   //! Query for non-finalized transactions present on an account by the account address
   rpc GetAccountNonFinalizedTransactions(AccountAddress) returns (JsonResponse) {}
   //! Request a summary for a block by its hash
