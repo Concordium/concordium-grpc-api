@@ -75,6 +75,10 @@ message BlockHash {
   string block_hash = 1;
 }
 
+message AccountAddress {
+  string account_address = 1;
+}
+
 message TransactionHash {
   string transaction_hash = 1;
 }
@@ -108,41 +112,46 @@ message PeersRequest {
   bool include_bootstrappers = 1;
 }
 
+message GetTransactionStatusInBlockRequest {
+  string transaction_hash = 1;
+  string block_hash = 2;
+}
+
 service P2P {
-  // Suggest to a peer to connect to the submitted peer details
+  //! Suggest to a peer to connect to the submitted peer details
   rpc PeerConnect (PeerConnectRequest) returns (BoolResponse) {}
-  // Peer uptime in milliseconds
+  //! Peer uptime in milliseconds
   rpc PeerUptime(Empty) returns (NumberResponse) {}
-  // Peer total number of sent packets
+  //! Peer total number of sent packets
   rpc PeerTotalSent(Empty) returns (NumberResponse) {}
-  // Peer total number of received packets
+  //! Peer total number of received packets
   rpc PeerTotalReceived(Empty) returns(NumberResponse) {}
-  // Peer client software version
+  //! Peer client software version
   rpc PeerVersion(Empty) returns (StringResponse) {}
-  // Stats for connected peers
+  //! Stats for connected peers
   rpc PeerStats(PeersRequest) returns (PeerStatsResponse) {}
-  // List of connected peers
+  //! List of connected peers
   rpc PeerList(PeersRequest) returns (PeerListResponse) {}
   rpc BanNode(PeerElement) returns (BoolResponse) {}
   rpc UnbanNode(PeerElement) returns (BoolResponse) {}
   rpc JoinNetwork(NetworkChangeRequest) returns (BoolResponse) {}
   rpc LeaveNetwork(NetworkChangeRequest) returns (BoolResponse) {}
-  // Get information about the running Node
+  //! Get information about the running Node
   rpc NodeInfo(Empty) returns (NodeInfoResponse) {}
-  // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getconsensusstatus
+  //! see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getconsensusstatus
   rpc GetConsensusStatus(Empty) returns (JsonResponse) {}
-  // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getblockinfo
+  //! see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getblockinfo
   rpc GetBlockInfo(BlockHash) returns (JsonResponse) {}
-  // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getancestors
+  //! see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getancestors
   rpc GetAncestors(BlockHashAndAmount) returns (JsonResponse) {}
-  // see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getbranches
+  //! see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getbranches
   rpc GetBranches(Empty) returns (JsonResponse) {}
-  // Submit a local transaction
+  //! Submit a local transaction
   rpc SendTransaction(SendTransactionRequest) returns (BoolResponse) {}
 
-  // Start the baker in the consensus module
+  //! Start the baker in the consensus module
   rpc StartBaker(Empty) returns (BoolResponse) {}
-  // Stop the baker in the consensus module
+  //! Stop the baker in the consensus module
   rpc StopBaker(Empty) returns (BoolResponse) {}
 
   rpc GetAccountList(BlockHash) returns (JsonResponse) {}
@@ -158,6 +167,13 @@ service P2P {
   rpc Shutdown(Empty) returns (BoolResponse) {}
   rpc DumpStart(DumpRequest) returns (BoolResponse) {}
   rpc DumpStop(Empty) returns (BoolResponse) {}
-  rpc HookTransaction(TransactionHash) returns (JsonResponse) {}
   rpc GetBakerPrivateData(Empty) returns (JsonResponse) {}
+  //! Query for the status of a transaction by its hash
+  rpc GetTransactionStatus(TransactionHash) returns (JsonResponse) {}
+  //! Query for transactions in a block by its hash
+  rpc GetTransactionStatusInBlock(GetTransactionStatusInBlockRequest) returns (JsonResponse) {}
+  //! Query for non-finalized transactions present on an account by the account address
+  rpc GetAccountNonFinalizedTransactions(AccountAddress) returns (JsonResponse) {}
+  //! Request a summary for a block by its hash
+  rpc GetBlockSummary(BlockHash) returns (JsonResponse) {}
 }
