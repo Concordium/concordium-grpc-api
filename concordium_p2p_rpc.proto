@@ -67,7 +67,7 @@ message NodeInfoResponse {
   string consensus_type = 6;
   bool consensus_baker_committee = 7;
   bool consensus_finalizer_committee = 8;
-  google.protobuf.StringValue beta_username = 50;
+  google.protobuf.StringValue staging_net_username = 50;
 }
 
 message BlockHash {
