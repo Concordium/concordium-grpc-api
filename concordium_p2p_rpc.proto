@@ -175,4 +175,6 @@ service P2P {
   rpc GetAccountNonFinalizedTransactions(AccountAddress) returns (JsonResponse) {}
   //! Request a summary for a block by its hash
   rpc GetBlockSummary(BlockHash) returns (JsonResponse) {}
+  //! Request next nonce information for an account
+  rpc GetNextAccountNonce(AccountAddress) returns (JsonResponse) {}
 }
