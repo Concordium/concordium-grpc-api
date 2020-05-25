@@ -36,9 +36,9 @@ message PeerElement {
   google.protobuf.UInt32Value port = 2;
   google.protobuf.StringValue ip = 3;
   enum CatchupStatus {
-    CATCHINGUP = 0;
+    UPTODATE = 0;
     PENDING = 1;
-    UPTODATE = 2;
+    CATCHINGUP = 2;
   }
   CatchupStatus catchup_status = 4;
 }
