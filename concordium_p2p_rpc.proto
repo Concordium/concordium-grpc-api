@@ -168,6 +168,8 @@ service P2P {
   rpc GetBirkParameters(BlockHash) returns (JsonResponse) {}
   rpc GetModuleList(BlockHash) returns (JsonResponse) {}
   rpc GetModuleSource(GetModuleSourceRequest) returns (BytesResponse) {}
+  rpc GetIdentityProviders(BlockHash) returns (JsonResponse) {}
+  rpc GetAnonymityRevokers(BlockHash) returns (JsonResponse) {}
 
   rpc GetBannedPeers(Empty) returns (PeerListResponse) {}
   rpc Shutdown(Empty) returns (BoolResponse) {}
