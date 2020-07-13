@@ -123,6 +123,10 @@ message GetTransactionStatusInBlockRequest {
   string block_hash = 2;
 }
 
+message BlockHeight {
+  uint64 block_height = 1;
+}
+
 service P2P {
   //! Suggest to a peer to connect to the submitted peer details
   rpc PeerConnect (PeerConnectRequest) returns (BoolResponse) {}
@@ -152,6 +156,8 @@ service P2P {
   rpc GetAncestors(BlockHashAndAmount) returns (JsonResponse) {}
   //! see https://gitlab.com/Concordium/notes-wiki/wikis/Consensus-queries#getbranches
   rpc GetBranches(Empty) returns (JsonResponse) {}
+  //! Get the blocks at the given height
+  rpc GetBlocksAtHeight(BlockHeight) returns (JsonResponse) {}
   //! Submit a local transaction
   rpc SendTransaction(SendTransactionRequest) returns (BoolResponse) {}
 
