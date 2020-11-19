@@ -176,6 +176,7 @@ service P2P {
   rpc GetModuleSource(GetModuleSourceRequest) returns (BytesResponse) {}
   rpc GetIdentityProviders(BlockHash) returns (JsonResponse) {}
   rpc GetAnonymityRevokers(BlockHash) returns (JsonResponse) {}
+  rpc GetCryptographicParameters(BlockHash) returns (JsonResponse) {}
 
   rpc GetBannedPeers(Empty) returns (PeerListResponse) {}
   rpc Shutdown(Empty) returns (BoolResponse) {}
