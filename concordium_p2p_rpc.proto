@@ -71,7 +71,13 @@ message NodeInfoResponse {
   bool consensus_baker_running = 4;
   bool consensus_running = 5;
   string consensus_type = 6;
-  bool consensus_baker_committee = 7;
+  enum IsInBakingCommittee {
+    NOT_IN_COMMITTEE = 0;
+    ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
+    ADDED_BUT_WRONG_KEYS = 2;
+    ACTIVE_IN_COMMITTEE = 3;
+  }
+  IsInBakingCommittee consensus_baker_committee = 7;
   bool consensus_finalizer_committee = 8;
   google.protobuf.UInt64Value consensus_baker_id = 9;
   google.protobuf.StringValue staging_net_username = 50;
