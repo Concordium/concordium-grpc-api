@@ -134,8 +134,12 @@ message BlockHeight {
 }
 
 service P2P {
-  //! Suggest to a peer to connect to the submitted peer details
+  //! Suggest to a peer to connect to the submitted peer details.
+  //! This, if successful, adds the peer to the list of given addresses.
   rpc PeerConnect (PeerConnectRequest) returns (BoolResponse) {}
+  //! Disconnect from the peer and remove them from the given addresses list
+  //! if they are on it. Return if the request was processed successfully.
+  rpc PeerDisconnect (PeerConnectRequest) returns (BoolResponse) {}
   //! Peer uptime in milliseconds
   rpc PeerUptime(Empty) returns (NumberResponse) {}
   //! Peer total number of sent packets
