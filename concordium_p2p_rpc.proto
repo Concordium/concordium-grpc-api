@@ -7,7 +7,7 @@ package concordium;
 message Empty {}
 
 message NumberResponse {
-  uint64 value = 1;
+  uint64 value = 1 [jstype = JS_STRING];
 }
 
 message BoolResponse {
@@ -51,13 +51,13 @@ message PeerListResponse {
 message PeerStatsResponse {
   message PeerStats {
     string node_id = 1;
-    uint64 packets_sent = 2;
-    uint64 packets_received = 3;
-    uint64 latency = 4;
+    uint64 packets_sent = 2 [jstype = JS_STRING];
+    uint64 packets_received = 3 [jstype = JS_STRING];
+    uint64 latency = 4 [jstype = JS_STRING];
   }
   repeated PeerStats peerstats = 1;
-  uint64 avg_bps_in = 2;
-  uint64 avg_bps_out = 3;
+  uint64 avg_bps_in = 2 [jstype = JS_STRING];
+  uint64 avg_bps_out = 3 [jstype = JS_STRING];
 }
 
 message NetworkChangeRequest {
@@ -66,7 +66,7 @@ message NetworkChangeRequest {
 
 message NodeInfoResponse {
   google.protobuf.StringValue node_id = 1;
-  uint64 current_localtime = 2;
+  uint64 current_localtime = 2 [jstype = JS_STRING];
   string peer_type = 3;
   bool consensus_baker_running = 4;
   bool consensus_running = 5;
@@ -97,7 +97,7 @@ message TransactionHash {
 
 message BlockHashAndAmount {
   string block_hash = 1;
-  uint64 amount = 2;
+  uint64 amount = 2 [jstype = JS_STRING];
 }
 
 message SendTransactionRequest {
@@ -130,7 +130,7 @@ message GetTransactionStatusInBlockRequest {
 }
 
 message BlockHeight {
-  uint64 block_height = 1;
+  uint64 block_height = 1 [jstype = JS_STRING];
 }
 
 service P2P {
