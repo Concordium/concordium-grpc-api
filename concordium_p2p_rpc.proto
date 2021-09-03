@@ -131,6 +131,10 @@ message GetTransactionStatusInBlockRequest {
 
 message BlockHeight {
   uint64 block_height = 1 [jstype = JS_STRING];
+  //! The block height is relative to the genesis block at this index.
+  uint32 from_genesis_index = 2;
+  //! If true, only return results from the specified genesis index.
+  bool restrict_to_genesis_index = 3;
 }
 
 service P2P {
