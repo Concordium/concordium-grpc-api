@@ -110,6 +110,11 @@ message GetAddressInfoRequest {
   string address = 2;
 }
 
+message InvokeContractRequest {
+  string block_hash = 1;
+  string context = 2;
+}
+
 message GetModuleSourceRequest {
   string block_hash = 1;
   string module_ref = 2;
@@ -184,6 +189,7 @@ service P2P {
   rpc GetInstances(BlockHash) returns (JsonResponse) {}
   rpc GetAccountInfo(GetAddressInfoRequest) returns (JsonResponse) {}
   rpc GetInstanceInfo(GetAddressInfoRequest) returns (JsonResponse) {}
+  rpc InvokeContract(InvokeContractRequest) returns (JsonResponse) {}
   rpc GetRewardStatus(BlockHash) returns (JsonResponse) {}
   rpc GetBirkParameters(BlockHash) returns (JsonResponse) {}
   rpc GetModuleList(BlockHash) returns (JsonResponse) {}
