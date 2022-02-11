@@ -110,8 +110,11 @@ message GetAddressInfoRequest {
   string address = 2;
 }
 
+// Request for invoking a contract without a transaction.
 message InvokeContractRequest {
+  // Hash of the block (encoded in hex) at which to invoke the contract.
   string block_hash = 1;
+  // A JSON object that specifies which contract to invoke, and how.
   string context = 2;
 }
 
