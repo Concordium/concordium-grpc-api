@@ -129,6 +129,12 @@ message GetTransactionStatusInBlockRequest {
   string block_hash = 2;
 }
 
+message GetPoolStatusRequest {
+  string block_hash = 1;
+  bool l_pool = 2;
+  uint64 baker_id = 3;
+}
+
 message BlockHeight {
   uint64 block_height = 1 [jstype = JS_STRING];
   //! The block height is relative to the genesis block at this index.
@@ -191,6 +197,8 @@ service P2P {
   rpc GetIdentityProviders(BlockHash) returns (JsonResponse) {}
   rpc GetAnonymityRevokers(BlockHash) returns (JsonResponse) {}
   rpc GetCryptographicParameters(BlockHash) returns (JsonResponse) {}
+  rpc GetBakerList(BlockHash) returns (JsonResponse) {}
+  rpc GetPoolStatus(GetPoolStatusRequest) returns (JsonResponse) {}
 
   rpc GetBannedPeers(Empty) returns (PeerListResponse) {}
   rpc Shutdown(Empty) returns (BoolResponse) {}
