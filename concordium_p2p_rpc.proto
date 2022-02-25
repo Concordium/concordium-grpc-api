@@ -140,7 +140,7 @@ message GetTransactionStatusInBlockRequest {
 message GetPoolStatusRequest {
   string block_hash = 1;
   bool l_pool = 2;
-  uint64 baker_id = 3;
+  uint64 baker_id = 3 [jstype = JS_STRING];
 }
 
 message BlockHeight {
