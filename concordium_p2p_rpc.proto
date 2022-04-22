@@ -139,7 +139,7 @@ message GetTransactionStatusInBlockRequest {
 
 message GetPoolStatusRequest {
   string block_hash = 1;
-  bool l_pool = 2;
+  bool passive_delegation = 2;
   uint64 baker_id = 3 [jstype = JS_STRING];
 }
 
