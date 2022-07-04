@@ -54,9 +54,18 @@ message PeerElement {
   google.protobuf.StringValue ip = 3;
 
   enum CatchupStatus {
-    // TODO: Exact meaning of these?
+    // The node has caught up from this peer and is, for now, up to date with the peer.
+    // If the node receives messages with novel information from a peer with this status,
+    // then the peer's status is changed to 'PENDING'.
     UPTODATE = 0;
+    // The peer is in the node's round-robin queue of peers to catch up from.
+    // New peers will start with this status.
     PENDING = 1;
+    // The node is currently catching up by receiving blocks from this peer.
+    // There will be at most one peer with this status at a time.
+    // Once the peer has sent a sufficient number of blocks, its status will be changed to:
+    // - 'UPTODATE' if the node block height is *equal to* the peer block height
+    // - 'PENDING' if the node block height is *less than* the peer block height
     CATCHINGUP = 2;
   }
 
@@ -64,14 +73,17 @@ message PeerElement {
   CatchupStatus catchup_status = 4;
 }
 
+// A response containing a list of peers.
 message PeerListResponse {
-  // The type of node. Either "Node" or "Bootstrapper".
+  // Whether the response includes nodes that are bootstrappers.
+  // Possible values: "Node" or "Bootstrapper".
   string peer_type = 1;
 
-  // The peers.
+  // A list of peers.
   repeated PeerElement peers = 2;
 }
 
+// A response containing information about a peer.
 message PeerStatsResponse {
   message PeerStats {
     // The unique node id.
@@ -90,18 +102,20 @@ message PeerStatsResponse {
   // A list of stats for the peers.
   repeated PeerStats peerstats = 1;
 
-  // Average outbound throughput in bits per second. TODO: bits or bytes?
+  // Average outbound throughput in bytes per second.
   uint64 avg_bps_in = 2 [jstype = JS_STRING];
 
-  // Average inbound throughput in bits per second. TODO: bits or bytes?
+  // Average inbound throughput in bytes per second.
   uint64 avg_bps_out = 3 [jstype = JS_STRING];
 }
 
+// A request to change the network.
 message NetworkChangeRequest {
   // The identifier for the network.
   google.protobuf.Int32Value network_id = 1;
 }
 
+// A response containing information about the node.
 message NodeInfoResponse {
   // The unique node identifier.
   google.protobuf.StringValue node_id = 1;
@@ -115,7 +129,8 @@ message NodeInfoResponse {
   // Whether the node is a baker.
   bool consensus_baker_running = 4;
 
-  // Whether consensus is running. TODO: When would it not? No finalization?
+  // Whether consensus is running.
+  // This is only false if the protocol was updated to a version which the node software does not support.
   bool consensus_running = 5;
 
   // Whether the node is "Active" or "Passive".
@@ -140,10 +155,10 @@ message NodeInfoResponse {
   // Whether the node is part of the finalizer committee.
   bool consensus_finalizer_committee = 8;
 
-  // The baker id. TODO: Value if not a baker?
+  // The baker id. This will be `null` if the node is not a baker.
   google.protobuf.UInt64Value consensus_baker_id = 9;
 
-  // Deprecated. TODO: What to write here?
+  // Deprecated.
   google.protobuf.StringValue staging_net_username = 50 [deprecated = true];
 }
 
@@ -243,7 +258,7 @@ message GetPoolStatusRequest {
   // Whether the request is for passive delegation or a specific baker.
   bool passive_delegation = 2;
 
-  // The baker id to get the status of. TODO: Is this just ignored if passive_delegation == true?
+  // The baker id to get the status of. This will be ignored if 'passive_delegation' is 'true'.
   uint64 baker_id = 3 [jstype = JS_STRING];
 }
 
