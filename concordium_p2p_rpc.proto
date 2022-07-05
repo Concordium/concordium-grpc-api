@@ -29,6 +29,7 @@ message JsonResponse {
 }
 
 // A response in binary format.
+// The encoding of the data is dependent on the endpoint.
 message BytesResponse {
   bytes value = 1;
 }
@@ -197,6 +198,8 @@ message SendTransactionRequest {
   uint32 network_id = 1;
 
   // The transaction payload in binary encoding.
+  // The encoding of certain transaction types, along with the general payload structure,
+  // is described at: https://developer.concordium.software/en/mainnet/net/references/grpc.html.
   bytes payload = 2;
 }
 
@@ -347,11 +350,11 @@ service P2P {
   // Stop the baker in the consensus module.
   rpc StopBaker(Empty) returns (BoolResponse) {}
 
-  // Get a list of accounts that existed when the given block was created.
+  // Get a list of accounts that exist in the state after the given block.
   // A JSON schema for the return type is provided at: https://developer.concordium.software/en/mainnet/net/references/grpc.html.
   rpc GetAccountList(BlockHash) returns (JsonResponse) {}
 
-  // Get all smart contract instances that existed when the given block was created.
+  // Get all smart contract instances that exist in the state after the given block.
   // A JSON schema for the return type is provided at: https://developer.concordium.software/en/mainnet/net/references/grpc.html.
   rpc GetInstances(BlockHash) returns (JsonResponse) {}
 
@@ -376,18 +379,18 @@ service P2P {
   // A JSON schema for the return type is provided at: https://developer.concordium.software/en/mainnet/net/references/grpc.html.
   rpc GetBirkParameters(BlockHash) returns (JsonResponse) {}
 
-  // Get a list of smart contract modules that existed when the given block was created.
+  // Get a list of smart contract modules that exist in the state after the given block.
   // A JSON schema for the return type is provided at: https://developer.concordium.software/en/mainnet/net/references/grpc.html.
   rpc GetModuleList(BlockHash) returns (JsonResponse) {}
 
   // Get the source of a smart contract module.
   rpc GetModuleSource(GetModuleSourceRequest) returns (BytesResponse) {}
 
-  // Get a list of all identity providers that existed when the given block was created.
+  // Get a list of all identity providers that exist in the state after the given block.
   // A JSON schema for the return type is provided at: https://developer.concordium.software/en/mainnet/net/references/grpc.html.
   rpc GetIdentityProviders(BlockHash) returns (JsonResponse) {}
 
-  // Get a list of all anonymity revokers that existed when the given block was created.
+  // Get a list of all anonymity revokers that exist in the state after the given block.
   // A JSON schema for the return type is provided at: https://developer.concordium.software/en/mainnet/net/references/grpc.html.
   rpc GetAnonymityRevokers(BlockHash) returns (JsonResponse) {}
 
