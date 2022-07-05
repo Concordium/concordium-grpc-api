@@ -54,18 +54,19 @@ message PeerElement {
   google.protobuf.StringValue ip = 3;
 
   enum CatchupStatus {
-    // The node has caught up from this peer and is, for now, up to date with the peer.
-    // If the node receives messages with novel information from a peer with this status,
-    // then the peer's status is changed to 'PENDING'.
+    // The peer does not have any data unknown to us. If we receive a message from the
+    // peer that refers to uknown data (e.g., an unknown block) the peer is marked as pending.
     UPTODATE = 0;
-    // The peer is in the node's round-robin queue of peers to catch up from.
-    // New peers will start with this status.
+    // The peer might have some data unknown to us. A peer can be in this state either because
+    // it sent a message that refers to data unknown to us, or before we have established a baseline with it.
+    // The latter happens during node startup, as well as upon protocol updates until the initial catchup handshake
+    // completes.
     PENDING = 1;
     // The node is currently catching up by receiving blocks from this peer.
     // There will be at most one peer with this status at a time.
     // Once the peer has sent a sufficient number of blocks, its status will be changed to:
-    // - 'UPTODATE' if the node block height is *equal to* the peer block height
-    // - 'PENDING' if the node block height is *less than* the peer block height
+    // - 'UPTODATE' if the peer has no more data that is not known to us
+    // - 'PENDING' if the node has more data that is unknown to us.
     CATCHINGUP = 2;
   }
 
@@ -152,7 +153,7 @@ message NodeInfoResponse {
   // The baking status of the node.
   IsInBakingCommittee consensus_baker_committee = 7;
 
-  // Whether the node is part of the finalizer committee.
+  // Whether the node is part of the finalization committee.
   bool consensus_finalizer_committee = 8;
 
   // The baker id. This will be `null` if the node is not a baker.
@@ -189,7 +190,8 @@ message BlockHashAndAmount {
   uint64 amount = 2 [jstype = JS_STRING];
 }
 
-// Reqest for sending a transaction.
+// Submit a transaction to the node. The transaction is subject to basic validation
+// and is then relayed to all the peers.
 message SendTransactionRequest {
   // The network id. Default is 100.
   uint32 network_id = 1;
