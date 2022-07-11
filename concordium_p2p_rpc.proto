@@ -45,7 +45,7 @@ message PeerConnectRequest {
 
 // A peer node.
 message PeerElement {
-  // The unique id of the node.
+  // The id of the node.
   google.protobuf.StringValue node_id = 1;
 
   // The port of the node.
@@ -56,16 +56,16 @@ message PeerElement {
 
   enum CatchupStatus {
     // The peer does not have any data unknown to us. If we receive a message from the
-    // peer that refers to uknown data (e.g., an unknown block) the peer is marked as pending.
+    // peer that refers to unknown data (e.g., an unknown block) the peer is marked as pending.
     UPTODATE = 0;
     // The peer might have some data unknown to us. A peer can be in this state either because
     // it sent a message that refers to data unknown to us, or before we have established a baseline with it.
     // The latter happens during node startup, as well as upon protocol updates until the initial catchup handshake
     // completes.
     PENDING = 1;
-    // The node is currently catching up by receiving blocks from this peer.
+    // The node is currently catching up by requesting blocks from this peer.
     // There will be at most one peer with this status at a time.
-    // Once the peer has sent a sufficient number of blocks, its status will be changed to:
+    // Once the peer has responded to the request, its status will be changed to:
     // - 'UPTODATE' if the peer has no more data that is not known to us
     // - 'PENDING' if the node has more data that is unknown to us.
     CATCHINGUP = 2;
@@ -77,7 +77,7 @@ message PeerElement {
 
 // A response containing a list of peers.
 message PeerListResponse {
-  // Whether the response includes nodes that are bootstrappers.
+  // The type of the queried node.
   // Possible values: "Node" or "Bootstrapper".
   string peer_type = 1;
 
@@ -88,16 +88,16 @@ message PeerListResponse {
 // A response containing information about a peer.
 message PeerStatsResponse {
   message PeerStats {
-    // The unique node id.
+    // The node id.
     string node_id = 1;
 
-    // The number of packages sent to the peer.
+    // The number of messages sent to the peer.
     uint64 packets_sent = 2 [jstype = JS_STRING];
 
-    // The number of packages received from the peer.
+    // The number of messages received from the peer.
     uint64 packets_received = 3 [jstype = JS_STRING];
 
-    // The connection latency.
+    // The connection latency (i.e., ping time) in milliseconds.
     uint64 latency = 4 [jstype = JS_STRING];
   }
 
@@ -136,16 +136,16 @@ message NodeInfoResponse {
   bool consensus_running = 5;
 
   // Whether the node is "Active" or "Passive".
-  // - Active means that it is either a baker or a member of the finalization committee.
-  // - Passive means that it is neither a baker or a member of the finalization committee.
+  // - "Active": the node has baker credentials and can thus potentially participate in baking and finalization.
+  // - "Passive": the node has no baker credentials is thus only an observer of the consensus protocol.
   string consensus_type = 6;
 
   enum IsInBakingCommittee {
     // The node is not the baking committee.
     NOT_IN_COMMITTEE = 0;
-    // The node has valid baker keys that will be included in the baker committee in the next chain epoch.
+    // The node has baker keys, but the account is not currently a baker (and possibly never will be).
     ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
-    // The node has invalid baker keys.
+    // The node has baker keys, but they don't match the current keys on the baker account.
     ADDED_BUT_WRONG_KEYS = 2;
     // The node has valid baker keys and is active in the baker committee.
     ACTIVE_IN_COMMITTEE = 3;
@@ -194,7 +194,7 @@ message BlockHashAndAmount {
 // Submit a transaction to the node. The transaction is subject to basic validation
 // and is then relayed to all the peers.
 message SendTransactionRequest {
-  // The network id. Default is 100.
+  // The network id (currently not used in this request).
   uint32 network_id = 1;
 
   // The transaction payload in binary encoding.
@@ -231,7 +231,7 @@ message GetModuleSourceRequest {
   string module_ref = 2;
 }
 
-// Request to enable dumping of packages.
+// Request to enable dumping of network packages.
 message DumpRequest {
   // Which file to dump the packages into.
   string file = 1;
@@ -414,9 +414,11 @@ service P2P {
   rpc Shutdown(Empty) returns (BoolResponse) {}
 
   // Start dumping packages into the specified file.
+  // Only enabled if the node was built with the `network_dump` feature.
   rpc DumpStart(DumpRequest) returns (BoolResponse) {}
 
   // Stop dumping packages.
+  // Only enabled if the node was built with the `network_dump` feature.
   rpc DumpStop(Empty) returns (BoolResponse) {}
 
   // Query for the status of a transaction by its hash.
