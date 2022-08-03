@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+package concordium.types;
+
+// A message that contains no information.
+message Empty {}
+
+message BlockHash {
+  bytes value = 1;
+}
+
+message BlockHeight {
+  // The absolute height of a block.
+  uint64 value = 1;
+}
+
+message BakerId {
+  uint64 baker_id = 1;
+}
+
+// A sequence number that determines the ordering of transactions from the
+// account.
+message Nonce {
+  // The nonce
+  uint64 value = 1;
+}
+
+// The amount of microCCD.
+message Amount {
+  uint64 value = 1;
+}
+
+// The amount of microCCD.
+message CredentialIndex {
+  uint32 value = 1;
+}
+
+message SignatureThreshold {
+  uint32 value = 1;
+}
+
+message VerifyKey {
+  bytes value = 1;
+}
+
+message CredentialPublicKeys {
+  map<uint32, VerifyKey> keys = 1;
+  SignatureThreshold threshold = 2;
+}
+
+message CredentialRegistrationId {
+  bytes value = 1;
+}
+
+message IdentityProviderIdentity {
+  uint32 value = 1;
+}
+
+message InitialCredentialValues {
+  CredentialPublicKeys keys = 1;
+  CredentialRegistrationId cred_id = 2;
+  IdentityProviderIdentity ip_id = 3;
+  // TODO: Policy
+}
+
+message NormalCredentialValues {
+  // TODO
+}
+
+message AccountCredential {
+  oneof credential_values {
+    InitialCredentialValues initial = 1;
+    NormalCredentialValues normal = 2;
+  }
+}
+
+message AccountInfo {
+  Nonce nonce = 1;
+  Amount amount = 2;
+  map<uint32, AccountCredential> creds = 3;
+}
+
+message FinalizedBlockInfo {
+  BlockHash hash = 1;
+  BlockHeight height = 2;
+  BakerId baker_id = 3;
+}

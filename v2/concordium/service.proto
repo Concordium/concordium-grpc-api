@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+import "types.proto"
+
+package "concordium.service"
+
+service Queries {
+  rpc FinalizedBlocks (Empty) returns (stream FinalizedBlockInfo);
+
+  rpc GetAccountInfo (BlockHash) returns (AccountInfo);
+}
