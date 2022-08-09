@@ -1,10 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/wrappers.proto";
+import "v2/concordium/types.proto";
 
-import "types.proto"
-
-package "concordium.service"
+package concordium.v2;
 
 service Queries {
   rpc FinalizedBlocks (Empty) returns (stream FinalizedBlockInfo);
