@@ -1,33 +1,230 @@
 syntax = "proto3";
 
-// import "google/protobuf/wrappers.proto";
-
 package concordium.v2;
 
 // A message that contains no information.
-message Empty {}
+message Empty {
+}
 
+/// Hash of a block. This is always 32 bytes long.
 message BlockHash {
   bytes value = 1;
 }
 
-message BlockHeight {
-  // The absolute height of a block.
+/// Hash of a transaction. This is always 32 bytes long.
+message TransactionHash {
+  bytes value = 1;
+}
+
+// The absolute height of a block.
+message AbsoluteBlockHeight {
   uint64 value = 1;
 }
 
+// The height of a block relative to the last genesis.
+message BlockHeight {
+  uint64 value = 1;
+}
+
+// The ID of a baker, which is the index of its account.
 message BakerId {
-  uint64 baker_id = 1;
+  uint64 value = 1;
+}
+
+// Index of the account in the account table. These are assigned sequentially
+// in the order of creation of accounts. The first account has index 0.
+message AccountIndex {
+  uint64 value = 1;
+}
+
+// An individual release of a locked balance.
+message Release {
+  // Effective time of the release in milliseconds since unix epoch.
+  uint64 timestamp = 1;
+  // Amount to be released.
+  Amount amount = 2;
+  // List of transaction hashes that contribute a balance to this release.
+  repeated TransactionHash transactions = 3;
+}
+
+// State of the account's release schedule. This is the balance of the account
+// that is owned by the account, but cannot be used until the release point.
+message ReleaseSchedule {
+  Amount total = 1;
+  repeated Release schedules = 2;
+}
+
+// An encrypted amount, in two chunks in "little endian limbs". That is, the
+// first chunk represents the low 32 bits of an amount, and the second chunk
+// represents the high 32 bits. The chunks are serialized in order and
+// represented as a byte array.
+// Always 192 bytes.
+message EncryptedAmount {
+  bytes value = 1;
+}
+
+message EncryptedBalance {
+  // Encrypted amount that is a result of this accounts' actions.
+  // In particular this list includes the aggregate of
+  //
+  // - remaining amounts that result when transfering to public balance
+  // - remaining amounts when transfering to another account
+  // - encrypted amounts that are transferred from public balance
+  //
+  // When a transfer is made all of these must always be used.
+  EncryptedAmount self_amount = 1;
+  // Starting index for incoming encrypted amounts. If an aggregated amount
+  // is present then this index is associated with such an amount and the
+  // list of incoming encrypted amounts starts at the index `start_index
+  // + 1`.
+  uint64 start_index = 2;
+  // If present, the amount that has resulted from aggregating other amounts
+  // If this field is present so is `num_aggregated`.
+  optional EncryptedAmount aggregated_amount = 3;
+  // The number of aggregated amounts (must be at least 2 if present). This
+  // field is present if and only if `aggregated_amount` is present.
+  optional uint32 num_aggregated = 4;
+  // Amounts starting at `start_index` (or at `start_index + 1` if there is
+  // an aggregated amount present). They are assumed to be numbered
+  // sequentially. The length of this list is bounded by the maximum number
+  // of incoming amounts on the accounts, which is currently 32. After
+  // that aggregation kicks in.
+  repeated EncryptedAmount incoming_amounts = 5;
+}
+
+// Entity to which the account delegates a portion of its stake.
+message DelegationTarget {
+  oneof target {
+    // Delegate passively, i.e., to no specific baker.
+    Empty passive = 1;
+    // Delegate to a specific baker.
+    BakerId baker = 2;
+  }
+}
+
+// Baker's public key used to check whether they won the lottery or not.
+message BakerElectionVerifyKey {
+  bytes value = 1;
+}
+
+// Baker's public key used to check that they are indeed the ones who
+// produced the block.
+message BakerSignatureVerifyKey {
+  bytes value = 1;
+}
+ 
+// Baker's public key used to check signatures on finalization records.
+// This is only used if the baker has sufficient stake to participate in
+// finalization.
+message BakerAggregationVerifyKey {
+  bytes value = 1;
+}
+
+/// Information about a baker.
+message BakerInfo {
+  // Identity of the baker. This is actually the account index of
+  // the account controlling the baker.
+  BakerId baker_id = 1;
+  // Baker's public key used to check whether they won the lottery or not.
+  BakerElectionVerifyKey election_key = 2;
+  // Baker's public key used to check that they are indeed the ones who
+  // produced the block.
+  BakerSignatureVerifyKey signature_key = 3;
+  // Baker's public key used to check signatures on finalization records.
+  // This is only used if the baker has sufficient stake to participate in
+  // finalization.
+  BakerAggregationVerifyKey aggregation_key = 4;
+}
+
+message StakePendingChange {
+  message Reduce {
+    Amount new_stake = 1;
+    // Timestamp in milliseconds when the change takes effect.
+    uint64 effective_time = 2;
+  }
+  
+  oneof change {
+    Reduce reduce = 1;
+    // Remove the stake. The value is a timestamp of the effective time in
+    // milliseconds.
+    uint64 remove = 2;
+  }
+}
+
+// Information about how open the pool is to new delegators.
+enum OpenStatus {
+  OPEN_STATUS_OPENFORALL_UNSPECIFIED = 0;
+  OPEN_STATUS_CLOSEDFORNEW = 1;
+  OPEN_STATUS_CLOSEDFORALL = 2;
+}
+
+// A fraction of an amount with a precision of `1/100_000`.
+message AmountFraction {
+  uint64 parts_per_hundred_thousand = 1;
+}
+
+// Distribution of the rewards for the particular pool.
+message CommissionRates {
+  // Fraction of finalization rewards charged by the pool owner.
+  AmountFraction finalization = 1;
+  // Fraction of baking rewards charged by the pool owner.
+  AmountFraction baking = 2;
+  // Fraction of transaction rewards charged by the pool owner.
+  AmountFraction transaction = 3;
+}
+
+/// Additional information about a baking pool.
+/// This information is added with the introduction of delegation.
+message BakerPoolInfo {
+  // Whether the pool allows delegators.
+  OpenStatus open_status = 1;
+  // The URL that links to the metadata about the pool.
+  string url = 2;
+  // The commission rates charged by the pool owner.
+  CommissionRates commission_rates = 3;
+}
+
+// Information about the account stake, if the account is either a baker or a
+// delegator.
+message AccountStakingInfo {
+  message Baker {
+    Amount staked_amount = 1;
+    bool restake_earnings = 2;
+    BakerInfo baker_info = 3;
+    // If present, any pending change to the delegated stake.
+    optional StakePendingChange pending_change = 4;
+    // Present if the account is currently a baker, i.e., it is in the baking
+    // committee of the current epoch.
+    optional BakerPoolInfo pool_info = 5;
+  }
+
+  message Delegate {
+    // The amount that the account delegates.
+    Amount staked_amount = 1;
+    // Whether the earnings are automatically added to the staked amount.
+    bool restake_earnings = 2;
+    // The entity to which the account delegates.
+    DelegationTarget target = 3;
+    // If present, any pending change to the delegated stake.
+    optional StakePendingChange pool_info = 4;
+  }
+
+  oneof staking_info {
+    // The account is a baker.
+    Baker baker = 1;
+    // The account is a delegator.
+    Delegate delegate = 2;
+  }
 }
 
 // A sequence number that determines the ordering of transactions from the
-// account.
+// account. The minimum sequence number is 1.
 message Nonce {
   // The nonce
   uint64 value = 1;
 }
 
-// The amount of microCCD.
+// An amount of microCCD.
 message Amount {
   uint64 value = 1;
 }
@@ -37,36 +234,114 @@ message CredentialIndex {
   uint32 value = 1;
 }
 
+// The number of signatures required to sign.
 message SignatureThreshold {
   uint32 value = 1;
 }
 
-message VerifyKey {
+// The number of credentials required to sign an account transaction.
+message AccountThreshold {
+  uint32 value = 1;
+}
+
+// An account encryption key. Always 96 bytes.
+message EncryptionKey {
   bytes value = 1;
 }
 
+// An address of an account. Always 32 bytes.
+message AccountAddress {
+  bytes value = 1;
+}
+
+// A public key used to verify transaction signatures from an account.
+message AccountVerifyKey {
+  oneof key {
+    bytes ed25519_key = 1;
+  }
+}
+
+// Public keys of a single credential.
 message CredentialPublicKeys {
-  map<uint32, VerifyKey> keys = 1;
+  map<uint32, AccountVerifyKey> keys = 1;
   SignatureThreshold threshold = 2;
 }
 
+// A registration ID of a credential, derived from the secred PRF key and a
+// nonce. This is always 48 bytes long.
 message CredentialRegistrationId {
   bytes value = 1;
 }
 
+// An index of the identity provider that identifies them uniquely in the
+// context of a specific chain.
 message IdentityProviderIdentity {
   uint32 value = 1;
 }
 
-message InitialCredentialValues {
-  CredentialPublicKeys keys = 1;
-  CredentialRegistrationId cred_id = 2;
-  IdentityProviderIdentity ip_id = 3;
-  // TODO: Policy
+// Representation of the pair of a year and month.
+message YearMonth {
+  uint32 year = 1;
+  uint32 month = 2;
 }
 
+// Policy on a credential.
+message Policy {
+  // The year and month when the identity object from which the credential is
+  // derived was created.
+  YearMonth created_at = 1;
+  // The last year and month when the credential is still valid. After this
+  // expires an account can no longer be created from the credential.
+  YearMonth valid_to = 2;
+  // Mapping from attribute tags to attribute values. Attribute tags are always
+  // representable in a single `u8`, attribute values are never more than 31
+  // bytes in length.
+  map<uint32, bytes> attributes = 3;
+}
+
+// Values contained in an initial credential.
+message InitialCredentialValues {
+  // Public keys of the credential.
+  CredentialPublicKeys keys = 1;
+  // Its registration ID.
+  CredentialRegistrationId cred_id = 2;
+  // The identity provider who signed the identity object from which this
+  // credential is derived.
+  IdentityProviderIdentity ip_id = 3;
+  // Policy of this credential.
+  Policy policy = 4;
+}
+
+/// Data relating to a single anonymity revoker sent by the account holder to
+/// the chain.
+message ChainArData {
+  // Share of the encryption of IdCredPub.
+  bytes enc_id_cred_pub_share = 1;
+}
+
+// The number of anonymity revokers needed to revoke anonymity of a credential
+// holder.
+message ArThreshold {
+  uint32 value = 1;
+}
+
+// Values contained in a normal (non-initial) credential.
 message NormalCredentialValues {
-  // TODO
+  // Public keys of the credential.
+  CredentialPublicKeys keys = 1;
+  // Its registration ID.
+  CredentialRegistrationId cred_id = 2;
+  // The identity provider who signed the identity object from which this
+  // credential is derived.
+  IdentityProviderIdentity ip_id = 3;
+  // Policy of this credential.
+  Policy policy = 4;
+  // The number of anonymity revokers that must work together to revoke the
+  // anonymity of the credential holder.
+  ArThreshold ar_threshold = 5;
+  // Mapping from anonymity revoker identities to revocation data for the given anonymity revoker.
+  map<uint32, ChainArData> ar_data = 6;
+  // TODO: Commitments.
 }
 
 message AccountCredential {
@@ -77,11 +352,57 @@ message AccountCredential {
 }
 
 message AccountInfo {
+  // Next sequence number to be used for transactions signed from this account.
   Nonce nonce = 1;
+  // Current (unencrypted) balance of the account.
   Amount amount = 2;
-  map<uint32, AccountCredential> creds = 3;
+  // Release schedule for any locked up amount. This could be an empty
+  // release schedule.
+  ReleaseSchedule schedule = 3;
+  // Map of all currently active credentials on the account.
+  // This includes public keys that can sign for the given credentials, as
+  // well as any revealed attributes. This map always contains a credential
+  // with index 0.
+  map<uint32, AccountCredential> creds = 4;
+  // Lower bound on how many credentials must sign any given transaction from
+  // this account.
+  AccountThreshold threshold = 5;
+  // The encrypted balance of the account.
+  EncryptedBalance encrypted_balance = 6;
+  // The public key for sending encrypted balances to the account.
+  EncryptionKey encryption_key = 7;
+  // Internal index of the account. Accounts on the chain get sequential
+  // indices. These should generally not be used outside of the chain,
+  // the account address is meant to be used to refer to accounts,
+  // however the account index serves the role of the baker id, if the
+  // account is a baker. Hence it is exposed here as well.
+  AccountIndex index = 8;
+  // Present if the account is a baker or delegator. In that case
+  // it is the information about the baker or delegator.
+  optional AccountStakingInfo stake = 9;
+  // Canonical address of the account. This is derived from the first credential
+  // that created the account.
+  AccountAddress address = 10;
 }
 
+message BlockHashInput {
+  oneof block_hash_input {
+    Empty best = 1;
+    Empty last_final = 2;
+    BlockHash given = 3;
+  }
+}
+
+message AccountInfoRequest {
+  BlockHashInput block_hash = 1;
+  oneof account_identifier {
+    AccountAddress address = 2;
+    CredentialRegistrationId cred_id = 3;
+    AccountIndex account_index = 4;
+  }
+}
+
+// TODO 
 message FinalizedBlockInfo {
   BlockHash hash = 1;
   BlockHeight height = 2;

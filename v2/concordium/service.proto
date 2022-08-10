@@ -7,5 +7,5 @@ package concordium.v2;
 service Queries {
   rpc FinalizedBlocks (Empty) returns (stream FinalizedBlockInfo);
 
-  rpc GetAccountInfo (BlockHash) returns (AccountInfo);
+  rpc GetAccountInfo (AccountInfoRequest) returns (AccountInfo);
 }
