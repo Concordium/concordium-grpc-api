@@ -402,9 +402,10 @@ message AccountInfoRequest {
   }
 }
 
-// TODO 
+// Information about a finalized block that is part of the streaming response.
 message FinalizedBlockInfo {
+  // Hash of the block.
   BlockHash hash = 1;
-  BlockHeight height = 2;
-  BakerId baker_id = 3;
+  // Absolute height of the block, height 0 is the genesis block.
+  AbsoluteBlockHeight height = 2;
 }
