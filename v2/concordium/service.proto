@@ -8,4 +8,6 @@ service Queries {
   rpc FinalizedBlocks (Empty) returns (stream FinalizedBlockInfo);
 
   rpc GetAccountInfo (AccountInfoRequest) returns (AccountInfo);
+
+  rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
 }
