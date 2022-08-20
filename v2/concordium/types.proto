@@ -206,7 +206,7 @@ message AccountStakingInfo {
     // The entity to which the account delegates.
     DelegationTarget target = 3;
     // If present, any pending change to the delegated stake.
-    optional StakePendingChange pool_info = 4;
+    optional StakePendingChange pending_change = 4;
   }
 
   oneof staking_info {
