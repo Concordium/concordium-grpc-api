@@ -153,14 +153,14 @@ message StakePendingChange {
 
 // Information about how open the pool is to new delegators.
 enum OpenStatus {
-  OPEN_STATUS_OPENFORALL_UNSPECIFIED = 0;
+  OPEN_STATUS_OPENFORALL = 0;
   OPEN_STATUS_CLOSEDFORNEW = 1;
   OPEN_STATUS_CLOSEDFORALL = 2;
 }
 
 // A fraction of an amount with a precision of `1/100_000`.
 message AmountFraction {
-  uint64 parts_per_hundred_thousand = 1;
+  uint32 parts_per_hundred_thousand = 1;
 }
 
 // Distribution of the rewards for the particular pool.
@@ -325,6 +325,28 @@ message ArThreshold {
   uint32 value = 1;
 }
 
+// A single commitment in the G1 group of the BLS curve.
+message Commitment {
+  bytes value = 1;
+}
+
+// Commitments that are part of a normal credential.
+message CredentialCommitments {
+  // Commitment to the PRF key.
+  Commitment prf = 1;
+  // Commitment to the counter used to generate the credential registration id.
+  Commitment cred_counter = 2;
+  // Commitment to the `max_accounts` value, which determines the maximum number
+  // of credentials that may be created from the identity object.
+  Commitment max_accounts = 3;
+  // Commitments to the attributes which have not been revealed in the policy.
+  map<uint32, Commitment> attributes = 4;
+  // List of commitments to the coefficients of the sharing polynomial. This
+  // polynomial is used in a shared encryption of `id_cred_pub` among the
+  // anonymity revokers.
+  repeated Commitment id_cred_sec_sharing_coeff = 5;
+}
+
 // Values contained in a normal (non-initial) credential.
 message NormalCredentialValues {
   // Public keys of the credential.
@@ -341,7 +363,8 @@ message NormalCredentialValues {
   ArThreshold ar_threshold = 5;
   // Mapping from anonymity revoker identities to revocation data for the given anonymity revoker.
   map<uint32, ChainArData> ar_data = 6;
-  // TODO: Commitments.
+  // Commitments to attributes which have not been revealed.
+  CredentialCommitments commitments = 7;
 }
 
 message AccountCredential {
