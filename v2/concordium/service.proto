@@ -10,4 +10,6 @@ service Queries {
   rpc GetAccountInfo (AccountInfoRequest) returns (AccountInfo);
 
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
+
+  rpc GetModuleList (BlockHashInput) returns (stream ModuleReference);
 }

@@ -37,6 +37,11 @@ message AccountIndex {
   uint64 value = 1;
 }
 
+/// Hash of a smart contract module. This is always 32 bytes long.
+message ModuleReference {
+  bytes value = 1;
+}
+
 // An individual release of a locked balance.
 message Release {
   // Effective time of the release in milliseconds since unix epoch.
