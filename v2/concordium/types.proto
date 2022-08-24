@@ -437,3 +437,11 @@ message FinalizedBlockInfo {
   // Absolute height of the block, height 0 is the genesis block.
   AbsoluteBlockHeight height = 2;
 }
+
+// Request the ancestors for the given block.
+message AncestorsRequest {
+  // The block to get ancestors of.
+  BlockHashInput block_hash = 1;
+  // The maximum number of ancestors returned.
+  uint64 amount = 2;
+}

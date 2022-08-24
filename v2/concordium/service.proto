@@ -5,11 +5,21 @@ import "v2/concordium/types.proto";
 package concordium.v2;
 
 service Queries {
+  // Get a stream of finalized blocks. The stream will continue indefinitely.
   rpc GetFinalizedBlocks (Empty) returns (stream FinalizedBlockInfo);
 
+  // Get information about the requested account.
   rpc GetAccountInfo (AccountInfoRequest) returns (AccountInfo);
 
+  // Get a list of all accounts. The stream will end when all accounts
+  // that exist in the state at the end of the given block have been returned.
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
 
+  // Get a list of all smart contract modules. The stream will end
+  // when all modules that exist in the state at the end of the given
+  // block have been returned.
   rpc GetModuleList (BlockHashInput) returns (stream ModuleReference);
+
+  // Get ancestors for the provided block.
+  rpc GetAncestors (AncestorsRequest) returns (stream BlockHash);
 }
