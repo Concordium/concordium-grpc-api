@@ -37,8 +37,14 @@ message AccountIndex {
   uint64 value = 1;
 }
 
-/// Hash of a smart contract module. This is always 32 bytes long.
-message ModuleReference {
+// Reference (hash) of a smart contract module. This is always 32 bytes long.
+message ModuleRef {
+  bytes value = 1;
+}
+
+//! Source bytes of a smart contract module.
+// ok test
+message ModuleSource {
   bytes value = 1;
 }
 
@@ -234,7 +240,7 @@ message Amount {
   uint64 value = 1;
 }
 
-// The amount of microCCD.
+// A credential index of an account.
 message CredentialIndex {
   uint32 value = 1;
 }
@@ -444,4 +450,65 @@ message AncestorsRequest {
   BlockHashInput block_hash = 1;
   // The maximum number of ancestors returned.
   uint64 amount = 2;
+}
+
+// Request for getting the source of a smart contract module.
+message ModuleSourceRequest {
+  // The block to be used for the query.
+  BlockHashInput block_hash = 1;
+
+  // The reference (hash) of the module.
+  ModuleRef module_ref = 2;
+}
+
+// Address of a smart contract instance.
+message ContractAddress {
+  // The index of the smart contract.
+  uint64 index = 1;
+  // The subindex of the smart contract instance.
+  // Currently not used, so it is always 0.
+  uint64 subindex = 2;
+}
+
+message InstanceInfoRequest {
+  BlockHashInput block_hash = 1;
+  ContractAddress address = 2;
+}
+
+// Information about a smart contract instance.
+message InstanceInfo {
+
+  message V0 {
+    ContractState model = 1;
+    AccountAddress owner = 2;
+    Amount amount = 3;
+    repeated ReceiveName methods = 4;
+    InitName name = 5;
+    ModuleRef source_module = 6;
+  }
+
+  message V1 {
+    AccountAddress owner = 2;
+    Amount amount = 3;
+    repeated ReceiveName methods = 4;
+    InitName name = 5;
+    ModuleRef source_module = 6;
+  }
+
+  oneof version {
+    V0 v0 = 1;
+    V1 v1 = 2;
+  }
+}
+
+message ReceiveName {
+  string value = 1;
+}
+
+message InitName {
+  string value = 1;
+}
+
+message ContractState {
+  bytes value = 1;
 }

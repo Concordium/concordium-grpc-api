@@ -18,8 +18,19 @@ service Queries {
   // Get a list of all smart contract modules. The stream will end
   // when all modules that exist in the state at the end of the given
   // block have been returned.
-  rpc GetModuleList (BlockHashInput) returns (stream ModuleReference);
+  rpc GetModuleList (BlockHashInput) returns (stream ModuleRef);
 
   // Get ancestors for the provided block.
   rpc GetAncestors (AncestorsRequest) returns (stream BlockHash);
+
+  // Get the source of a smart contract module.
+  rpc GetModuleSource (ModuleSourceRequest) returns (ModuleSource);
+
+  // Get a list of addresses for all smart contract instances. The stream
+  // will end when all instances that exist in the state at the end of the
+  // given block has been returned.
+  rpc GetInstanceList (BlockHashInput) returns (stream ContractAddress);
+
+  // Get info about a smart contract instance as it appears in the given block.
+  rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
 }
