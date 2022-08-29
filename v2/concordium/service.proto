@@ -33,4 +33,7 @@ service Queries {
 
   // Get info about a smart contract instance as it appears in the given block.
   rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
+
+  // Get the status of and information about a specific transaction.
+  rpc GetTransactionStatus (TransactionHash) returns (TransactionStatus);
 }

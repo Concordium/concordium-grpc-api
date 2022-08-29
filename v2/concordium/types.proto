@@ -385,6 +385,13 @@ message AccountCredential {
   }
 }
 
+message CredentialType {
+  oneof type {
+    Empty initial = 1;
+    Empty normal = 2;
+  }
+}
+
 message AccountInfo {
   // Next sequence number to be used for transactions signed from this account.
   Nonce nonce = 1;
@@ -511,4 +518,81 @@ message InitName {
 
 message ContractState {
   bytes value = 1;
+}
+
+message TransactionStatus {
+
+  message Committed {
+    Empty outcomes = 1;
+    // map<BlockHash, TransactionSummary> outcomes = 1; // This is Maybe TransactionSummary in hs. Why the maybe?
+  }
+
+  message Finalized {
+    BlockHash block_hash = 1; // Return in metadata instead?
+    TransactionSummary outcome = 2;
+  }
+
+  oneof status {
+    Empty received = 1;
+    Committed committed = 2;
+    Finalized finalized = 3;
+  }
+}
+
+message Energy {
+  uint64 value = 1;
+}
+
+message TransactionSummary {
+  message AccountTransaction {
+    optional TransactionType type = 1; // TODO: Why is this optional in HS?
+  }
+  message CredentialDeploymentTransaction {
+    CredentialType type = 1;
+  }
+  message UpdateTransaction {
+    UpdateType type = 1;
+  }
+  optional AccountAddress sender = 1;
+  TransactionHash hash = 2;
+  Amount cost = 3;
+  Energy energy_cost = 4;
+
+}
+
+// TODO: Consider microgtu/euro should be the default value, as it will be used much more frequently.
+// First variant of an enum will be encoded with no bytes.
+enum UpdateType {
+    UPDATE_PROTOCOL = 0;
+    UPDATE_ELECTION_DIFFICULTY = 1;
+    UPDATE_EURO_PER_ENERGY = 2;
+    UPDATE_MICRO_GTU_PER_EURO = 3;
+    UPDATE_FOUNDATION_ACCOUNT = 4;
+    UPDATE_MINT_DISTRIBUTION = 5;
+    UPDATE_TRANSACTION_FEE_DISTRIBUTION = 6;
+    UPDATE_GAS_REWARDS = 7;
+    UPDATE_POOL_PARAMETERS = 8;
+    ADD_ANONYMITY_REVOKER = 9;
+    ADD_IDENTITY_PROVIDER = 10;
+    UPDATE_ROOT_KEYS = 11;
+    UPDATE_LEVEL1_KEYS = 12;
+    UPDATE_LEVEL2_KEYS = 13;
+    UPDATE_COOLDOWN_PARAMETERS = 14;
+    UPDATE_TIME_PARAMETERS = 15;
+}
+
+message TransactionType {
+  message ModuleDeploy {
+    ModuleSource module_source = 1;
+  }
+
+  message Transfer {
+    AccountAddress to_address = 1;
+    Amount amount = 2;
+  }
+
+  oneof type {
+    ModuleDeploy module_deploy = 1;
+    Transfer transfer = 4;
+  }
 }
