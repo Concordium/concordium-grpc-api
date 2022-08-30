@@ -16,12 +16,15 @@ message TransactionHash {
   bytes value = 1;
 }
 
-// The absolute height of a block.
+// The absolute height of a block. This is the number of ancestors of a block
+// since the genesis block. In particular, the chain genesis block has absolute
+// height 0.
 message AbsoluteBlockHeight {
   uint64 value = 1;
 }
 
-// The height of a block relative to the last genesis.
+// The height of a block relative to the last genesis. This differs from the
+// absolute block height in that it counts height from the last protocol update.
 message BlockHeight {
   uint64 value = 1;
 }
@@ -50,7 +53,9 @@ message Release {
 // State of the account's release schedule. This is the balance of the account
 // that is owned by the account, but cannot be used until the release point.
 message ReleaseSchedule {
+  // Total amount locked in the release schedule.
   Amount total = 1;
+  // A list of releases, ordered by increasing timestamp.
   repeated Release schedules = 2;
 }
 
@@ -136,6 +141,7 @@ message BakerInfo {
   BakerAggregationVerifyKey aggregation_key = 4;
 }
 
+// Pending change to the stake either of a baker or delegator.
 message StakePendingChange {
   message Reduce {
     Amount new_stake = 1;
@@ -367,6 +373,7 @@ message NormalCredentialValues {
   CredentialCommitments commitments = 7;
 }
 
+// Credential that is part of an account.
 message AccountCredential {
   oneof credential_values {
     InitialCredentialValues initial = 1;
@@ -408,25 +415,43 @@ message AccountInfo {
   AccountAddress address = 10;
 }
 
+// Input to queries which take a block as a parameter.
 message BlockHashInput {
   oneof block_hash_input {
+    // Query for the best block.
     Empty best = 1;
+    // Query for the last finalized block.
     Empty last_final = 2;
+    // Query for the block specified by the hash. This hash should always be 32 bytes.
     BlockHash given = 3;
   }
 }
 
+// Request for account information.
 message AccountInfoRequest {
+  // Block in which to query the account information.
   BlockHashInput block_hash = 1;
+  // Specification of the account.
   oneof account_identifier {
+    // Address of the account.
     AccountAddress address = 2;
+    // Identify the account by the credential that belongs or has belonged to it.
     CredentialRegistrationId cred_id = 3;
+    // Identify the account via its index.
     AccountIndex account_index = 4;
   }
 }
 
 // Information about a finalized block that is part of the streaming response.
 message FinalizedBlockInfo {
+  // Hash of the block.
+  BlockHash hash = 1;
+  // Absolute height of the block, height 0 is the genesis block.
+  AbsoluteBlockHeight height = 2;
+}
+
+// Information about an arrived block that is part of the streaming response.
+message BlockInfo {
   // Hash of the block.
   BlockHash hash = 1;
   // Absolute height of the block, height 0 is the genesis block.
