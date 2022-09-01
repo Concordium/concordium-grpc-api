@@ -265,6 +265,14 @@ message AccountAddress {
   bytes value = 1;
 }
 
+// An addrass is either a contract or account address.
+message Address {
+  oneof type {
+    AccountAddress account = 1;
+    ContractAddress contract = 2;
+  }
+}
+
 // A public key used to verify transaction signatures from an account.
 message AccountVerifyKey {
   oneof key {
@@ -523,13 +531,11 @@ message ContractState {
 message TransactionStatus {
 
   message Committed {
-    Empty outcomes = 1;
-    // map<BlockHash, TransactionSummary> outcomes = 1; // This is Maybe TransactionSummary in hs. Why the maybe?
+    repeated TransactionSummaryInBlock outcomes = 1;
   }
 
   message Finalized {
-    BlockHash block_hash = 1; // Return in metadata instead?
-    TransactionSummary outcome = 2;
+    TransactionSummaryInBlock outcomes = 1; // TODO: Should this also be repeated for when finalization committee is corrupt?
   }
 
   oneof status {
@@ -539,28 +545,68 @@ message TransactionStatus {
   }
 }
 
+message TransactionSummaryInBlock {
+  BlockHash block_hash = 1;
+  optional TransactionSummary outcome = 2; // TODO: This is optional in haskell, why?
+}
+
 message Energy {
   uint64 value = 1;
 }
 
 message TransactionSummary {
   message AccountTransaction {
-    optional TransactionType type = 1; // TODO: Why is this optional in HS?
+    optional TransactionType value = 1; // TODO: Why is this optional in HS?
   }
   message CredentialDeploymentTransaction {
-    CredentialType type = 1;
+    CredentialType value = 1;
   }
   message UpdateTransaction {
-    UpdateType type = 1;
+    UpdateType value = 1;
   }
+  message TransactionIndex {
+    uint64 value = 1;
+  }
+  message Success {
+    message Event {
+      message Transferred {
+        Address sender = 1;
+        Amount amount = 2;
+        Address receiver = 3;
+      }
+      // TODO: implement remaning variants
+      oneof type {
+        Transferred transferred = 1;
+      }
+    }
+    repeated Event events = 1;
+  }
+  message Reject {
+    message RejectReason {
+      Empty value = 1; // TODO: implement
+    }
+    RejectReason reject_reason = 1;
+  }
+
   optional AccountAddress sender = 1;
   TransactionHash hash = 2;
   Amount cost = 3;
   Energy energy_cost = 4;
-
+  oneof type {
+    AccountTransaction account = 5;
+    CredentialDeploymentTransaction credential_deployment = 6;
+    UpdateTransaction update = 7;
+  }
+  oneof result {
+    Success success = 8;
+    Reject reject = 9;
+  }
+  TransactionIndex index = 10;
 }
 
-// TODO: Consider microgtu/euro should be the default value, as it will be used much more frequently.
+
+
+// TODO: Consider if microgtu/euro should be the default value, as it will be used much more frequently.
 // First variant of an enum will be encoded with no bytes.
 enum UpdateType {
     UPDATE_PROTOCOL = 0;
@@ -581,18 +627,10 @@ enum UpdateType {
     UPDATE_TIME_PARAMETERS = 15;
 }
 
-message TransactionType {
-  message ModuleDeploy {
-    ModuleSource module_source = 1;
-  }
-
-  message Transfer {
-    AccountAddress to_address = 1;
-    Amount amount = 2;
-  }
-
-  oneof type {
-    ModuleDeploy module_deploy = 1;
-    Transfer transfer = 4;
-  }
+enum TransactionType {
+  DEPLOY_MODULE = 0;
+  INIT_CONTRACT = 1;
+  UPDATE = 2;
+  TRANSFER = 3;
+  // TODO: implement rest
 }
