@@ -535,7 +535,7 @@ message TransactionStatus {
   }
 
   message Finalized {
-    TransactionSummaryInBlock outcomes = 1; // TODO: Should this also be repeated for when finalization committee is corrupt?
+    TransactionSummaryInBlock outcomes = 1; // TODO: Should this also be repeated for when finalization committee is corrupt? Yes.
   }
 
   oneof status {
@@ -556,13 +556,13 @@ message Energy {
 
 message TransactionSummary {
   message AccountTransaction {
-    optional TransactionType value = 1; // TODO: Why is this optional in HS?
+    optional TransactionType transaction_type = 1; // TODO: Why is this optional in HS?
   }
   message CredentialDeploymentTransaction {
-    CredentialType value = 1;
+    CredentialType credential_type = 1;
   }
   message UpdateTransaction {
-    UpdateType value = 1;
+    UpdateType update_type = 1;
   }
   message TransactionIndex {
     uint64 value = 1;
@@ -602,6 +602,38 @@ message TransactionSummary {
     Reject reject = 9;
   }
   TransactionIndex index = 10;
+}
+
+message AccountTransactionEffects {
+  message AccountTransfer {
+    Amount amount = 1;
+    AccountAddress to_ = 2;
+  }
+
+  oneof effect {
+    AccountTransfer account_transfer = 1; // TODO: implement the rest.
+  }
+}
+
+message AccountTransactionDetails {
+  Amount cost = 1;
+  AccountAddress sender = 2;
+  AccountTransactionEffects effects = 3;
+}
+
+message BlockItemSummary {
+  message TransactionIndex {
+    uint64 value = 1;
+  }
+
+  TransactionIndex index = 1;
+  Energy energy_cost = 2;
+  TransactionHash hash = 3;
+  oneof details {
+    AccountTransactionEffects account_transaction = 4;
+    // account_creation
+    // update
+  }
 }
 
 
