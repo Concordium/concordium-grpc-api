@@ -535,7 +535,7 @@ message TransactionStatus {
   }
 
   message Finalized {
-    TransactionSummaryInBlock outcomes = 1; // TODO: Should this also be repeated for when finalization committee is corrupt? Yes.
+    TransactionSummaryInBlock outcome = 1; // TODO: internalservererror grpc error if there are multiple
   }
 
   oneof status {
@@ -547,61 +547,11 @@ message TransactionStatus {
 
 message TransactionSummaryInBlock {
   BlockHash block_hash = 1;
-  optional TransactionSummary outcome = 2; // TODO: This is optional in haskell, why?
+  BlockItemSummary outcome = 2; // TODO: Just a technical maybe in hs. No maybe in grpc.
 }
 
 message Energy {
   uint64 value = 1;
-}
-
-message TransactionSummary {
-  message AccountTransaction {
-    optional TransactionType transaction_type = 1; // TODO: Why is this optional in HS?
-  }
-  message CredentialDeploymentTransaction {
-    CredentialType credential_type = 1;
-  }
-  message UpdateTransaction {
-    UpdateType update_type = 1;
-  }
-  message TransactionIndex {
-    uint64 value = 1;
-  }
-  message Success {
-    message Event {
-      message Transferred {
-        Address sender = 1;
-        Amount amount = 2;
-        Address receiver = 3;
-      }
-      // TODO: implement remaning variants
-      oneof type {
-        Transferred transferred = 1;
-      }
-    }
-    repeated Event events = 1;
-  }
-  message Reject {
-    message RejectReason {
-      Empty value = 1; // TODO: implement
-    }
-    RejectReason reject_reason = 1;
-  }
-
-  optional AccountAddress sender = 1;
-  TransactionHash hash = 2;
-  Amount cost = 3;
-  Energy energy_cost = 4;
-  oneof type {
-    AccountTransaction account = 5;
-    CredentialDeploymentTransaction credential_deployment = 6;
-    UpdateTransaction update = 7;
-  }
-  oneof result {
-    Success success = 8;
-    Reject reject = 9;
-  }
-  TransactionIndex index = 10;
 }
 
 message AccountTransactionEffects {
@@ -630,7 +580,7 @@ message BlockItemSummary {
   Energy energy_cost = 2;
   TransactionHash hash = 3;
   oneof details {
-    AccountTransactionEffects account_transaction = 4;
+    AccountTransactionDetails account_transaction = 4;
     // account_creation
     // update
   }
