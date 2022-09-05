@@ -19,6 +19,6 @@ service Queries {
   // Retrieve the information about the given account in the given block.
   rpc GetAccountInfo (AccountInfoRequest) returns (AccountInfo);
 
-  // Retrieve the list of accounts that exist in the given block.
+  // Retrieve the list of accounts that exist at the end of the given block.
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
 }
