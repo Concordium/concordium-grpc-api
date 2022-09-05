@@ -442,13 +442,17 @@ message BlockHashInput {
   }
 }
 
+message AccountIdentifierInput {
+  oneof account_identifier_input {
+    AccountAddress address = 1;
+    CredentialRegistrationId cred_id = 2;
+    AccountIndex account_index = 3;
+  }
+}
+
 message AccountInfoRequest {
   BlockHashInput block_hash = 1;
-  oneof account_identifier {
-    AccountAddress address = 2;
-    CredentialRegistrationId cred_id = 3;
-    AccountIndex account_index = 4;
-  }
+  AccountIdentifierInput account_identifier = 2;
 }
 
 // Information about a finalized block that is part of the streaming response.
@@ -633,4 +637,9 @@ enum TransactionType {
   UPDATE = 2;
   TRANSFER = 3;
   // TODO: implement rest
+}
+
+message NextAccountNonce {
+  Nonce nonce = 1;
+  bool all_final = 2;
 }
