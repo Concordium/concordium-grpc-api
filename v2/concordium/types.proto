@@ -524,6 +524,11 @@ message InitName {
   string value = 1;
 }
 
+// Parameter to a smart contract invocation.
+message Parameter {
+  bytes value = 1;
+}
+
 message ContractState {
   bytes value = 1;
 }
@@ -554,14 +559,233 @@ message Energy {
   uint64 value = 1;
 }
 
+message RejectReason {
+
+  message ModuleHashAlreadyExists {
+    ModuleRef contents = 1;
+  }
+
+  message InvalidAccountReference {
+    AccountAddress contents = 1;
+  }
+
+  message InvalidInitMethod {
+    ModuleRef module_ref = 1;
+    InitName init_name = 2;
+  }
+
+  message InvalidReceiveMethod {
+    ModuleRef module_ref = 1;
+    ReceiveName receive_name = 2;
+  }
+
+  message InvalidModuleReference {
+    ModuleRef contents = 1;
+  }
+
+  message InvalidContractAddress {
+    ContractAddress contents = 1;
+  }
+
+  message AmountTooLarge {
+    Address address = 1;
+    Amount amount = 2;
+  }
+
+  message RejectedInit {
+    int32 reject_reason = 1;
+  }
+
+  message RejectedReceive {
+    int32 reject_reason = 1;
+    ContractAddress contract_address = 2;
+    ReceiveName receive_name = 3;
+    Parameter parameter = 4;
+  }
+
+  message AlreadyABaker {
+    BakerId contents = 1;
+  }
+
+  message NotABaker {
+    AccountAddress contents = 1;
+  }
+
+  message DuplicateAggregationKey {
+    BakerAggregationVerifyKey contents = 1;
+  }
+
+  message EncryptedAmountSelfTransfer {
+    AccountAddress contents = 1;
+  }
+
+  message ScheduledSelfTransfer {
+    AccountAddress contents = 1;
+  }
+
+  message DuplicateCredIds {
+    repeated CredentialRegistrationId contents = 1;
+  }
+
+  message NonExistentCredIds {
+    repeated CredentialRegistrationId contents = 1;
+  }
+
+  message NotADelegator {
+    AccountAddress contents = 1;
+  }
+
+  message DelegationTargetNotABaker {
+    BakerId contents = 1;
+  }
+
+  oneof reason {
+    // Raised while validating a Wasm module that is not well formed.
+    Empty module_not_wf = 1;
+    // The smart contract module hash already exists.
+    ModuleHashAlreadyExists module_hash_already_exists = 2;
+    // Account does not exist.
+    InvalidAccountReference invalid_account_reference = 3;
+    // Reference to a non-existing contract init method.
+    InvalidInitMethod invalid_init_method = 4;
+    // Reference to a non-existing contract receive method.
+    InvalidReceiveMethod invalid_receive_method = 5;
+    // Reference to a non-existing smart contract module.
+    InvalidModuleReference invalid_module_reference = 6;
+    // Contract instance does not exist.
+    InvalidContractAddress invalid_contract_address = 7;
+    /// Runtime exception occurred when running either the init or receive
+    /// method.
+    Empty runtime_failure = 8;
+    /// When one wishes to transfer an amount from A to B but there
+    /// are not enough funds on account/contract A to make this
+    /// possible. The data are the from address and the amount to transfer.
+    AmountTooLarge amount_too_large = 9;
+    /// Serialization of the body failed.
+    Empty serialization_failure = 10;
+    /// We ran of out energy to process this transaction.
+    Empty out_of_energy = 11;
+    /// Rejected due to contract logic in init function of a contract.
+    RejectedInit rejected_init = 12;
+    /// Rejected due to contract logic in receive function of a contract.
+    RejectedReceive rejected_receive = 13;
+    /// Proof that the baker owns relevant private keys is not valid.
+    Empty invalid_proof = 14;
+    /// Tried to add baker for an account that already has a baker
+    AlreadyABaker already_a_baker = 15;
+    /// Tried to remove a baker for an account that has no baker
+    NotABaker not_a_baker = 16;
+    /// The amount on the account was insufficient to cover the proposed stake
+    Empty insufficient_balance_for_baker_stake = 17;
+    /// The amount provided is under the threshold required for becoming a baker
+    Empty stake_under_minimum_threshold_for_baking = 18;
+    /// The change could not be made because the baker is in cooldown for
+    /// another change
+    Empty baker_in_cooldown = 19;
+    /// A baker with the given aggregation key already exists
+    DuplicateAggregationKey duplicate_aggregation_key = 20;
+    /// Encountered credential ID that does not exist
+    Empty non_existent_credential_id = 21;
+    /// Attempted to add an account key to a key index already in use
+    Empty key_index_already_in_use = 22;
+    /// When the account threshold is updated, it must not exceed the amount of
+    /// existing keys
+    Empty invalid_account_threshold = 23;
+    /// When the credential key threshold is updated, it must not exceed the
+    /// amount of existing keys
+    Empty invalid_credential_key_sign_threshold = 24;
+    /// Proof for an encrypted amount transfer did not validate.
+    Empty invalid_encrypted_amount_transfer_proof = 25;
+    /// Proof for a secret to public transfer did not validate.
+    Empty invalid_transfer_to_public_proof = 26;
+    /// Account tried to transfer an encrypted amount to itself, that's not
+    /// allowed.
+    EncryptedAmountSelfTransfer encrypted_amount_self_transfer = 27;
+    /// The provided index is below the start index or above `startIndex +
+    /// length incomingAmounts`
+    Empty invalid_index_on_encrypted_transfer = 28;
+    /// The transfer with schedule is going to send 0 tokens
+    Empty zero_scheduledAmount = 29;
+    /// The transfer with schedule has a non strictly increasing schedule
+    Empty non_increasing_schedule = 30;
+    /// The first scheduled release in a transfer with schedule has already
+    /// expired
+    Empty first_scheduled_release_expired = 31;
+    /// Account tried to transfer with schedule to itself, that's not allowed.
+    ScheduledSelfTransfer scheduled_self_transfer = 32;
+    /// At least one of the credentials was either malformed or its proof was
+    /// incorrect.
+    Empty invalid_credentials = 33;
+    /// Some of the credential IDs already exist or are duplicated in the
+    /// transaction.
+    DuplicateCredIds duplicate_cred_ids = 34;
+    /// A credential id that was to be removed is not part of the account.
+    NonExistentCredIds non_existent_cred_ids = 35;
+    /// Attemp to remove the first credential
+    Empty remove_first_credential = 36;
+    /// The credential holder of the keys to be updated did not sign the
+    /// transaction
+    Empty credential_holder_did_not_sign = 37;
+    /// Account is not allowed to have multiple credentials because it contains
+    /// a non-zero encrypted transfer.
+    Empty not_allowed_multiple_credentials = 38;
+    /// The account is not allowed to receive encrypted transfers because it has
+    /// multiple credentials.
+    Empty not_allowed_to_receive_encrypted = 39;
+    /// The account is not allowed to send encrypted transfers (or transfer
+    /// from/to public to/from encrypted)
+    Empty not_allowed_to_handle_encrypted = 40;
+    /// A configure baker transaction is missing one or more arguments in order
+    /// to add a baker.
+    Empty missing_baker_add_parameters = 41;
+    /// Finalization reward commission is not in the valid range for a baker
+    Empty finalization_reward_commission_not_in_range = 42;
+    /// Baking reward commission is not in the valid range for a baker
+    Empty baking_reward_commission_not_in_range = 43;
+    /// Transaction fee commission is not in the valid range for a baker
+    Empty transaction_fee_commission_not_in_range = 44;
+    /// Tried to add baker for an account that already has a delegator.
+    Empty already_a_delegator = 45;
+    /// The amount on the account was insufficient to cover the proposed stake.
+    Empty insufficient_balance_for_delegation_stake = 46;
+    /// A configure delegation transaction is missing one or more arguments in
+    /// order to add a delegator.
+    Empty missing_delegation_add_parameters = 47;
+    /// Delegation stake when adding a delegator was 0.
+    Empty insufficient_delegation_stake = 48;
+    /// Account is not a delegation account.
+    Empty delegator_in_cooldown = 49;
+    /// Account is not a delegation account.
+    NotADelegator not_a_delegator = 50;
+    /// Delegation target is not a baker
+    DelegationTargetNotABaker delegation_target_not_a_baker = 51;
+    /// The amount would result in pool capital higher than the maximum
+    /// threshold.
+    Empty stake_over_maximum_threshold_for_pool = 52;
+    /// The amount would result in pool with a too high fraction of delegated
+    /// capital.
+    Empty pool_would_become_over_delegated = 53;
+    /// The pool is not open to delegators.
+    Empty pool_closed = 54;
+  }
+}
+
 message AccountTransactionEffects {
+  message None {
+    // Transaction type of a failed transaction, if known.
+    // In case of serialization failure this will not be set.
+    optional TransactionType transaction_type = 1;
+    // Reason for rejection of the transaction.
+    RejectReason reject_reason = 2;
+  }
   message AccountTransfer {
     Amount amount = 1;
     AccountAddress to_ = 2;
   }
 
   oneof effect {
-    AccountTransfer account_transfer = 1; // TODO: implement the rest.
+    None none = 1;
+    AccountTransfer account_transfer = 2; // TODO: implement the rest.
   }
 }
 
@@ -614,5 +838,21 @@ enum TransactionType {
   INIT_CONTRACT = 1;
   UPDATE = 2;
   TRANSFER = 3;
-  // TODO: implement rest
+  ADD_BAKER = 4;
+  REMOVE_BAKER = 5;
+  UPDATE_BAKER_STAKE = 6;
+  UPDATE_BAKER_RESTAKE_EARNINGS = 7;
+  UPDATE_BAKER_KEYS = 8;
+  UPDATE_CREDENTIAL_KEYS = 9;
+  ENCRYPTED_AMOUNT_TRANSFER = 10;
+  TRANSFER_TO_ENCRYPTED = 11;
+  TRANSFER_TO_PUBLIC = 12;
+  TRANSFER_WITH_SCHEDULE = 13;
+  UPDATE_CREDENTIALS = 14;
+  REGISTER_DATA = 15;
+  TRANSFER_WITH_MEMO = 16;
+  ENCRYPTED_AMOUNT_TRANSFER_WITH_MEMO = 17;
+  TRANSFER_WITH_SCHEDULE_AND_MEMO = 18;
+  CONFIGURE_BAKER = 19;
+  CONFIGURE_DELEGATION = 20;
 }
