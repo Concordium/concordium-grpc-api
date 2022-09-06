@@ -643,3 +643,89 @@ message NextAccountNonce {
   Nonce nonce = 1;
   bool all_final = 2;
 }
+
+message Timestamp {
+  uint64 value = 1;
+}
+
+message Duration {
+  uint64 value = 1;
+}
+
+enum ProtocolVersion {
+  PROTOCOL_VERSION_1 = 0;
+  PROTOCOL_VERSION_2 = 1;
+  PROTOCOL_VERSION_3 = 2;
+  PROTOCOL_VERSION_4 = 3;
+}
+
+message GenesisIndex {
+  uint32 value = 1;
+}
+
+message ConsensusInfo {
+  // Hash of the current best block
+  BlockHash best_block = 1;
+  // Hash of the (original) genesis block
+  BlockHash genesis_block = 2;
+  // Time of the (original) genesis block
+  Timestamp genesis_time = 3;
+  // (Current) slot duration in milliseconds
+  Duration slot_duration = 4;
+  // (Current) epoch duration in milliseconds
+  Duration epoch_duration = 5;
+  // Hash of the last finalized block
+  BlockHash last_finalized_block = 6;
+  // Absolute height of the best block
+  AbsoluteBlockHeight best_block_height = 7;
+  // Absolute height of the last finalized block
+  AbsoluteBlockHeight last_finalized_block_height = 8;
+  // Total number of blocks received
+  uint32 blocks_received_count = 9;
+  // The last time a block was received
+  optional Timestamp block_last_received_time = 10;
+  // Moving average latency between a block's slot time and received time
+  double block_receive_latency_ema = 11;
+  // Standard deviation of moving average latency between a block's slot time and received time
+  double block_receive_latency_emsd = 12;
+  // Moving average time between receiving blocks
+  optional double block_receive_period_ema = 13;
+  // Standard deviation of moving average time between receiving blocks
+  optional double block_receive_period_emsd = 14;
+  // Total number of blocks received and verified
+  uint32 blocks_verified_count = 15;
+  // The last time a block was verified (added to the tree)
+  optional Timestamp block_last_arrived_time = 16;
+  // Moving average latency between a block's slot time and its arrival
+  double block_arrive_latency_ema = 17;
+  // Standard deviation of moving average latency between a block's slot time and its arrival
+  double block_arrive_latency_emsd = 18;
+  // Moving average time between block arrivals
+  optional double block_arrive_period_ema = 19;
+  // Standard deviation of moving average time between block arrivals
+  optional double block_arrive_period_emsd = 20;
+  // Moving average number of transactions per block
+  double transactions_per_block_ema = 21;
+  // Standard deviation of moving average number of transactions per block
+  double transactions_per_block_emsd = 22;
+  // Number of finalizations
+  uint32 finalization_count = 23;
+  // Time of last verified finalization
+  optional Timestamp last_finalized_time = 24;
+  // Moving average time between finalizations
+  optional double finalization_period_ema = 25;
+  // Standard deviation of moving average time between finalizations
+  optional double finalization_period_emsd = 26;
+  // Currently active protocol version.
+  ProtocolVersion protocol_version = 27;
+  // The number of chain restarts via a protocol update. An effected
+  // protocol update instruction might not change the protocol version
+  // specified in the previous field, but it always increments the genesis
+  // index.
+  GenesisIndex genesis_index = 28;
+  // Block hash of the genesis block of current era, i.e., since the last protocol update.
+  // Initially this is equal to 'csGenesisBlock'.
+  BlockHash current_era_genesis_block = 29;
+  // Time when the current era started.
+  Timestamp current_era_genesis_time = 30;
+}

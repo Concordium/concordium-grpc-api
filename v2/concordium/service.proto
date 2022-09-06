@@ -34,8 +34,11 @@ service Queries {
   // Get info about a smart contract instance as it appears in the given block.
   rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
 
-  // Get the next account nonce
+  // Get the next account nonce.
   rpc GetNextAccountNonce (AccountIdentifierInput) returns (NextAccountNonce);
+
+  // Get the consensus status.
+  rpc GetConsensusInfo (Empty) returns (ConsensusInfo);
 
   // Get the status of and information about a specific transaction.
   rpc GetTransactionStatus (TransactionHash) returns (TransactionStatus);
