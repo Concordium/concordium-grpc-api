@@ -6,12 +6,12 @@ package concordium.v2;
 message Empty {
 }
 
-/// Hash of a block. This is always 32 bytes long.
+// Hash of a block. This is always 32 bytes long.
 message BlockHash {
   bytes value = 1;
 }
 
-/// Hash of a transaction. This is always 32 bytes long.
+// Hash of a transaction. This is always 32 bytes long.
 message TransactionHash {
   bytes value = 1;
 }
@@ -40,13 +40,12 @@ message AccountIndex {
   uint64 value = 1;
 }
 
-// Reference (hash) of a smart contract module. This is always 32 bytes long.
+// A smart contract module reference. This is always 32 bytes long.
 message ModuleRef {
   bytes value = 1;
 }
 
-//! Source bytes of a smart contract module.
-// ok test
+// Source bytes of a smart contract module.
 message ModuleSource {
   bytes value = 1;
 }
@@ -281,7 +280,7 @@ message AccountAddress {
   bytes value = 1;
 }
 
-// An addrass is either a contract or account address.
+// An address of either a contract or an account.
 message Address {
   oneof type {
     AccountAddress account = 1;
@@ -468,7 +467,7 @@ message BlockHashInput {
 // Input to queries which take an account as a parameter.
 message AccountIdentifierInput {
   oneof account_identifier_input {
-    // Address of the account.
+    // Identify the account by the address of the account.
     AccountAddress address = 1;
     // Identify the account by the credential that belongs or has belonged to it.
     CredentialRegistrationId cred_id = 2;
@@ -505,8 +504,7 @@ message AncestorsRequest {
 message ModuleSourceRequest {
   // The block to be used for the query.
   BlockHashInput block_hash = 1;
-
-  // The reference (hash) of the module.
+  // The reference of the module.
   ModuleRef module_ref = 2;
 }
 
@@ -519,45 +517,67 @@ message ContractAddress {
   uint64 subindex = 2;
 }
 
+// Request for getting information about a smart contract instance.
 message InstanceInfoRequest {
+  // The block to be used for the query.
   BlockHashInput block_hash = 1;
+  // The address of the smart contract instance.
   ContractAddress address = 2;
 }
 
 // Information about a smart contract instance.
 message InstanceInfo {
 
+  // Version 0 smart contract instance information.
   message V0 {
+    // The state of the instance.
     ContractState model = 1;
+    // The account address which deployed the instance.
     AccountAddress owner = 2;
+    // The amount of CCD tokens in the balance of the instance.
     Amount amount = 3;
+    // A list of endpoints exposed by the instance.
     repeated ReceiveName methods = 4;
+    // The name of the smart contract of the instance.
     InitName name = 5;
+    // The module reference for the smart contract module of the instance.
     ModuleRef source_module = 6;
   }
 
+  // Version 1 smart contract instance information.
   message V1 {
+    // The account address which deployed the instance.
     AccountAddress owner = 2;
+    // The amount of CCD tokens in the balance of the instance.
     Amount amount = 3;
+    // A list of endpoints exposed by the instance.
     repeated ReceiveName methods = 4;
+    // The name of the smart contract of the instance.
     InitName name = 5;
+    // The module reference for the smart contract module of the instance.
     ModuleRef source_module = 6;
   }
 
+  // The information depends on the smart contract version used by the instance.
   oneof version {
     V0 v0 = 1;
     V1 v1 = 2;
   }
 }
 
+// The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
+// It must only consist of atmost 100 ascii alphanumeric or punctuation characters, and must contain a '.'.
 message ReceiveName {
   string value = 1;
 }
 
+// The init name of a smart contract function. Expected format: "init_<contract_name>".
+// It must only consist of atmost 100 ascii alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
 message InitName {
   string value = 1;
 }
 
+// A smart contract v0 state.
 message ContractState {
   bytes value = 1;
 }
@@ -669,15 +689,20 @@ enum TransactionType {
   // TODO: implement rest
 }
 
+// The response for getNextAccountSequenceNumber.
 message NextAccountSequenceNumber {
+  // The best guess for the available account sequence number.
   SequenceNumber sequence_number = 1;
+  // Whether the guess relies on any non-finalized transactions. If true all of the relevant transactions are finalized.
   bool all_final = 2;
 }
 
+// A duration of milliseconds.
 message Duration {
   uint64 value = 1;
 }
 
+// The different versions of the protocol.
 enum ProtocolVersion {
   PROTOCOL_VERSION_1 = 0;
   PROTOCOL_VERSION_2 = 1;
@@ -685,62 +710,67 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_4 = 3;
 }
 
+// The number of chain restarts via a protocol update. An effected
+// protocol update instruction might not change the protocol version
+// specified in the previous field, but it always increments the genesis
+// index.
 message GenesisIndex {
   uint32 value = 1;
 }
 
+// The response for GetConsensusInfo.
 message ConsensusInfo {
-  // Hash of the current best block
+  // Hash of the current best block.
   BlockHash best_block = 1;
-  // Hash of the (original) genesis block
+  // Hash of the (original) genesis block.
   BlockHash genesis_block = 2;
-  // Time of the (original) genesis block
+  // Time of the (original) genesis block.
   Timestamp genesis_time = 3;
-  // (Current) slot duration in milliseconds
+  // (Current) slot duration in milliseconds.
   Duration slot_duration = 4;
-  // (Current) epoch duration in milliseconds
+  // (Current) epoch duration in milliseconds.
   Duration epoch_duration = 5;
-  // Hash of the last finalized block
+  // Hash of the last finalized block.
   BlockHash last_finalized_block = 6;
-  // Absolute height of the best block
+  // Absolute height of the best block.
   AbsoluteBlockHeight best_block_height = 7;
-  // Absolute height of the last finalized block
+  // Absolute height of the last finalized block.
   AbsoluteBlockHeight last_finalized_block_height = 8;
-  // Total number of blocks received
+  // Total number of blocks received.
   uint32 blocks_received_count = 9;
-  // The last time a block was received
+  // The last time a block was received.
   optional Timestamp block_last_received_time = 10;
-  // Moving average latency between a block's slot time and received time
+  // Moving average latency between a block's slot time and received time.
   double block_receive_latency_ema = 11;
-  // Standard deviation of moving average latency between a block's slot time and received time
+  // Standard deviation of moving average latency between a block's slot time and received time.
   double block_receive_latency_emsd = 12;
-  // Moving average time between receiving blocks
+  // Moving average time between receiving blocks.
   optional double block_receive_period_ema = 13;
-  // Standard deviation of moving average time between receiving blocks
+  // Standard deviation of moving average time between receiving blocks.
   optional double block_receive_period_emsd = 14;
-  // Total number of blocks received and verified
+  // Total number of blocks received and verified.
   uint32 blocks_verified_count = 15;
-  // The last time a block was verified (added to the tree)
+  // The last time a block was verified (added to the tree).
   optional Timestamp block_last_arrived_time = 16;
-  // Moving average latency between a block's slot time and its arrival
+  // Moving average latency between a block's slot time and its arrival.
   double block_arrive_latency_ema = 17;
-  // Standard deviation of moving average latency between a block's slot time and its arrival
+  // Standard deviation of moving average latency between a block's slot time and its arrival.
   double block_arrive_latency_emsd = 18;
-  // Moving average time between block arrivals
+  // Moving average time between block arrivals.
   optional double block_arrive_period_ema = 19;
-  // Standard deviation of moving average time between block arrivals
+  // Standard deviation of moving average time between block arrivals.
   optional double block_arrive_period_emsd = 20;
-  // Moving average number of transactions per block
+  // Moving average number of transactions per block.
   double transactions_per_block_ema = 21;
-  // Standard deviation of moving average number of transactions per block
+  // Standard deviation of moving average number of transactions per block.
   double transactions_per_block_emsd = 22;
-  // Number of finalizations
+  // Number of finalizations.
   uint32 finalization_count = 23;
-  // Time of last verified finalization
+  // Time of last verified finalization.
   optional Timestamp last_finalized_time = 24;
-  // Moving average time between finalizations
+  // Moving average time between finalizations.
   optional double finalization_period_ema = 25;
-  // Standard deviation of moving average time between finalizations
+  // Standard deviation of moving average time between finalizations.
   optional double finalization_period_emsd = 26;
   // Currently active protocol version.
   ProtocolVersion protocol_version = 27;

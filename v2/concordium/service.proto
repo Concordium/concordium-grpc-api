@@ -41,10 +41,13 @@ service Queries {
   // Get info about a smart contract instance as it appears in the given block.
   rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
 
-  // Get the next account sequence number.
+  // Get the best guess as to what the next account sequence number should be.
+  // If all account transactions are finalized then this information is reliable.
+  // Otherwise this is the best guess, assuming all other transactions will be
+  // committed to blocks and eventually finalized.
   rpc GetNextAccountSequenceNumber (AccountIdentifierInput) returns (NextAccountSequenceNumber);
 
-  // Get the consensus status.
+  // Get information of the current state of consensus.
   rpc GetConsensusInfo (Empty) returns (ConsensusInfo);
 
   // Get the status of and information about a specific transaction.
