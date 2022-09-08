@@ -50,6 +50,9 @@ service Queries {
   // Get information of the current state of consensus.
   rpc GetConsensusInfo (Empty) returns (ConsensusInfo);
 
+  // Get the cryptographic parameters in a given block.
+  rpc GetCryptographicParameters (BlockHashInput) returns (CryptographicParameters);
+
   // Get the status of and information about a specific transaction.
   rpc GetTransactionStatus (TransactionHash) returns (TransactionStatus);
 }

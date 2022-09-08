@@ -793,3 +793,14 @@ message BlockInfo {
   // Absolute height of the block, height 0 is the genesis block.
   AbsoluteBlockHeight height = 2;
 }
+
+// The response for GetCryptographicParameters.
+message CryptographicParameters {
+  // A free-form string used to distinguish between different chains even if they share other parameters.
+  string genesis_string = 1;
+  // Generators for the bulletproofs.
+  bytes bulletproof_generators = 2;
+  // A shared commitment key known to the chain and the account holder (and therefore it is public).
+  // The account holder uses this commitment key to generate commitments to values in the attribute list.
+  bytes on_chain_commitment_key = 3;
+}
