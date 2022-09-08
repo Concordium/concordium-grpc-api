@@ -58,6 +58,14 @@ message Release {
   repeated TransactionHash transactions = 3;
 }
 
+// A new individual release. Part of a single transfer with schedule transaction.
+message NewRelease {
+  // Effective time of the release in milliseconds since unix epoch.
+  uint64 timestamp = 1;
+  // Amount to be released.
+  Amount amount = 2;
+}
+
 // State of the account's release schedule. This is the balance of the account
 // that is owned by the account, but cannot be used until the release point.
 message ReleaseSchedule {
@@ -857,17 +865,6 @@ message ContractTraceElement {
   }
 }
 
-message BakerAddedEvent {
-  // The keys with which the baker registered.
-  BakerKeysEvent keys_event = 1;
-  // The amount the account staked to become a baker. This amount is
-  // locked.
-  Amount stake = 2;
-  // Whether the baker will automatically add earnings to their stake or
-  // not.
-  bool restake_earnings = 3;
-}
-
 // Result of a successful change of baker keys.
 message BakerKeysEvent {
     // ID of the baker whose keys were changed.
@@ -938,7 +935,14 @@ message RegisteredData {
 message BakerEvent {
   // A baker was added.
   message BakerAdded {
-    BakerAddedEvent contents = 1;
+    // The keys with which the baker registered.
+    BakerKeysEvent keys_event = 1;
+    // The amount the account staked to become a baker. This amount is
+    // locked.
+    Amount stake = 2;
+    // Whether the baker will automatically add earnings to their stake or
+    // not.
+    bool restake_earnings = 3;
   }
   // A baker was removed.
   message BakerRemoved {
@@ -1008,7 +1012,7 @@ message BakerEvent {
     BakerRemoved baker_removed = 2;
     BakerStakeIncreased baker_stake_increased = 3;
     BakerStakeDecreased baker_stake_decreased = 4;
-    BakerRestakeEarningsUpdated baker_restake_earnings_updatd = 5;
+    BakerRestakeEarningsUpdated baker_restake_earnings_updated = 5;
     BakerKeysUpdated baker_keys_updated = 6;
     BakerSetOpenStatus baker_set_open_status = 7;
     BakerSetMetadataUrl baker_set_metadata_url = 8;
@@ -1104,17 +1108,6 @@ message AccountTransactionEffects {
     // Memo.
     optional Memo memo = 3;
   }
-  // An account was registered as a baker. This is the result of a successful
-  // [`AddBaker`](transactions::Payload::AddBaker) transaction.
-  message BakerAdded {
-    BakerAddedEvent contents = 1;
-  }
-  // An account was deregistered as a baker. This is the result of a
-  // successful [RemoveBaker](transactions::Payload::RemoveBaker)
-  // transaction.
-  message BakerRemoved {
-    BakerId baker_id = 1;
-  }
   // An account was deregistered as a baker. This is the result of a
   // successful [`UpdateBakerStake`](transactions::Payload::UpdateBakerStake)
   // transaction.
@@ -1122,20 +1115,6 @@ message AccountTransactionEffects {
     // If the stake was updated (that is, it changed and did not stay the
     // same) then this is [Some], otherwise [None].
     optional BakerStakeUpdatedData contents = 1;
-  }
-  // An account changed its preference for restaking earnings. This is the
-  // result of a successful
-  // [`UpdateBakerRestakeEarnings`](
-  //    transactions::Payload::UpdateBakerRestakeEarnings) transaction.
-  message BakerRestakeEarningsUpdated {
-    BakerId baker_id = 1;
-    // The new value of the flag.
-    bool restake_earnings = 2;
-  }
-  // The baker's keys were updated. This is the result of a successful
-  // [`UpdateBakerKeys`](transactions::Payload::UpdateBakerKeys) transaction.
-  message BakerKeysUpdated {
-    BakerKeysEvent contents = 1;
   }
   // An encrypted amount was transferred. This is the result of a successful
   // [`EncryptedAmountTransfer`](
@@ -1168,7 +1147,7 @@ message AccountTransactionEffects {
     // Receiver account.
     AccountAddress to_ = 1;
     // The list of releases. Ordered by increasing timestamp.
-    repeated Release amount = 2; //Vec<(Timestamp, Amount)>,
+    repeated NewRelease amount = 2;
     // Optional memo.
     optional Memo memo = 3;
   }
@@ -1215,11 +1194,11 @@ message AccountTransactionEffects {
     ContractInitialized contract_initialized = 3;
     ContractUpdateIssued contract_update_issued = 4;
     AccountTransfer account_transfer = 5;
-    BakerAdded baker_added = 6;
-    BakerRemoved baker_removed = 7;
+    BakerEvent.BakerAdded baker_added = 6;
+    BakerEvent.BakerRemoved baker_removed = 7;
     BakerStakeUpdated baker_stake_updated = 8;
-    BakerRestakeEarningsUpdated baker_restake_earnings_updated = 9;
-    BakerKeysUpdated baker_keys_updates = 10;
+    BakerEvent.BakerRestakeEarningsUpdated baker_restake_earnings_updated = 9;
+    BakerEvent.BakerKeysUpdated baker_keys_updated = 10;
     EncryptedAmountTransferred encrypted_amount_transferred = 11;
     TransferredToEncrypted transferred_to_encrypted = 12;
     TransferredToPublic transferred_to_public = 13;
