@@ -45,9 +45,22 @@ message ModuleRef {
   bytes value = 1;
 }
 
-// Source bytes of a smart contract module.
-message ModuleSource {
-  bytes value = 1;
+// Source bytes of a versioned smart contract module.
+message VersionedModuleSource {
+  // Source bytes of a smart contract v0 module.
+  message ModuleSourceV0 {
+    bytes value = 1;
+  }
+
+  // Source bytes of a smart contract v1 module.
+  message ModuleSourceV1 {
+    bytes value = 1;
+  }
+
+  oneof module {
+    ModuleSourceV0 v0 = 1;
+    ModuleSourceV1 v1 = 2;
+  }
 }
 
 // Unix timestamp in milliseconds.
@@ -132,7 +145,7 @@ message BakerElectionVerifyKey {
 message BakerSignatureVerifyKey {
   bytes value = 1;
 }
- 
+
 // Baker's public key used to check signatures on finalization records.
 // This is only used if the baker has sufficient stake to participate in
 // finalization.
@@ -410,13 +423,6 @@ message AccountCredential {
   }
 }
 
-message CredentialType {
-  oneof type {
-    Empty initial = 1;
-    Empty normal = 2;
-  }
-}
-
 // Information about the account at a particular point in time.
 message AccountInfo {
   // Next sequence number to be used for transactions signed from this account.
@@ -531,7 +537,7 @@ message InstanceInfo {
   // Version 0 smart contract instance information.
   message V0 {
     // The state of the instance.
-    ContractState model = 1;
+    ContractStateV0 model = 1;
     // The account address which deployed the instance.
     AccountAddress owner = 2;
     // The amount of CCD tokens in the balance of the instance.
@@ -566,127 +572,26 @@ message InstanceInfo {
 }
 
 // The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
-// It must only consist of atmost 100 ascii alphanumeric or punctuation characters, and must contain a '.'.
+// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
 message ReceiveName {
   string value = 1;
 }
 
 // The init name of a smart contract function. Expected format: "init_<contract_name>".
-// It must only consist of atmost 100 ascii alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
+// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
 message InitName {
   string value = 1;
 }
 
 // A smart contract v0 state.
-message ContractState {
+message ContractStateV0 {
   bytes value = 1;
 }
 
-message TransactionStatus {
-
-  message Committed {
-    repeated TransactionSummaryInBlock outcomes = 1;
-  }
-
-  message Finalized {
-    TransactionSummaryInBlock outcomes = 1; // TODO: Should this also be repeated for when finalization committee is corrupt?
-  }
-
-  oneof status {
-    Empty received = 1;
-    Committed committed = 2;
-    Finalized finalized = 3;
-  }
-}
-
-message TransactionSummaryInBlock {
-  BlockHash block_hash = 1;
-  optional TransactionSummary outcome = 2; // TODO: This is optional in haskell, why?
-}
-
+// Energy is used to count exact execution cost.
+// This cost is then converted to CCD amounts.
 message Energy {
   uint64 value = 1;
-}
-
-message TransactionSummary {
-  message AccountTransaction {
-    optional TransactionType value = 1; // TODO: Why is this optional in HS?
-  }
-  message CredentialDeploymentTransaction {
-    CredentialType value = 1;
-  }
-  message UpdateTransaction {
-    UpdateType value = 1;
-  }
-  message TransactionIndex {
-    uint64 value = 1;
-  }
-  message Success {
-    message Event {
-      message Transferred {
-        Address sender = 1;
-        Amount amount = 2;
-        Address receiver = 3;
-      }
-      // TODO: implement remaning variants
-      oneof type {
-        Transferred transferred = 1;
-      }
-    }
-    repeated Event events = 1;
-  }
-  message Reject {
-    message RejectReason {
-      Empty value = 1; // TODO: implement
-    }
-    RejectReason reject_reason = 1;
-  }
-
-  optional AccountAddress sender = 1;
-  TransactionHash hash = 2;
-  Amount cost = 3;
-  Energy energy_cost = 4;
-  oneof type {
-    AccountTransaction account = 5;
-    CredentialDeploymentTransaction credential_deployment = 6;
-    UpdateTransaction update = 7;
-  }
-  oneof result {
-    Success success = 8;
-    Reject reject = 9;
-  }
-  TransactionIndex index = 10;
-}
-
-
-
-// TODO: Consider if microgtu/euro should be the default value, as it will be used much more frequently.
-// First variant of an enum will be encoded with no bytes.
-enum UpdateType {
-    UPDATE_PROTOCOL = 0;
-    UPDATE_ELECTION_DIFFICULTY = 1;
-    UPDATE_EURO_PER_ENERGY = 2;
-    UPDATE_MICRO_GTU_PER_EURO = 3;
-    UPDATE_FOUNDATION_ACCOUNT = 4;
-    UPDATE_MINT_DISTRIBUTION = 5;
-    UPDATE_TRANSACTION_FEE_DISTRIBUTION = 6;
-    UPDATE_GAS_REWARDS = 7;
-    UPDATE_POOL_PARAMETERS = 8;
-    ADD_ANONYMITY_REVOKER = 9;
-    ADD_IDENTITY_PROVIDER = 10;
-    UPDATE_ROOT_KEYS = 11;
-    UPDATE_LEVEL1_KEYS = 12;
-    UPDATE_LEVEL2_KEYS = 13;
-    UPDATE_COOLDOWN_PARAMETERS = 14;
-    UPDATE_TIME_PARAMETERS = 15;
-}
-
-enum TransactionType {
-  DEPLOY_MODULE = 0;
-  INIT_CONTRACT = 1;
-  UPDATE = 2;
-  TRANSFER = 3;
-  // TODO: implement rest
 }
 
 // The response for getNextAccountSequenceNumber.
@@ -740,47 +645,47 @@ message ConsensusInfo {
   uint32 blocks_received_count = 9;
   // The last time a block was received.
   optional Timestamp block_last_received_time = 10;
-  // Moving average latency between a block's slot time and received time.
+  // Exponential moving average latency between a block's slot time and received time.
   double block_receive_latency_ema = 11;
-  // Standard deviation of moving average latency between a block's slot time and received time.
+  // Standard deviation of exponential moving average latency between a block's slot time and received time.
   double block_receive_latency_emsd = 12;
-  // Moving average time between receiving blocks.
+  // Exponential moving average time between receiving blocks.
   optional double block_receive_period_ema = 13;
-  // Standard deviation of moving average time between receiving blocks.
+  // Standard deviation of exponential moving average time between receiving blocks.
   optional double block_receive_period_emsd = 14;
   // Total number of blocks received and verified.
   uint32 blocks_verified_count = 15;
   // The last time a block was verified (added to the tree).
   optional Timestamp block_last_arrived_time = 16;
-  // Moving average latency between a block's slot time and its arrival.
+  // Exponential moving average latency between a block's slot time and its arrival.
   double block_arrive_latency_ema = 17;
-  // Standard deviation of moving average latency between a block's slot time and its arrival.
+  // Standard deviation of exponential moving average latency between a block's slot time and its arrival.
   double block_arrive_latency_emsd = 18;
-  // Moving average time between block arrivals.
+  // Exponential moving average time between block arrivals.
   optional double block_arrive_period_ema = 19;
-  // Standard deviation of moving average time between block arrivals.
+  // Standard deviation of exponential moving average time between block arrivals.
   optional double block_arrive_period_emsd = 20;
-  // Moving average number of transactions per block.
+  // Exponential moving average number of transactions per block.
   double transactions_per_block_ema = 21;
-  // Standard deviation of moving average number of transactions per block.
+  // Standard deviation of exponential moving average number of transactions per block.
   double transactions_per_block_emsd = 22;
   // Number of finalizations.
   uint32 finalization_count = 23;
   // Time of last verified finalization.
   optional Timestamp last_finalized_time = 24;
-  // Moving average time between finalizations.
+  // Exponential moving average time between finalizations.
   optional double finalization_period_ema = 25;
-  // Standard deviation of moving average time between finalizations.
+  // Standard deviation of exponential moving average time between finalizations.
   optional double finalization_period_emsd = 26;
   // Currently active protocol version.
   ProtocolVersion protocol_version = 27;
-  // The number of chain restarts via a protocol update. An effected
+  // The number of chain restarts via a protocol update. A completed
   // protocol update instruction might not change the protocol version
   // specified in the previous field, but it always increments the genesis
   // index.
   GenesisIndex genesis_index = 28;
   // Block hash of the genesis block of current era, i.e., since the last protocol update.
-  // Initially this is equal to 'csGenesisBlock'.
+  // Initially this is equal to 'genesis_block'.
   BlockHash current_era_genesis_block = 29;
   // Time when the current era started.
   Timestamp current_era_genesis_time = 30;
