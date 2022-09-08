@@ -410,13 +410,6 @@ message AccountCredential {
   }
 }
 
-message CredentialType {
-  oneof type {
-    Empty initial = 1;
-    Empty normal = 2;
-  }
-}
-
 // Information about the account at a particular point in time.
 message AccountInfo {
   // Next sequence number to be used for transactions signed from this account.
@@ -582,111 +575,10 @@ message ContractState {
   bytes value = 1;
 }
 
-message TransactionStatus {
-
-  message Committed {
-    repeated TransactionSummaryInBlock outcomes = 1;
-  }
-
-  message Finalized {
-    TransactionSummaryInBlock outcomes = 1; // TODO: Should this also be repeated for when finalization committee is corrupt?
-  }
-
-  oneof status {
-    Empty received = 1;
-    Committed committed = 2;
-    Finalized finalized = 3;
-  }
-}
-
-message TransactionSummaryInBlock {
-  BlockHash block_hash = 1;
-  optional TransactionSummary outcome = 2; // TODO: This is optional in haskell, why?
-}
-
+// Energy is used to count exact execution cost.
+// This cost is then converted to CCD amounts.
 message Energy {
   uint64 value = 1;
-}
-
-message TransactionSummary {
-  message AccountTransaction {
-    optional TransactionType value = 1; // TODO: Why is this optional in HS?
-  }
-  message CredentialDeploymentTransaction {
-    CredentialType value = 1;
-  }
-  message UpdateTransaction {
-    UpdateType value = 1;
-  }
-  message TransactionIndex {
-    uint64 value = 1;
-  }
-  message Success {
-    message Event {
-      message Transferred {
-        Address sender = 1;
-        Amount amount = 2;
-        Address receiver = 3;
-      }
-      // TODO: implement remaning variants
-      oneof type {
-        Transferred transferred = 1;
-      }
-    }
-    repeated Event events = 1;
-  }
-  message Reject {
-    message RejectReason {
-      Empty value = 1; // TODO: implement
-    }
-    RejectReason reject_reason = 1;
-  }
-
-  optional AccountAddress sender = 1;
-  TransactionHash hash = 2;
-  Amount cost = 3;
-  Energy energy_cost = 4;
-  oneof type {
-    AccountTransaction account = 5;
-    CredentialDeploymentTransaction credential_deployment = 6;
-    UpdateTransaction update = 7;
-  }
-  oneof result {
-    Success success = 8;
-    Reject reject = 9;
-  }
-  TransactionIndex index = 10;
-}
-
-
-
-// TODO: Consider if microgtu/euro should be the default value, as it will be used much more frequently.
-// First variant of an enum will be encoded with no bytes.
-enum UpdateType {
-    UPDATE_PROTOCOL = 0;
-    UPDATE_ELECTION_DIFFICULTY = 1;
-    UPDATE_EURO_PER_ENERGY = 2;
-    UPDATE_MICRO_GTU_PER_EURO = 3;
-    UPDATE_FOUNDATION_ACCOUNT = 4;
-    UPDATE_MINT_DISTRIBUTION = 5;
-    UPDATE_TRANSACTION_FEE_DISTRIBUTION = 6;
-    UPDATE_GAS_REWARDS = 7;
-    UPDATE_POOL_PARAMETERS = 8;
-    ADD_ANONYMITY_REVOKER = 9;
-    ADD_IDENTITY_PROVIDER = 10;
-    UPDATE_ROOT_KEYS = 11;
-    UPDATE_LEVEL1_KEYS = 12;
-    UPDATE_LEVEL2_KEYS = 13;
-    UPDATE_COOLDOWN_PARAMETERS = 14;
-    UPDATE_TIME_PARAMETERS = 15;
-}
-
-enum TransactionType {
-  DEPLOY_MODULE = 0;
-  INIT_CONTRACT = 1;
-  UPDATE = 2;
-  TRANSFER = 3;
-  // TODO: implement rest
 }
 
 // The response for getNextAccountSequenceNumber.
