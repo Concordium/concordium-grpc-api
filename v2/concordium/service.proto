@@ -33,7 +33,7 @@ service Queries {
   rpc GetAncestors (AncestorsRequest) returns (stream BlockHash);
 
   // Get the source of a smart contract module.
-  rpc GetModuleSource (ModuleSourceRequest) returns (ModuleSource);
+  rpc GetModuleSource (ModuleSourceRequest) returns (VersionedModuleSource);
 
   // Get a list of addresses for all smart contract instances. The stream
   // will end when all instances that exist in the state at the end of the

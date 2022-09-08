@@ -45,9 +45,22 @@ message ModuleRef {
   bytes value = 1;
 }
 
-// Source bytes of a smart contract module.
-message ModuleSource {
-  bytes value = 1;
+// Source bytes of a versioned smart contract module.
+message VersionedModuleSource {
+  // Source bytes of a smart contract v0 module.
+  message ModuleSourceV0 {
+    bytes value = 1;
+  }
+
+  // Source bytes of a smart contract v1 module.
+  message ModuleSourceV1 {
+    bytes value = 1;
+  }
+
+  oneof module {
+    ModuleSourceV0 v0 = 1;
+    ModuleSourceV1 v1 = 2;
+  }
 }
 
 // Unix timestamp in milliseconds.
@@ -132,7 +145,7 @@ message BakerElectionVerifyKey {
 message BakerSignatureVerifyKey {
   bytes value = 1;
 }
- 
+
 // Baker's public key used to check signatures on finalization records.
 // This is only used if the baker has sufficient stake to participate in
 // finalization.
@@ -524,7 +537,7 @@ message InstanceInfo {
   // Version 0 smart contract instance information.
   message V0 {
     // The state of the instance.
-    ContractState model = 1;
+    ContractStateV0 model = 1;
     // The account address which deployed the instance.
     AccountAddress owner = 2;
     // The amount of CCD tokens in the balance of the instance.
