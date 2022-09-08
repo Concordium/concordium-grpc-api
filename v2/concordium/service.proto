@@ -27,7 +27,9 @@ service Queries {
   // block have been returned.
   rpc GetModuleList (BlockHashInput) returns (stream ModuleRef);
 
-  // Get ancestors for the provided block.
+  // Get a stream of ancestors for the provided block.
+  // Starting with the provided block itself, moving backwards until no more
+  // ancestors or the requested number of ancestors has been returned.
   rpc GetAncestors (AncestorsRequest) returns (stream BlockHash);
 
   // Get the source of a smart contract module.
@@ -38,7 +40,8 @@ service Queries {
   // given block has been returned.
   rpc GetInstanceList (BlockHashInput) returns (stream ContractAddress);
 
-  // Get info about a smart contract instance as it appears in the given block.
+  // Get info about a smart contract instance as it appears at the end of the
+  // given block.
   rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
 
   // Get the best guess as to what the next account sequence number should be.
@@ -47,7 +50,7 @@ service Queries {
   // committed to blocks and eventually finalized.
   rpc GetNextAccountSequenceNumber (AccountIdentifierInput) returns (NextAccountSequenceNumber);
 
-  // Get information of the current state of consensus.
+  // Get information about the current state of consensus.
   rpc GetConsensusInfo (Empty) returns (ConsensusInfo);
 
 }

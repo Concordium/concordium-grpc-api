@@ -559,19 +559,19 @@ message InstanceInfo {
 }
 
 // The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
-// It must only consist of atmost 100 ascii alphanumeric or punctuation characters, and must contain a '.'.
+// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
 message ReceiveName {
   string value = 1;
 }
 
 // The init name of a smart contract function. Expected format: "init_<contract_name>".
-// It must only consist of atmost 100 ascii alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
+// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
 message InitName {
   string value = 1;
 }
 
 // A smart contract v0 state.
-message ContractState {
+message ContractStateV0 {
   bytes value = 1;
 }
 
@@ -632,47 +632,47 @@ message ConsensusInfo {
   uint32 blocks_received_count = 9;
   // The last time a block was received.
   optional Timestamp block_last_received_time = 10;
-  // Moving average latency between a block's slot time and received time.
+  // Exponential moving average latency between a block's slot time and received time.
   double block_receive_latency_ema = 11;
-  // Standard deviation of moving average latency between a block's slot time and received time.
+  // Standard deviation of exponential moving average latency between a block's slot time and received time.
   double block_receive_latency_emsd = 12;
-  // Moving average time between receiving blocks.
+  // Exponential moving average time between receiving blocks.
   optional double block_receive_period_ema = 13;
-  // Standard deviation of moving average time between receiving blocks.
+  // Standard deviation of exponential moving average time between receiving blocks.
   optional double block_receive_period_emsd = 14;
   // Total number of blocks received and verified.
   uint32 blocks_verified_count = 15;
   // The last time a block was verified (added to the tree).
   optional Timestamp block_last_arrived_time = 16;
-  // Moving average latency between a block's slot time and its arrival.
+  // Exponential moving average latency between a block's slot time and its arrival.
   double block_arrive_latency_ema = 17;
-  // Standard deviation of moving average latency between a block's slot time and its arrival.
+  // Standard deviation of exponential moving average latency between a block's slot time and its arrival.
   double block_arrive_latency_emsd = 18;
-  // Moving average time between block arrivals.
+  // Exponential moving average time between block arrivals.
   optional double block_arrive_period_ema = 19;
-  // Standard deviation of moving average time between block arrivals.
+  // Standard deviation of exponential moving average time between block arrivals.
   optional double block_arrive_period_emsd = 20;
-  // Moving average number of transactions per block.
+  // Exponential moving average number of transactions per block.
   double transactions_per_block_ema = 21;
-  // Standard deviation of moving average number of transactions per block.
+  // Standard deviation of exponential moving average number of transactions per block.
   double transactions_per_block_emsd = 22;
   // Number of finalizations.
   uint32 finalization_count = 23;
   // Time of last verified finalization.
   optional Timestamp last_finalized_time = 24;
-  // Moving average time between finalizations.
+  // Exponential moving average time between finalizations.
   optional double finalization_period_ema = 25;
-  // Standard deviation of moving average time between finalizations.
+  // Standard deviation of exponential moving average time between finalizations.
   optional double finalization_period_emsd = 26;
   // Currently active protocol version.
   ProtocolVersion protocol_version = 27;
-  // The number of chain restarts via a protocol update. An effected
+  // The number of chain restarts via a protocol update. A completed
   // protocol update instruction might not change the protocol version
   // specified in the previous field, but it always increments the genesis
   // index.
   GenesisIndex genesis_index = 28;
   // Block hash of the genesis block of current era, i.e., since the last protocol update.
-  // Initially this is equal to 'csGenesisBlock'.
+  // Initially this is equal to 'genesis_block'.
   BlockHash current_era_genesis_block = 29;
   // Time when the current era started.
   Timestamp current_era_genesis_time = 30;
