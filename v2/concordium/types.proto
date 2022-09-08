@@ -11,6 +11,11 @@ message BlockHash {
   bytes value = 1;
 }
 
+// A SHA256 hash. This is always 32 bytes long.
+message Sha256Hash {
+  bytes value = 1;
+}
+
 // Hash of a transaction. This is always 32 bytes long.
 message TransactionHash {
   bytes value = 1;
@@ -560,7 +565,7 @@ message TransactionStatus {
 
 message TransactionSummaryInBlock {
   BlockHash block_hash = 1;
-  BlockItemSummary outcome = 2; // TODO: Just a technical maybe in hs. No maybe in grpc.
+  BlockItemSummary outcome = 2;
 }
 
 message Energy {
@@ -926,6 +931,11 @@ message EncryptedSelfAmountAddedEvent {
  Amount amount = 3;
 }
 
+// Unix timestamp in milliseconds.
+message Timestamp {
+  uint64 value = 1;
+}
+
 // Data registered on the chain with a register data transaction.
 message RegisteredData {
   bytes value = 1;
@@ -1211,10 +1221,140 @@ message AccountTransactionEffects {
   }
 }
 
+message ElectionDifficulty {
+  AmountFraction value = 1;
+}
+
+// Represents an exchange rate.
+message ExchangeRate {
+  Ratio value = 1;
+}
+
+// Represents a ratio, i.e., 'numerator / denominator'.
+message Ratio {
+  // The numerator.
+  uint64 numerator = 1;
+  // The denominator.
+  uint64 denominator = 2;
+}
+
+message UpdatePayload {
+  message ProtocolUpdatePayload {
+    // A brief message about the update.
+    string message_ = 1;
+    // A URL of a document describing the update.
+    string specification_url = 2;
+    // SHA256 hash of the specification document.
+    Sha256Hash specificationHash = 3;
+    // Auxiliary data whose interpretation is defined by the new specification.
+    bytes specification_auxiliary_data = 4;
+  }
+  message MintDistributionUpdatePayload {
+    message MintRate {
+      uint32 mantissa = 1;
+      // This will never exceed 255 and can thus be stored in a single byte.
+      uint32 exponent = 2;
+    }
+    MintRate mint_distribution = 1;
+    AmountFraction baking_reward = 2;
+    AmountFraction finalization_reward = 3;
+  }
+  message TransactionFeeDistributionUpdatePayload {
+    // The fraction allocated to the baker.
+    AmountFraction baker = 1;
+    // The fraction allocated to the GAS account.
+    AmountFraction gas_account = 2;
+  }
+  message GasRewardsUpdatePayload {
+    // The fraction paid to the baker.
+    AmountFraction baker = 1;
+    // Fraction paid for including a finalization proof in a block.
+    AmountFraction finalization_proof = 2;
+    // Fraction paid for including each account creation transaction in a block.
+    AmountFraction account_creation = 3;
+    // Fraction paid for including an update transaction in a block.
+    AmountFraction chain_update = 4;
+  }
+  message BakerStakeThresholdUpdatePayload {
+    // Minimum threshold required for registering as a baker.
+    Amount baker_stake_threshold = 1;
+  }
+  message RootUpdatePayload {
+    // TODO
+  }
+  message Level1UpdatePayload {
+    // TODO
+  }
+  message AddAnonymityRevokerUpdatePayload {
+    // TODO
+  }
+  message AddIdentityProviderUpdatePayload {
+    // TODO
+  }
+  message CooldownParametersCpv1UpdatePayload {
+    // TODO
+  }
+  message PoolParametersCpv1UpdatePayload {
+    // TODO
+  }
+  message TimeParametersCpv1UpdatePayload {
+    // TODO
+  }
+  message MintDistributionCpv1UpdatePayload {
+    // TODO
+  }
+
+  oneof payload {
+    ProtocolUpdatePayload protocol_update = 1;
+    ElectionDifficulty election_difficulty_update = 2;
+    ExchangeRate euro_per_energy_update = 3;
+    ExchangeRate micro_ccd_per_euro_update = 4;
+    AccountAddress foundation_account_updaet = 5;
+    MintDistributionUpdatePayload mint_distribution_update = 6;
+    TransactionFeeDistributionUpdatePayload transaction_fee_distribution_update = 7;
+    GasRewardsUpdatePayload gas_rewards_update = 8;
+    BakerStakeThresholdUpdatePayload baker_stake_threshold_update = 9;
+    RootUpdatePayload root_update = 10;
+    Level1UpdatePayload level_1_root_update = 11;
+    AddAnonymityRevokerUpdatePayload add_anonymity_revoker_update = 12;
+    AddIdentityProviderUpdatePayload add_identity_provider_update = 13;
+    CooldownParametersCpv1UpdatePayload cooldown_parameters_cpv_1_update = 14;
+    PoolParametersCpv1UpdatePayload pool_parameters_cpv_1_update = 15;
+    TimeParametersCpv1UpdatePayload time_parameters_cpv_1_update = 16;
+    MintDistributionCpv1UpdatePayload mint_distribution_cpv_1_update = 17;
+  }
+
+}
+
 message AccountTransactionDetails {
   Amount cost = 1;
   AccountAddress sender = 2;
   AccountTransactionEffects effects = 3;
+}
+
+// Details of an account creation. These transactions are free, and we only
+// ever get a response for them if the account is created, hence no failure
+// cases.
+message AccountCreationDetails {
+  // Whether this is an initial or normal account.
+  CredentialType credential_type = 1;
+  // Address of the newly created account.
+  AccountAddress address = 2;
+  // Credential registration ID of the first credential.
+  CredentialRegistrationId red_id = 3;
+}
+
+// Transaction time specified as seconds since unix epoch.
+message TransactionTime {
+  uint64 seconds = 1;
+}
+
+// Details of an update instruction. These are free, and we only ever get a
+// response for them if the update is successfully enqueued, hence no failure
+// cases.
+message UpdateDetails {
+  TransactionTime effective_time = 1;
+  UpdatePayload payload = 2;
 }
 
 message BlockItemSummary {
@@ -1227,14 +1367,11 @@ message BlockItemSummary {
   TransactionHash hash = 3;
   oneof details {
     AccountTransactionDetails account_transaction = 4;
-    // account_creation
-    // update
+    AccountCreationDetails account_creation = 5;
+    UpdateDetails update = 6;
   }
 }
 
-
-
-// First variant of an enum will be encoded with no bytes.
 enum UpdateType {
     UPDATE_PROTOCOL = 0;
     UPDATE_ELECTION_DIFFICULTY = 1;
