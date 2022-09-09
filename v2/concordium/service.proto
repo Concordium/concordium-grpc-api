@@ -21,4 +21,36 @@ service Queries {
 
   // Retrieve the list of accounts that exist at the end of the given block.
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
+
+  // Get a list of all smart contract modules. The stream will end
+  // when all modules that exist in the state at the end of the given
+  // block have been returned.
+  rpc GetModuleList (BlockHashInput) returns (stream ModuleRef);
+
+  // Get a stream of ancestors for the provided block.
+  // Starting with the provided block itself, moving backwards until no more
+  // ancestors or the requested number of ancestors has been returned.
+  rpc GetAncestors (AncestorsRequest) returns (stream BlockHash);
+
+  // Get the source of a smart contract module.
+  rpc GetModuleSource (ModuleSourceRequest) returns (VersionedModuleSource);
+
+  // Get a list of addresses for all smart contract instances. The stream
+  // will end when all instances that exist in the state at the end of the
+  // given block has been returned.
+  rpc GetInstanceList (BlockHashInput) returns (stream ContractAddress);
+
+  // Get info about a smart contract instance as it appears at the end of the
+  // given block.
+  rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
+
+  // Get the best guess as to what the next account sequence number should be.
+  // If all account transactions are finalized then this information is reliable.
+  // Otherwise this is the best guess, assuming all other transactions will be
+  // committed to blocks and eventually finalized.
+  rpc GetNextAccountSequenceNumber (AccountAddress) returns (NextAccountSequenceNumber);
+
+  // Get information about the current state of consensus.
+  rpc GetConsensusInfo (Empty) returns (ConsensusInfo);
+
 }
