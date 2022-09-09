@@ -1238,6 +1238,182 @@ message Ratio {
   uint64 denominator = 2;
 }
 
+message UpdatePublicKey {
+  bytes value = 1;
+}
+
+message UpdateKeysThreshold {
+  // Is ensured to be within between 1 and 2^16.
+  uint32 value = 1;
+}
+
+// Index of a key in an authorizations update payload.
+message UpdateKeyIndex {
+  uint32 value = 1;
+}
+
+// Represents root or level 1 keys.
+message HigherLevelKeys {
+  repeated UpdatePublicKey keys = 1;
+  UpdateKeysThreshold threshold = 2;
+}
+
+message AccessStructure {
+  // Unique indexes into the set of keys in AuthorizationV0.
+  repeated UpdateKeyIndex access_public_keys = 1;
+  // Number of keys requred to authorize an update.
+  UpdateKeysThreshold access_threshold = 2;
+}
+
+// The set of keys authorized for chain updates, together with access structures
+// determining which keys are authorized for which update types.
+// This is the payload of an update to authorization.
+message AuthorizationsV0 {
+  // The set of keys authorized for chain updates.
+  repeated UpdatePublicKey keys = 1;
+  // New emergency keys.
+  AccessStructure emergency = 2;
+  // New protocol update keys.
+  AccessStructure protocol = 3;
+  // Access structure for updating the election difficulty.
+  AccessStructure parameter_election_difficulty = 4;
+  // Access structure for updating the euro per energy.
+  AccessStructure parameter_euro_per_energy = 5;
+  // Access structure for updating the micro CCD per euro.
+  AccessStructure parameter_micro_CCD_per_euro = 6;
+  // Access structure for updating the foundation account.
+  AccessStructure parameter_foundation_account = 7;
+  // Access structure for updating the mint distribution.
+  AccessStructure parameter_mint_distribution = 8;
+  // Access structure for updating the transaction fee distribution.
+  AccessStructure parameter_transaction_fee_distribution = 9;
+  // Access structure for updating the gas rewards.
+  AccessStructure parameter_gas_rewards = 10;
+  // Access structure for updating the pool parameters. For V0 this is only
+  // the baker stake threshold, for V1 there are more.
+  AccessStructure pool_parameters = 11;
+  // Access structure for adding new anonymity revokers.
+  AccessStructure add_anonymity_revoker = 12;
+  // Access structure for adding new identity providers.
+  AccessStructure add_identity_provider = 13;
+}
+
+// The set of keys authorized for chain updates, together with access structures
+// determining which keys are authorized for which update types.
+// This is the payload of an update to authorization.
+message AuthorizationsV1 {
+  AuthorizationsV0 v0 = 1;
+  // Access structure for updating the cooldown periods related to baking and delegation.
+  AccessStructure parameter_cooldown = 2;
+  // Access structure for updating the length of the reward period.
+  AccessStructure parameter_time = 3;
+}
+
+// Description either of an anonymity revoker or identity provider.
+// Metadata that should be visible on the chain.
+message Description {
+  string name = 1;
+  string url = 2;
+  string description = 3;
+}
+
+// Information on a single anonymity revoker help by the identity provider.
+// Typically an identity provider will hold more than one.
+message ArInfo {
+  // Identity of the anonymity revoker on the chain. This defines their
+  // evaluateion point for secret sharing, and thus it cannot be 0.
+  message ArIdentity {
+    uint32 value = 1;
+  }
+  // Public key of an anonymity revoker.
+  message ArPublicKey {
+    bytes value = 1;
+  }
+  // Unique identifier of the anonymity revoker.
+  ArIdentity identity = 1;
+  // Description of the anonymity revoker.
+  Description description = 2;
+  // Elgamal encryption key of the anonymity revoker.
+  ArPublicKey public_key = 3;
+}
+
+// A succinct identifier of an identity provider on the chain.
+// In credential deployments, and other interactions with the chain this is
+// used to identify which identity provider is meant.
+message IpIdentity {
+  uint32 value = 1;
+}
+
+/// Public information about an identity provider.
+message IpInfo {
+  // Pointcheval-Sanders public key of the identity provider.
+  message IpVerifyKey {
+    bytes value = 1;
+  }
+  // Ed25519 public key of the identity provider.
+  message IpCdiVerifyKey {
+    bytes value = 1;
+  }
+  // Unique identifier of the identity provider.
+  IpIdentity identity = 1;
+  // Description of the identity provider.
+  Description description = 2;
+  // Pointcheval-Sanders public key of the identity provider.
+  IpVerifyKey verify_key = 3;
+  // Ed25519 public key of the identity provider.
+  IpCdiVerifyKey cdi_verify_key = 4;
+}
+
+// A duration in seconds.
+message DurationSeconds {
+  uint64 value = 1;
+}
+
+// Inclusive range of amount fractions.
+message InclusiveRangeAmountFraction {
+  AmountFraction min = 1;
+  AmountFraction max_ = 2;
+}
+
+// Ranges of allowed commission values that pools may choose from.
+message CommissionRanges {
+  // The range of allowed finalization commissions.
+  InclusiveRangeAmountFraction finalization = 1;
+  // The range of allowed baker commissions.
+  InclusiveRangeAmountFraction baking = 2;
+  // The range of allowed transaction commissions.
+  InclusiveRangeAmountFraction transaction = 3;
+}
+
+// A bound on the relative share of the total staked capital that a baker can
+// have as its stake. This is required to be greater than 0.
+message CapitalBound {
+  AmountFraction value = 1;
+}
+
+// A leverage factor.
+message LeverageFactor {
+  Ratio value = 1;
+}
+
+// A chain epoch.
+message Epoch {
+  uint64 value = 1;
+}
+
+// Length of a reward period in epochs.
+// Must always be a strictly positive number.
+message RewardPeriodLength {
+  Epoch value = 1;
+}
+
+// A minting rate of CCD.
+message MintRate {
+  uint32 mantissa = 1;
+  // This will never exceed 255 and can thus be stored in a single byte.
+  uint32 exponent = 2;
+}
+
 message UpdatePayload {
   message ProtocolUpdatePayload {
     // A brief message about the update.
@@ -1250,11 +1426,6 @@ message UpdatePayload {
     bytes specification_auxiliary_data = 4;
   }
   message MintDistributionUpdatePayload {
-    message MintRate {
-      uint32 mantissa = 1;
-      // This will never exceed 255 and can thus be stored in a single byte.
-      uint32 exponent = 2;
-    }
     MintRate mint_distribution = 1;
     AmountFraction baking_reward = 2;
     AmountFraction finalization_reward = 3;
@@ -1279,29 +1450,62 @@ message UpdatePayload {
     // Minimum threshold required for registering as a baker.
     Amount baker_stake_threshold = 1;
   }
+  // Root updates are the highest kind of key updates. They can update every other set of keys,
+  // even themselves. They can only be performed by Root level keys.
   message RootUpdatePayload {
-    // TODO
+    oneof update_type {
+      HigherLevelKeys root_keys_update = 1;
+      HigherLevelKeys level_1_keys_update = 2;
+      AuthorizationsV0 level_2_keys_update_v0 = 3;
+      AuthorizationsV1 level_2_keys_update_v1 = 4;
+    }
   }
+  // Level 1 updates are the intermediate update kind.
+  // They can update themselves or level 2 keys. They can only be performed by level 1 keys.
   message Level1UpdatePayload {
-    // TODO
-  }
-  message AddAnonymityRevokerUpdatePayload {
-    // TODO
-  }
-  message AddIdentityProviderUpdatePayload {
-    // TODO
+    oneof update_type {
+      HigherLevelKeys level_1_keys_update = 1;
+      AuthorizationsV0 level_2_keys_update_v0 = 2;
+      AuthorizationsV1 level_2_keys_update_v1 = 3;
+    }
   }
   message CooldownParametersCpv1UpdatePayload {
-    // TODO
+    // Number of seconds that pool owners must cooldown
+    // when reducing their equity capital or closing the pool.
+    DurationSeconds pool_owner_cooldown = 1;
+    // Number of seconds that a delegator must cooldown
+    // when reducing their delegated stake.
+    DurationSeconds delegator_cooldown = 2;
   }
+  // Parameters related to staking pools.
   message PoolParametersCpv1UpdatePayload {
-    // TODO
+    // Fraction of finalization rewards charged by the passive delegation.
+    AmountFraction passive_finalization_commission = 1;
+    // Fraction of baking rewards charged by the passive delegation.
+    AmountFraction passive_baking_commission = 2;
+    // Fraction of transaction rewards charged by the L-pool.
+    AmountFraction passive_transaction_commission = 3;
+    // Bounds on the commission rates that may be charged by bakers.
+    CommissionRanges commission_bounds = 4;
+    // Minimum equity capital required for a new baker.
+    Amount minimum_equity_capital = 5;
+    // Maximum fraction of the total staked capital of that a new baker can
+    // have.
+    CapitalBound capital_bound = 6;
+    // The maximum leverage that a baker can have as a ratio of total stake
+    // to equity capital.
+    LeverageFactor leverage_bound = 7;
   }
+  // The time parameters are introduced as of protocol version 4, and consist of
+  // the reward period length and the mint rate per payday. These are coupled as
+  // a change to either affects the overall rate of minting.
   message TimeParametersCpv1UpdatePayload {
-    // TODO
+    RewardPeriodLength reward_period_length = 1;
+    MintRate mint_per_payday = 2;
   }
   message MintDistributionCpv1UpdatePayload {
-    // TODO
+    AmountFraction baking_reward = 1;
+    AmountFraction finalization_reward = 2;
   }
 
   oneof payload {
@@ -1309,21 +1513,20 @@ message UpdatePayload {
     ElectionDifficulty election_difficulty_update = 2;
     ExchangeRate euro_per_energy_update = 3;
     ExchangeRate micro_ccd_per_euro_update = 4;
-    AccountAddress foundation_account_updaet = 5;
+    AccountAddress foundation_account_update = 5;
     MintDistributionUpdatePayload mint_distribution_update = 6;
     TransactionFeeDistributionUpdatePayload transaction_fee_distribution_update = 7;
     GasRewardsUpdatePayload gas_rewards_update = 8;
     BakerStakeThresholdUpdatePayload baker_stake_threshold_update = 9;
     RootUpdatePayload root_update = 10;
     Level1UpdatePayload level_1_root_update = 11;
-    AddAnonymityRevokerUpdatePayload add_anonymity_revoker_update = 12;
-    AddIdentityProviderUpdatePayload add_identity_provider_update = 13;
+    ArInfo add_anonymity_revoker_update = 12;
+    IpInfo add_identity_provider_update = 13;
     CooldownParametersCpv1UpdatePayload cooldown_parameters_cpv_1_update = 14;
     PoolParametersCpv1UpdatePayload pool_parameters_cpv_1_update = 15;
     TimeParametersCpv1UpdatePayload time_parameters_cpv_1_update = 16;
     MintDistributionCpv1UpdatePayload mint_distribution_cpv_1_update = 17;
   }
-
 }
 
 message AccountTransactionDetails {
@@ -1341,12 +1544,12 @@ message AccountCreationDetails {
   // Address of the newly created account.
   AccountAddress address = 2;
   // Credential registration ID of the first credential.
-  CredentialRegistrationId red_id = 3;
+  CredentialRegistrationId reg_id = 3;
 }
 
 // Transaction time specified as seconds since unix epoch.
 message TransactionTime {
-  uint64 seconds = 1;
+  uint64 value = 1;
 }
 
 // Details of an update instruction. These are free, and we only ever get a
