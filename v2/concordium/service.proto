@@ -58,4 +58,7 @@ service Queries {
 
   // Get information, such as height, timings, and transaction counts for the given block.
   rpc GetBlockInfo (BlockHashInput) returns (BlockInfo);
+
+  // Get all the bakers at the end of the given block.
+  rpc GetBakerList (BlockHashInput) returns (stream BakerId);
 }
