@@ -5,14 +5,21 @@ import "v2/concordium/types.proto";
 package concordium.v2;
 
 service Queries {
-  // Get a stream of finalized blocks. The stream will continue indefinitely.
+  // Return a stream of blocks that arrive from the time the query is made onward.
+  // This can be used to listen for incoming blocks.
+  rpc GetBlocks (Empty) returns (stream BlockInfo);
+
+  // Return a stream of blocks that are finalized from the time the query is
+  // made onward. This can be used to listen for newly finalized blocks. Note
+  // that there is no guarantee that blocks will not be skipped if the client is
+  // too slow in processing the stream, however blocks will always be sent by
+  // increasing block height.
   rpc GetFinalizedBlocks (Empty) returns (stream FinalizedBlockInfo);
 
-  // Get information about the requested account.
+  // Retrieve the information about the given account in the given block.
   rpc GetAccountInfo (AccountInfoRequest) returns (AccountInfo);
 
-  // Get a list of all accounts. The stream will end when all accounts
-  // that exist in the state at the end of the given block have been returned.
+  // Retrieve the list of accounts that exist at the end of the given block.
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
 
   // Get a list of all smart contract modules. The stream will end
@@ -20,20 +27,33 @@ service Queries {
   // block have been returned.
   rpc GetModuleList (BlockHashInput) returns (stream ModuleRef);
 
-  // Get ancestors for the provided block.
+  // Get a stream of ancestors for the provided block.
+  // Starting with the provided block itself, moving backwards until no more
+  // ancestors or the requested number of ancestors has been returned.
   rpc GetAncestors (AncestorsRequest) returns (stream BlockHash);
 
   // Get the source of a smart contract module.
-  rpc GetModuleSource (ModuleSourceRequest) returns (ModuleSource);
+  rpc GetModuleSource (ModuleSourceRequest) returns (VersionedModuleSource);
 
   // Get a list of addresses for all smart contract instances. The stream
   // will end when all instances that exist in the state at the end of the
   // given block has been returned.
   rpc GetInstanceList (BlockHashInput) returns (stream ContractAddress);
 
-  // Get info about a smart contract instance as it appears in the given block.
+  // Get info about a smart contract instance as it appears at the end of the
+  // given block.
   rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
+
+  // Get the best guess as to what the next account sequence number should be.
+  // If all account transactions are finalized then this information is reliable.
+  // Otherwise this is the best guess, assuming all other transactions will be
+  // committed to blocks and eventually finalized.
+  rpc GetNextAccountSequenceNumber (AccountAddress) returns (NextAccountSequenceNumber);
+
+  // Get information about the current state of consensus.
+  rpc GetConsensusInfo (Empty) returns (ConsensusInfo);
 
   // Get the status of and information about a specific transaction.
   rpc GetTransactionStatus (TransactionHash) returns (TransactionStatus);
+
 }

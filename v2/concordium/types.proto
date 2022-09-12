@@ -21,12 +21,15 @@ message TransactionHash {
   bytes value = 1;
 }
 
-// The absolute height of a block.
+// The absolute height of a block. This is the number of ancestors of a block
+// since the genesis block. In particular, the chain genesis block has absolute
+// height 0.
 message AbsoluteBlockHeight {
   uint64 value = 1;
 }
 
-// The height of a block relative to the last genesis.
+// The height of a block relative to the last genesis. This differs from the
+// absolute block height in that it counts height from the last protocol update.
 message BlockHeight {
   uint64 value = 1;
 }
@@ -42,21 +45,38 @@ message AccountIndex {
   uint64 value = 1;
 }
 
-// Reference (hash) of a smart contract module. This is always 32 bytes long.
+// A smart contract module reference. This is always 32 bytes long.
 message ModuleRef {
   bytes value = 1;
 }
 
-//! Source bytes of a smart contract module.
-// ok test
-message ModuleSource {
-  bytes value = 1;
+// Source bytes of a versioned smart contract module.
+message VersionedModuleSource {
+  // Source bytes of a smart contract v0 module.
+  message ModuleSourceV0 {
+    bytes value = 1;
+  }
+
+  // Source bytes of a smart contract v1 module.
+  message ModuleSourceV1 {
+    bytes value = 1;
+  }
+
+  oneof module {
+    ModuleSourceV0 v0 = 1;
+    ModuleSourceV1 v1 = 2;
+  }
+}
+
+// Unix timestamp in milliseconds.
+message Timestamp {
+  uint64 value = 1;
 }
 
 // An individual release of a locked balance.
 message Release {
   // Effective time of the release in milliseconds since unix epoch.
-  uint64 timestamp = 1;
+  Timestamp timestamp = 1;
   // Amount to be released.
   Amount amount = 2;
   // List of transaction hashes that contribute a balance to this release.
@@ -74,7 +94,9 @@ message NewRelease {
 // State of the account's release schedule. This is the balance of the account
 // that is owned by the account, but cannot be used until the release point.
 message ReleaseSchedule {
+  // Total amount locked in the release schedule.
   Amount total = 1;
+  // A list of releases, ordered by increasing timestamp.
   repeated Release schedules = 2;
 }
 
@@ -88,11 +110,11 @@ message EncryptedAmount {
 }
 
 message EncryptedBalance {
-  // Encrypted amount that is a result of this accounts' actions.
+  // Encrypted amount that is a result of this account's actions.
   // In particular this list includes the aggregate of
   //
-  // - remaining amounts that result when transfering to public balance
-  // - remaining amounts when transfering to another account
+  // - remaining amounts that result when transferring to public balance
+  // - remaining amounts when transferring to another account
   // - encrypted amounts that are transferred from public balance
   //
   // When a transfer is made all of these must always be used.
@@ -136,7 +158,7 @@ message BakerElectionVerifyKey {
 message BakerSignatureVerifyKey {
   bytes value = 1;
 }
- 
+
 // Baker's public key used to check signatures on finalization records.
 // This is only used if the baker has sufficient stake to participate in
 // finalization.
@@ -160,30 +182,32 @@ message BakerInfo {
   BakerAggregationVerifyKey aggregation_key = 4;
 }
 
+// Pending change to the stake either of a baker or delegator.
 message StakePendingChange {
   message Reduce {
     Amount new_stake = 1;
-    // Timestamp in milliseconds when the change takes effect.
-    uint64 effective_time = 2;
+    // Unix timestamp in milliseconds when the change takes effect.
+    Timestamp effective_time = 2;
   }
   
   oneof change {
     Reduce reduce = 1;
-    // Remove the stake. The value is a timestamp of the effective time in
+    // Remove the stake. The value is a Unix timestamp of the effective time in
     // milliseconds.
-    uint64 remove = 2;
+    Timestamp remove = 2;
   }
 }
 
 // Information about how open the pool is to new delegators.
 enum OpenStatus {
-  OPEN_STATUS_OPENFORALL = 0;
-  OPEN_STATUS_CLOSEDFORNEW = 1;
-  OPEN_STATUS_CLOSEDFORALL = 2;
+  OPEN_STATUS_OPEN_FOR_ALL = 0;
+  OPEN_STATUS_CLOSED_FOR_NEW = 1;
+  OPEN_STATUS_CLOSED_FOR_ALL = 2;
 }
 
 // A fraction of an amount with a precision of `1/100_000`.
 message AmountFraction {
+  // Must not exceed 100000.
   uint32 parts_per_hundred_thousand = 1;
 }
 
@@ -212,8 +236,12 @@ message BakerPoolInfo {
 // delegator.
 message AccountStakingInfo {
   message Baker {
+    // Amount staked at present.
     Amount staked_amount = 1;
+    // A flag indicating whether rewards paid to the baker are automatically
+    // restaked or not.
     bool restake_earnings = 2;
+    // Information about the baker that is staking.
     BakerInfo baker_info = 3;
     // If present, any pending change to the delegated stake.
     optional StakePendingChange pending_change = 4;
@@ -222,7 +250,7 @@ message AccountStakingInfo {
     optional BakerPoolInfo pool_info = 5;
   }
 
-  message Delegate {
+  message Delegator {
     // The amount that the account delegates.
     Amount staked_amount = 1;
     // Whether the earnings are automatically added to the staked amount.
@@ -237,13 +265,13 @@ message AccountStakingInfo {
     // The account is a baker.
     Baker baker = 1;
     // The account is a delegator.
-    Delegate delegate = 2;
+    Delegator delegator = 2;
   }
 }
 
 // A sequence number that determines the ordering of transactions from the
 // account. The minimum sequence number is 1.
-message Nonce {
+message SequenceNumber {
   // The nonce
   uint64 value = 1;
 }
@@ -253,7 +281,7 @@ message Amount {
   uint64 value = 1;
 }
 
-// A credential index of an account.
+// Index of a credential on an account.
 message CredentialIndex {
   uint32 value = 1;
 }
@@ -278,7 +306,7 @@ message AccountAddress {
   bytes value = 1;
 }
 
-// An addrass is either a contract or account address.
+// An address of either a contract or an account.
 message Address {
   oneof type {
     AccountAddress account = 1;
@@ -299,7 +327,7 @@ message CredentialPublicKeys {
   SignatureThreshold threshold = 2;
 }
 
-// A registration ID of a credential, derived from the secred PRF key and a
+// A registration ID of a credential, derived from the secret PRF key and a
 // nonce. This is always 48 bytes long.
 message CredentialRegistrationId {
   bytes value = 1;
@@ -357,7 +385,8 @@ message ArThreshold {
   uint32 value = 1;
 }
 
-// A single commitment in the G1 group of the BLS curve.
+// A single commitment in the G1 group of the BLS curve. This is always 48 bytes
+// in length.
 message Commitment {
   bytes value = 1;
 }
@@ -399,6 +428,7 @@ message NormalCredentialValues {
   CredentialCommitments commitments = 7;
 }
 
+// Credential that is part of an account.
 message AccountCredential {
   oneof credential_values {
     InitialCredentialValues initial = 1;
@@ -406,16 +436,10 @@ message AccountCredential {
   }
 }
 
-message CredentialType {
-  oneof type {
-    Empty initial = 1;
-    Empty normal = 2;
-  }
-}
-
+// Information about the account at a particular point in time.
 message AccountInfo {
   // Next sequence number to be used for transactions signed from this account.
-  Nonce nonce = 1;
+  SequenceNumber sequence_number = 1;
   // Current (unencrypted) balance of the account.
   Amount amount = 2;
   // Release schedule for any locked up amount. This could be an empty
@@ -447,21 +471,36 @@ message AccountInfo {
   AccountAddress address = 10;
 }
 
+// Input to queries which take a block as a parameter.
 message BlockHashInput {
   oneof block_hash_input {
+    // Query for the best block.
     Empty best = 1;
+    // Query for the last finalized block.
     Empty last_final = 2;
+    // Query for the block specified by the hash. This hash should always be 32 bytes.
     BlockHash given = 3;
   }
 }
 
-message AccountInfoRequest {
-  BlockHashInput block_hash = 1;
-  oneof account_identifier {
-    AccountAddress address = 2;
-    CredentialRegistrationId cred_id = 3;
-    AccountIndex account_index = 4;
+// Input to queries which take an account as a parameter.
+message AccountIdentifierInput {
+  oneof account_identifier_input {
+    // Identify the account by the address of the account.
+    AccountAddress address = 1;
+    // Identify the account by the credential that belongs or has belonged to it.
+    CredentialRegistrationId cred_id = 2;
+    // Identify the account via its index.
+    AccountIndex account_index = 3;
   }
+}
+
+// Request for account information.
+message AccountInfoRequest {
+  // Block in which to query the account information.
+  BlockHashInput block_hash = 1;
+  // Specification of the account.
+  AccountIdentifierInput account_identifier = 2;
 }
 
 // Information about a finalized block that is part of the streaming response.
@@ -484,8 +523,7 @@ message AncestorsRequest {
 message ModuleSourceRequest {
   // The block to be used for the query.
   BlockHashInput block_hash = 1;
-
-  // The reference (hash) of the module.
+  // The reference of the module.
   ModuleRef module_ref = 2;
 }
 
@@ -498,41 +536,62 @@ message ContractAddress {
   uint64 subindex = 2;
 }
 
+// Request for getting information about a smart contract instance.
 message InstanceInfoRequest {
+  // The block to be used for the query.
   BlockHashInput block_hash = 1;
+  // The address of the smart contract instance.
   ContractAddress address = 2;
 }
 
 // Information about a smart contract instance.
 message InstanceInfo {
 
+  // Version 0 smart contract instance information.
   message V0 {
-    ContractState model = 1;
+    // The state of the instance.
+    ContractStateV0 model = 1;
+    // The account address which deployed the instance.
     AccountAddress owner = 2;
+    // The amount of CCD tokens in the balance of the instance.
     Amount amount = 3;
+    // A list of endpoints exposed by the instance.
     repeated ReceiveName methods = 4;
+    // The name of the smart contract of the instance.
     InitName name = 5;
+    // The module reference for the smart contract module of the instance.
     ModuleRef source_module = 6;
   }
 
+  // Version 1 smart contract instance information.
   message V1 {
+    // The account address which deployed the instance.
     AccountAddress owner = 2;
+    // The amount of CCD tokens in the balance of the instance.
     Amount amount = 3;
+    // A list of endpoints exposed by the instance.
     repeated ReceiveName methods = 4;
+    // The name of the smart contract of the instance.
     InitName name = 5;
+    // The module reference for the smart contract module of the instance.
     ModuleRef source_module = 6;
   }
 
+  // The information depends on the smart contract version used by the instance.
   oneof version {
     V0 v0 = 1;
     V1 v1 = 2;
   }
 }
 
+// The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
+// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
 message ReceiveName {
   string value = 1;
 }
 
+// The init name of a smart contract function. Expected format: "init_<contract_name>".
+// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
 message InitName {
   string value = 1;
 }
@@ -542,7 +601,8 @@ message Parameter {
   bytes value = 1;
 }
 
-message ContractState {
+// A smart contract v0 state.
+message ContractStateV0 {
   bytes value = 1;
 }
 
@@ -568,7 +628,22 @@ message TransactionSummaryInBlock {
   BlockItemSummary outcome = 2;
 }
 
+// Energy is used to count exact execution cost.
+// This cost is then converted to CCD amounts.
 message Energy {
+  uint64 value = 1;
+}
+
+// The response for getNextAccountSequenceNumber.
+message NextAccountSequenceNumber {
+  // The best guess for the available account sequence number.
+  SequenceNumber sequence_number = 1;
+  // Whether the guess relies on any non-finalized transactions. If true all of the relevant transactions are finalized.
+  bool all_final = 2;
+}
+
+// A duration of milliseconds.
+message Duration {
   uint64 value = 1;
 }
 
@@ -929,11 +1004,6 @@ message EncryptedSelfAmountAddedEvent {
  EncryptedAmount new_amount = 2;
  // The amount that was transferred from public to encrypted balance.
  Amount amount = 3;
-}
-
-// Unix timestamp in milliseconds.
-message Timestamp {
-  uint64 value = 1;
 }
 
 // Data registered on the chain with a register data transaction.
@@ -1547,6 +1617,13 @@ message AccountCreationDetails {
   CredentialRegistrationId reg_id = 3;
 }
 
+message CredentialType {
+  oneof type {
+    Empty initial = 1;
+    Empty normal = 2;
+  }
+}
+
 // Transaction time specified as seconds since unix epoch.
 message TransactionTime {
   uint64 value = 1;
@@ -1616,4 +1693,96 @@ enum TransactionType {
   TRANSFER_WITH_SCHEDULE_AND_MEMO = 18;
   CONFIGURE_BAKER = 19;
   CONFIGURE_DELEGATION = 20;
+}
+
+// The different versions of the protocol.
+enum ProtocolVersion {
+  PROTOCOL_VERSION_1 = 0;
+  PROTOCOL_VERSION_2 = 1;
+  PROTOCOL_VERSION_3 = 2;
+  PROTOCOL_VERSION_4 = 3;
+}
+
+// The number of chain restarts via a protocol update. An effected
+// protocol update instruction might not change the protocol version
+// specified in the previous field, but it always increments the genesis
+// index.
+message GenesisIndex {
+  uint32 value = 1;
+}
+
+// The response for GetConsensusInfo.
+message ConsensusInfo {
+  // Hash of the current best block.
+  BlockHash best_block = 1;
+  // Hash of the (original) genesis block.
+  BlockHash genesis_block = 2;
+  // Time of the (original) genesis block.
+  Timestamp genesis_time = 3;
+  // (Current) slot duration in milliseconds.
+  Duration slot_duration = 4;
+  // (Current) epoch duration in milliseconds.
+  Duration epoch_duration = 5;
+  // Hash of the last finalized block.
+  BlockHash last_finalized_block = 6;
+  // Absolute height of the best block.
+  AbsoluteBlockHeight best_block_height = 7;
+  // Absolute height of the last finalized block.
+  AbsoluteBlockHeight last_finalized_block_height = 8;
+  // Total number of blocks received.
+  uint32 blocks_received_count = 9;
+  // The last time a block was received.
+  optional Timestamp block_last_received_time = 10;
+  // Exponential moving average latency between a block's slot time and received time.
+  double block_receive_latency_ema = 11;
+  // Standard deviation of exponential moving average latency between a block's slot time and received time.
+  double block_receive_latency_emsd = 12;
+  // Exponential moving average time between receiving blocks.
+  optional double block_receive_period_ema = 13;
+  // Standard deviation of exponential moving average time between receiving blocks.
+  optional double block_receive_period_emsd = 14;
+  // Total number of blocks received and verified.
+  uint32 blocks_verified_count = 15;
+  // The last time a block was verified (added to the tree).
+  optional Timestamp block_last_arrived_time = 16;
+  // Exponential moving average latency between a block's slot time and its arrival.
+  double block_arrive_latency_ema = 17;
+  // Standard deviation of exponential moving average latency between a block's slot time and its arrival.
+  double block_arrive_latency_emsd = 18;
+  // Exponential moving average time between block arrivals.
+  optional double block_arrive_period_ema = 19;
+  // Standard deviation of exponential moving average time between block arrivals.
+  optional double block_arrive_period_emsd = 20;
+  // Exponential moving average number of transactions per block.
+  double transactions_per_block_ema = 21;
+  // Standard deviation of exponential moving average number of transactions per block.
+  double transactions_per_block_emsd = 22;
+  // Number of finalizations.
+  uint32 finalization_count = 23;
+  // Time of last verified finalization.
+  optional Timestamp last_finalized_time = 24;
+  // Exponential moving average time between finalizations.
+  optional double finalization_period_ema = 25;
+  // Standard deviation of exponential moving average time between finalizations.
+  optional double finalization_period_emsd = 26;
+  // Currently active protocol version.
+  ProtocolVersion protocol_version = 27;
+  // The number of chain restarts via a protocol update. A completed
+  // protocol update instruction might not change the protocol version
+  // specified in the previous field, but it always increments the genesis
+  // index.
+  GenesisIndex genesis_index = 28;
+  // Block hash of the genesis block of current era, i.e., since the last protocol update.
+  // Initially this is equal to 'genesis_block'.
+  BlockHash current_era_genesis_block = 29;
+  // Time when the current era started.
+  Timestamp current_era_genesis_time = 30;
+}
+
+// Information about an arrived block that is part of the streaming response.
+message BlockInfo {
+  // Hash of the block.
+  BlockHash hash = 1;
+  // Absolute height of the block, height 0 is the genesis block.
+  AbsoluteBlockHeight height = 2;
 }
