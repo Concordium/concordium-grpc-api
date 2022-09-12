@@ -16,6 +16,11 @@ message TransactionHash {
   bytes value = 1;
 }
 
+// Hash of the state after some block. This is always 32 bytes long.
+message StateHash {
+  bytes value = 1;
+}
+
 // The absolute height of a block. This is the number of ancestors of a block
 // since the genesis block. In particular, the chain genesis block has absolute
 // height 0.
@@ -594,6 +599,11 @@ message Energy {
   uint64 value = 1;
 }
 
+// A number representing a slot for baking a block.
+message Slot {
+  uint64 value = 1;
+}
+
 // The response for getNextAccountSequenceNumber.
 message NextAccountSequenceNumber {
   // The best guess for the available account sequence number.
@@ -692,7 +702,7 @@ message ConsensusInfo {
 }
 
 // Information about an arrived block that is part of the streaming response.
-message BlockInfo {
+message ArrivedBlockInfo {
   // Hash of the block.
   BlockHash hash = 1;
   // Absolute height of the block, height 0 is the genesis block.
@@ -708,4 +718,42 @@ message CryptographicParameters {
   // A shared commitment key known to the chain and the account holder (and therefore it is public).
   // The account holder uses this commitment key to generate commitments to values in the attribute list.
   bytes on_chain_commitment_key = 3;
+}
+
+// The response for GetBlockInfo.
+message BlockInfo {
+  // Hash of the block.
+  BlockHash hash = 1;
+  // Absolute height of the block, height 0 is the genesis block.
+  AbsoluteBlockHeight height = 2;
+  // The parent block hash. For a re-genesis block, this will be the terminal block of the
+  // previous chain. For the initial genesis block, this will be the hash of the block itself.
+  BlockHash parent_block = 3;
+  // The last finalized block when this block was baked.
+  BlockHash last_finalized_block = 4;
+  // The genesis index for this block. This counts the number of protocol updates that have
+  // preceded this block, and defines the era of the block.
+  GenesisIndex genesis_index = 5;
+  // The height of this block relative to the (re)genesis block of its era.
+  BlockHeight era_block_height = 6;
+  // The time the block was received.
+  Timestamp receive_time = 7;
+  // The time the block was verified.
+  Timestamp arrive_time = 8;
+  // The slot number in which the block was baked.
+  Slot slot_number = 9;
+  // The time of the slot in which the block was baked.
+  Timestamp slot_time = 10;
+  // The baker id of account baking this block. Not provided for a genesis block.
+  optional BakerId baker = 11;
+  // Whether the block is finalized.
+  bool finalized = 12;
+  // The number of transactions in the block.
+  uint32 transaction_count = 13;
+  // The energy cost of the transactions in the block.
+  Energy transactions_energy_cost = 14;
+  // The total byte size of all transactions in the block.
+  uint32 transactions_size = 15;
+  // The hash of the block state after this block.
+  StateHash state_hash = 16;
 }
