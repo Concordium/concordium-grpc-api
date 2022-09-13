@@ -67,4 +67,7 @@ service Queries {
 
   // Get status information about the passive delegators.
   rpc GetPassiveDelegationStatus (BlockHashInput) returns (PassiveDelegationStatus);
+
+  // Get a stream of live blocks at a given height.
+  rpc GetBlocksAtHeight (BlocksAtHeightRequest) returns (stream BlockHash);
 }

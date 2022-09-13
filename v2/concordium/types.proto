@@ -841,3 +841,28 @@ message PassiveDelegationStatus {
   // Total capital staked across all pools, including passive delegation.
   Amount all_pool_total_capital = 5;
 }
+
+// Request for GetBlocksAtHeight.
+message BlocksAtHeightRequest {
+  // Request using an absolute block height.
+  message Absolute {
+    // The absolute block height.
+    AbsoluteBlockHeight height = 1;
+  }
+
+  // Request using a relative block height.
+  message Relative {
+    // Genesis index to start from.
+    GenesisIndex genesis_index = 1;
+    // Height starting from the genesis block at the genesis index.
+    BlockHeight height = 2;
+    // Whether to return results only from the specified genesis index (`true`),
+    // or allow results from more recent genesis indices as well (`false`).
+    bool restrict = 3;
+  }
+
+  oneof blocks_at_height {
+    Absolute absolute = 1;
+    Relative relative = 2;
+  }
+}
