@@ -606,6 +606,7 @@ message ContractStateV0 {
   bytes value = 1;
 }
 
+// Status of a transaction known to the node.
 message TransactionStatus {
 
   message Committed {
@@ -617,14 +618,23 @@ message TransactionStatus {
   }
 
   oneof status {
+    // Transaction is received, but not yet in any blocks.
     Empty received = 1;
+    // Transaction is committed to one or more blocks. The outcomes are listed
+    // for each block. Note that in the vast majority of cases the outcome of a
+    // transaction should not be dependent on the block it is in, but this
+    // can in principle happen.
     Committed committed = 2;
+    // Transaction is finalized in the given block, with the given summary.
     Finalized finalized = 3;
   }
 }
 
+// A transaction summary together with a block hash. Used in TransactionStatus.
 message TransactionSummaryInBlock {
+  // The block hash.
   BlockHash block_hash = 1;
+  // The transaction summary.
   BlockItemSummary outcome = 2;
 }
 
@@ -647,6 +657,9 @@ message Duration {
   uint64 value = 1;
 }
 
+// A reason for why a transaction was rejected. Rejected means included in a
+// block, but the desired action was not achieved. The only effect of a
+// rejected transaction is payment.
 message RejectReason {
 
   message ModuleHashAlreadyExists {
@@ -908,10 +921,6 @@ message InstanceUpdatedEvent {
 }
 
 message ContractTraceElement {
-  // A contract instance was updated.
-  message Updated {
-    InstanceUpdatedEvent contents = 1;
-  }
   // A contract transferred an amount to an account.
   message Transferred {
     // Sender contract.
@@ -938,9 +947,14 @@ message ContractTraceElement {
   }
 
   oneof element {
-    Updated updated = 1;
+    // A contract instance was updated.
+    InstanceUpdatedEvent updated = 1;
+    // A contract transferred an amount to an account.
     Transferred transferred = 2;
+    // A contract was interrupted.
+    // This occurs when a contract invokes another contract or makes a transfer to an account.
     Interrupted interrupted = 3;
+    // A previously interrupted contract was resumed.
     Resumed resumed = 4;
   }
 }
@@ -1024,11 +1038,6 @@ message BakerEvent {
     // not.
     bool restake_earnings = 3;
   }
-  // A baker was removed.
-  message BakerRemoved {
-    // Baker's id.
-    BakerId baker_id = 1;
-  }
   // Baker stake increased.
   message BakerStakeIncreased {
     // Baker's id.
@@ -1047,10 +1056,6 @@ message BakerEvent {
     BakerId baker_id = 1;
     // The new value of the flag.
     bool restake_earnings = 2;
-  }
-  // The baker's keys were updated.
-  message BakerKeysUpdated {
-    BakerKeysEvent contents = 1;
   }
   // Updated open status for a baker pool.
   message BakerSetOpenStatus {
@@ -1088,16 +1093,27 @@ message BakerEvent {
     AmountFraction finalization_reward_commission = 2;
   }
   oneof event {
+    // A baker was added.
     BakerAdded baker_added = 1;
-    BakerRemoved baker_removed = 2;
+    // A baker was removed.
+    BakerId baker_removed = 2;
+    // The baker's stake was increased.
     BakerStakeIncreased baker_stake_increased = 3;
+    // The baker's stake was decreased.
     BakerStakeDecreased baker_stake_decreased = 4;
+    // The baker's setting for restaking earnings was updated.
     BakerRestakeEarningsUpdated baker_restake_earnings_updated = 5;
-    BakerKeysUpdated baker_keys_updated = 6;
+    // Baker keys were updated.
+    BakerKeysEvent baker_keys_updated = 6;
+    // The baker's open status was updated.
     BakerSetOpenStatus baker_set_open_status = 7;
+    // The baker's metadata URL was updated.
     BakerSetMetadataUrl baker_set_metadata_url = 8;
+    // The baker's transaction fee commission was updated.
     BakerSetTransactionFeeCommission baker_set_transaction_fee_commission = 9;
+    // The baker's baking reward commission was updated.
     BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
+    // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
   }
 }
@@ -1132,22 +1148,19 @@ message DelegationEvent {
     /// New delegation target
     DelegationTarget delegation_target = 2;
   }
-
-  message DelegationAdded {
-    /// Delegator's id
-    DelegatorId delegator_id = 1;
-  }
-  message DelegationRemoved {
-    /// Delegator's id
-    DelegatorId delegator_id = 1;
-  }
   oneof event {
+    // The delegator's stake increased.
     DelegationStakeIncreased delegation_stake_increased = 1;
+    // The delegator's stake decreased.
     DelegationStakeDecreased delegation_stake_decreased = 2;
+    // The delegator's restaking setting was updated.
     DelegationSetRestakeEarnings delegation_set_restake_earnings = 3;
+    // The delegator's delegation target was updated.
     DelegationSetDelegationTarget delegation_set_delegation_target = 4;
-    DelegationAdded delegation_added = 5;
-    DelegationRemoved delegation_removed = 6;
+    // A delegator was added.
+    DelegatorId delegation_added = 5;
+    // A delegator was removed.
+    DelegatorId delegation_removed = 6;
   }
 }
 
@@ -1161,25 +1174,13 @@ message AccountTransactionEffects {
     // Reason for rejection of the transaction.
     RejectReason reject_reason = 2;
   }
-  // A module was deployed. This corresponds to
-  // [`DeployModule`](transactions::Payload::DeployModule) transaction
-  // type.
-  message ModuleDeployed {
-    ModuleRef module_ref = 1;
-  }
-  // A contract was initialized was deployed. This corresponds to
-  // [`InitContract`](transactions::Payload::InitContract) transaction type.
-  message ContractInitialized{
-    ContractInitializedEvent contents = 1;
-  }
   // A contract update transaction was issued and produced the given trace.
-  // This is the result of [Update](transactions::Payload::Update)
-  // transaction.
+  // This is the result of Update transaction.
   message ContractUpdateIssued {
     repeated ContractTraceElement effects = 1;
   }
   // A simple account to account transfer occurred. This is the result of a
-  // successful [`Transfer`](transactions::Payload::Transfer) transaction.
+  // successful Transfer transaction.
   message AccountTransfer {
     // Amount that was transferred.
     Amount amount = 1;
@@ -1189,40 +1190,27 @@ message AccountTransactionEffects {
     optional Memo memo = 3;
   }
   // An account was deregistered as a baker. This is the result of a
-  // successful [`UpdateBakerStake`](transactions::Payload::UpdateBakerStake)
-  // transaction.
+  // successful UpdateBakerStake transaction.
   message BakerStakeUpdated {
     // If the stake was updated (that is, it changed and did not stay the
-    // same) then this is [Some], otherwise [None].
+    // same) then this is present, otherwise it is not present.
     optional BakerStakeUpdatedData contents = 1;
   }
   // An encrypted amount was transferred. This is the result of a successful
-  // [`EncryptedAmountTransfer`](
-  //   transactions::Payload::EncryptedAmountTransfer) transaction.
+  // EncryptedAmountTransfer transaction.
   message EncryptedAmountTransferred {
     EncryptedAmountRemovedEvent removed = 1;
     NewEncryptedAmountEvent added = 2;
     optional Memo memo = 3;
   }
-  // An account transferred part of its public balance to its encrypted
-  // balance. This is the result of a successful
-  // [`TransferToEncrypted`](transactions::Payload::TransferToEncrypted)
-  // transaction.
-  message TransferredToEncrypted {
-    EncryptedSelfAmountAddedEvent contents = 1;
-  }
   // An account transferred part of its encrypted balance to its public
-  // balance. This is the result of a successful
-  // [`TransferToPublic`](transactions::Payload::TransferToPublic)
-  // transaction.
+  // balance. This is the result of a successful TransferToPublic transaction.
   message TransferredToPublic {
     EncryptedAmountRemovedEvent removed = 1;
     Amount amount = 2;
   }
   // A transfer with schedule was performed. This is the result of a
-  // successful
-  // [`TransferWithSchedule`](transactions::Payload::TransferWithSchedule)
-  // transaction.
+  // successful TransferWithSchedule transaction.
   message TransferredWithSchedule {
     // Receiver account.
     AccountAddress to_ = 1;
@@ -1231,18 +1219,8 @@ message AccountTransactionEffects {
     // Optional memo.
     optional Memo memo = 3;
   }
-  // Keys of a specific credential were updated. This is the result of a
-  // successful
-  // [`UpdateCredentialKeys`](transactions::Payload::UpdateCredentialKeys)
-  // transaction.
-  message CredentialKeysUpdated {
-    // ID of the credential whose keys were updated.
-    CredentialRegistrationId cred_id = 1;
-  }
   // Account's credentials were updated. This is the result of a
-  // successful
-  // [`UpdateCredentials`](transactions::Payload::UpdateCredentials)
-  // transaction.
+  // successful UpdateCredentials transaction.
   message CredentialsUpdated {
     // The credential ids that were added.
     repeated CredentialRegistrationId new_cred_ids = 1;
@@ -1251,46 +1229,62 @@ message AccountTransactionEffects {
     // The (possibly) updated account threshold.
     AccountThreshold new_threshold = 3;
   }
-  // Some data was registered on the chain. This is the result of a
-  // successful [`RegisterData`](transactions::Payload::RegisterData)
-  // transaction.
-  message DataRegistered {
-    RegisteredData contents = 1;
-  }
   // A baker was configured. The details of what happened are contained in
-  // the list of [baker events](BakerEvent).
+  // the list of BakerEvents.
   message BakerConfigured {
     repeated BakerEvent contents = 1;
   }
   // An account configured delegation. The details of what happened are
-  // contained in the list of [delegation events](DelegationEvent).
+  // contained in the list of DelegationEvents.
   message DelegationConfigured {
     repeated DelegationEvent contents = 1;
   }
 
   oneof effect {
+    /// No effects other than payment from this transaction.
+    /// The rejection reason indicates why the transaction failed.
     None none = 1;
-    ModuleDeployed module_deployed = 2;
-    ContractInitialized contract_initialized = 3;
+    // A smart contract module with the attached reference was deployed.
+    ModuleRef module_deployed = 2;
+    // A smart contract was initialized.
+    ContractInitializedEvent contract_initialized = 3;
+    // A smart contract instance updated was issued.
     ContractUpdateIssued contract_update_issued = 4;
+    // A simple account to account transfer occurred.
     AccountTransfer account_transfer = 5;
+    // A baker was added.
     BakerEvent.BakerAdded baker_added = 6;
-    BakerEvent.BakerRemoved baker_removed = 7;
+    // A baker was removed.
+    BakerId baker_removed = 7;
+    // A baker's stake was updated.
     BakerStakeUpdated baker_stake_updated = 8;
+    // A baker's restake earnings setting was updated.
     BakerEvent.BakerRestakeEarningsUpdated baker_restake_earnings_updated = 9;
-    BakerEvent.BakerKeysUpdated baker_keys_updated = 10;
+    // A baker's keys were updated.
+    BakerKeysEvent baker_keys_updated = 10;
+    // An encrypted amount was transferred.
     EncryptedAmountTransferred encrypted_amount_transferred = 11;
-    TransferredToEncrypted transferred_to_encrypted = 12;
+    // An account transferred part of its public balance to its encrypted
+    // balance.
+    EncryptedSelfAmountAddedEvent transferred_to_encrypted = 12;
+    // An account transferred part of its encrypted balance to its public balance.
     TransferredToPublic transferred_to_public = 13;
+    // A transfer with a release schedule was made.
     TransferredWithSchedule transferred_with_schedule = 14;
-    CredentialKeysUpdated credential_keys_updated = 15;
+    // Keys of a specific credential were updated.
+    CredentialRegistrationId credential_keys_updated = 15;
+    // Account credentials were updated.
     CredentialsUpdated credentials_updated = 16;
-    DataRegistered data_registered = 17;
+    // Some data was registered on the chain.
+    RegisteredData data_registered = 17;
+    // A baker was configured. The details of what happened are contained in a list of BakerEvents.
     BakerConfigured baker_configured = 18;
+    // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
   }
 }
 
+// Election difficulty parameter.
 message ElectionDifficulty {
   AmountFraction value = 1;
 }
@@ -1308,29 +1302,36 @@ message Ratio {
   uint64 denominator = 2;
 }
 
+// A public key used for chain updates.
 message UpdatePublicKey {
   bytes value = 1;
 }
 
+// The threshold for how many UpdatePublicKeys are need to make a certain chain update.
 message UpdateKeysThreshold {
   // Is ensured to be within between 1 and 2^16.
   uint32 value = 1;
 }
 
 // Index of a key in an authorizations update payload.
-message UpdateKeyIndex {
+message UpdateKeysIndex {
   uint32 value = 1;
 }
 
 // Represents root or level 1 keys.
 message HigherLevelKeys {
+  // The keys.
   repeated UpdatePublicKey keys = 1;
+  // The number of keys needed to make a chain update.
   UpdateKeysThreshold threshold = 2;
 }
 
+// An access structure which specifies which UpdatePublicKeys in a HigherLevelKeys that are allowed
+// to make chain update of a specific type. The threshold defines the minimum number of allowed keys needed
+// to make the actual update.
 message AccessStructure {
   // Unique indexes into the set of keys in AuthorizationV0.
-  repeated UpdateKeyIndex access_public_keys = 1;
+  repeated UpdateKeysIndex access_public_keys = 1;
   // Number of keys requred to authorize an update.
   UpdateKeysThreshold access_threshold = 2;
 }
@@ -1382,8 +1383,11 @@ message AuthorizationsV1 {
 // Description either of an anonymity revoker or identity provider.
 // Metadata that should be visible on the chain.
 message Description {
+  // The name.
   string name = 1;
+  // A link to more information about the anonymity revoker or identity provider.
   string url = 2;
+  // A free form description of the revoker or provider.
   string description = 3;
 }
 
@@ -1573,35 +1577,57 @@ message UpdatePayload {
     RewardPeriodLength reward_period_length = 1;
     MintRate mint_per_payday = 2;
   }
+  // Mint distribution payload as it looks in protocol version 4 and onward.
   message MintDistributionCpv1UpdatePayload {
     AmountFraction baking_reward = 1;
     AmountFraction finalization_reward = 2;
   }
 
   oneof payload {
+    // The protocol version was updated.
     ProtocolUpdatePayload protocol_update = 1;
+    // The election difficulty was updated.
     ElectionDifficulty election_difficulty_update = 2;
+    // The euro per energy exchange rate was updated.
     ExchangeRate euro_per_energy_update = 3;
+    // The microCCD per euro exchange rate was updated.
     ExchangeRate micro_ccd_per_euro_update = 4;
+    // The foundation account address was updated.
     AccountAddress foundation_account_update = 5;
+    // The mint distribution was updated.
     MintDistributionUpdatePayload mint_distribution_update = 6;
+    // The transaction fee distribtuion was updated.
     TransactionFeeDistributionUpdatePayload transaction_fee_distribution_update = 7;
+    // The gas rewards were updated.
     GasRewardsUpdatePayload gas_rewards_update = 8;
+    // The minimum amount of CCD needed to be come a baker was updated.
     BakerStakeThresholdUpdatePayload baker_stake_threshold_update = 9;
+    // The root keys were updated.
     RootUpdatePayload root_update = 10;
+    // The level 1 keys were updated.
     Level1UpdatePayload level_1_root_update = 11;
+    // An anonymity revoker was added.
     ArInfo add_anonymity_revoker_update = 12;
+    // An identity provider was added.
     IpInfo add_identity_provider_update = 13;
+    // The cooldown parameters were updated.
     CooldownParametersCpv1UpdatePayload cooldown_parameters_cpv_1_update = 14;
+    // The pool parameters were updated.
     PoolParametersCpv1UpdatePayload pool_parameters_cpv_1_update = 15;
+    // The time parameters were updated.
     TimeParametersCpv1UpdatePayload time_parameters_cpv_1_update = 16;
+    // The mint distribution was updated.
     MintDistributionCpv1UpdatePayload mint_distribution_cpv_1_update = 17;
   }
 }
 
+// Details about an account transaction.
 message AccountTransactionDetails {
+  // The cost of the transaction. Paid by the sender.
   Amount cost = 1;
+  // The sender of the transaction.
   AccountAddress sender = 2;
+  // The effects of the transaction.
   AccountTransactionEffects effects = 3;
 }
 
@@ -1617,11 +1643,12 @@ message AccountCreationDetails {
   CredentialRegistrationId reg_id = 3;
 }
 
-message CredentialType {
-  oneof type {
-    Empty initial = 1;
-    Empty normal = 2;
-  }
+// The type of a credential.
+enum CredentialType {
+  // An initial credential created by the identity provider.
+  CREDENTIAL_TYPE_INITIAL = 0;
+  // A normal credential type created by the account.
+  CREDENTIAL_TYPE_NORMAL = 1;
 }
 
 // Transaction time specified as seconds since unix epoch.
@@ -1633,25 +1660,37 @@ message TransactionTime {
 // response for them if the update is successfully enqueued, hence no failure
 // cases.
 message UpdateDetails {
+  // The time at which the update will be effective.
   TransactionTime effective_time = 1;
+  // The paylaod for the update.
   UpdatePayload payload = 2;
 }
 
+// Summary of the outcome of a block item in structured form.
+// The summary determines which transaction type it was.
 message BlockItemSummary {
   message TransactionIndex {
     uint64 value = 1;
   }
 
+  // Index of the transaction in the block where it is included.
   TransactionIndex index = 1;
+  // The amount of NRG the transaction cost.
   Energy energy_cost = 2;
+  // Hash of the transaction.
   TransactionHash hash = 3;
+  // Details that are specific to different transaction types.
   oneof details {
+    // Detailsa about an account transaction.
     AccountTransactionDetails account_transaction = 4;
+    // Details about an account creation.
     AccountCreationDetails account_creation = 5;
+    // Details about a chain update.
     UpdateDetails update = 6;
   }
 }
 
+// The type of chain update.
 enum UpdateType {
     UPDATE_PROTOCOL = 0;
     UPDATE_ELECTION_DIFFICULTY = 1;
@@ -1671,6 +1710,7 @@ enum UpdateType {
     UPDATE_TIME_PARAMETERS = 15;
 }
 
+// The type of transaction.
 enum TransactionType {
   DEPLOY_MODULE = 0;
   INIT_CONTRACT = 1;
