@@ -61,4 +61,10 @@ service Queries {
 
   // Get all the bakers at the end of the given block.
   rpc GetBakerList (BlockHashInput) returns (stream BakerId);
+
+  // Get status information about a given pool.
+  rpc GetPoolStatus (PoolStatusRequest) returns (PoolStatus);
+
+  // Get status information about the passive delegators.
+  rpc GetPassiveDelegationStatus (BlockHashInput) returns (PassiveDelegationStatus);
 }

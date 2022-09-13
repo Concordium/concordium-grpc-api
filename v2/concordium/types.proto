@@ -757,3 +757,87 @@ message BlockInfo {
   // The hash of the block state after this block.
   StateHash state_hash = 16;
 }
+
+// Request for GetPoolStatus.
+message PoolStatusRequest {
+  // Block in which to query the pool information.
+  BlockHashInput block_hash = 1;
+  // The 'BakerId' of the pool owner.
+  BakerId baker = 2;
+}
+
+// A pending change to a baker pool.
+message PoolPendingChange {
+  // A reduction in baker equity capital is pending.
+  message Reduce {
+    // New baker equity capital.
+    Amount reduced_equity_capital = 1;
+    // Timestamp when the change takes effect.
+    Timestamp effective_time = 2;
+  }
+
+  // Removal of the pool is pending.
+  message Remove {
+    // Timestamp when the change takes effect.
+    Timestamp effective_time = 1;
+  }
+
+  oneof change {
+    Reduce reduce = 1;
+    Remove remove = 2;
+  }
+}
+
+// Information about the status of a baker pool in the current reward period.
+message PoolCurrentPaydayStatus {
+  // The number of blocks baked in the current reward period.
+  uint64 blocks_baked = 1;
+  // Whether the baker has contributed a finalization proof in the current reward period.
+  bool finalization_live = 2;
+  // The transaction fees accruing to the pool in the current reward period.
+  Amount transaction_fees_earned = 3;
+  // The effective stake of the baker in the current reward period.
+  Amount effective_stake = 4;
+  // The lottery power of the baker in the current reward period.
+  double lottery_power = 5;
+  // The effective equity capital of the baker for the current reward period.
+  Amount baker_equity_capital = 6;
+  // The effective delegated capital to the pool for the current reward period.
+  Amount delegated_capital = 7;
+}
+
+// Status information about a given pool.
+message PoolStatus {
+  // The 'BakerId' of the pool owner.
+  BakerId baker = 1;
+  // The account address of the pool owner.
+  AccountAddress address = 2;
+  // The equity capital provided by the pool owner.
+  Amount equity_capital = 3;
+  // The capital delegated to the pool by other accounts.
+  Amount delegated_capital = 4;
+  // The maximum amount that may be delegated to the pool, accounting for leverage and stake limits.
+  Amount delegated_capital_cap = 5;
+  // The pool info associated with the pool: open status, metadata URL and commission rates.
+  BakerPoolInfo pool_info = 6;
+  // Any pending change to the equity carpital.
+  optional PoolPendingChange equity_pending_change = 7;
+  // Status of the pool in the current reward period.
+  optional PoolCurrentPaydayStatus current_payday_status = 8;
+  // Total capital staked across all pools, including passive delegation.
+  Amount all_pool_total_capital = 9;
+}
+
+// Status information about passive delegators.
+message PassiveDelegationStatus {
+  // The total capital delegated passively.
+  Amount delegated_capital = 1;
+  // The passive delegation commission rates.
+  CommissionRates commission_rates = 2;
+  // The transaction fees accruing to the passive delegators in the current reward period.
+  Amount current_payday_transaction_fees_earned = 3;
+  // The effective delegated capital of passive delegators for the current reward period.
+  Amount current_payday_delegated_capital = 4;
+  // Total capital staked across all pools, including passive delegation.
+  Amount all_pool_total_capital = 5;
+}
