@@ -70,4 +70,7 @@ service Queries {
 
   // Get a stream of live blocks at a given height.
   rpc GetBlocksAtHeight (BlocksAtHeightRequest) returns (stream BlockHash);
+
+  // Get status of the tokenomics at the end of a given block.
+  rpc GetTokenomicsStatus (BlockHashInput) returns (TokenomicsStatus);
 }

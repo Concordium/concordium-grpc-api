@@ -866,3 +866,63 @@ message BlocksAtHeightRequest {
     Relative relative = 2;
   }
 }
+
+// A base-10 floating point number representation.
+// The value is `mantissa * 10^(-exponent)`.
+//
+// At least 6 significant figures were required by the specification,
+// and 'uint32' provides 9.  Exponent values greater than about
+// 29 will not be necessary, since such a rate will be effectively
+// 0 (when we compute the amount that is minted based on a 64-bit
+// value as the current number of CCDs.)
+message MintRate {
+  uint32 mantissa = 1;
+  uint32 exponent = 2;
+}
+
+// The status of the tokenomics at the end of a given block.
+message TokenomicsStatus {
+  // Version 0 tokenomics.
+  message V0 {
+    // The total CCD in existence.
+    Amount total_amount = 1;
+    // The total CCD in encrypted balances.
+    Amount total_encrypted_amount = 2;
+    // The amount in the baking reward account.
+    Amount baking_reward_account = 3;
+    // The amount in the finalization reward account.
+    Amount finalization_reward_account = 4;
+    // The amount in the GAS account.
+    Amount gas_account = 5;
+    // The protocol version.
+    ProtocolVersion protocol_version = 6;
+  }
+  // Version 1 tokenomics.
+  message V1 {
+    // The total CCD in existence.
+    Amount total_amount = 1;
+    // The total CCD in encrypted balances.
+    Amount total_encrypted_amount = 2;
+    // The amount in the baking reward account.
+    Amount baking_reward_account = 3;
+    // The amount in the finalization reward account.
+    Amount finalization_reward_account = 4;
+    // The amount in the GAS account.
+    Amount gas_account = 5;
+    // The transaction reward fraction accruing to the foundation (to be paid at next payday).
+    Amount foundation_transaction_rewards = 6;
+    // The time of the next payday.
+    Timestamp next_payday_time = 7;
+    // The rate at which CCD will be minted (as a proportion of the total supply) at the next payday.
+    MintRate next_payday_mint_rate = 8;
+    // The total capital put up as stake by bakers and delegators.
+    Amount total_staked_capital = 9;
+    // The protocol version.
+    ProtocolVersion protocol_version = 10;
+  }
+
+  oneof tokenomics {
+    V0 v0 = 1;
+    V1 v1 = 2;
+  }
+}
