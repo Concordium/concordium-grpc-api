@@ -1489,9 +1489,13 @@ message UpdatePayload {
   // even themselves. They can only be performed by Root level keys.
   message RootUpdatePayload {
     oneof update_type {
+      // The root keys were updated.
       HigherLevelKeys root_keys_update = 1;
+      // The level 1 keys were updated.
       HigherLevelKeys level_1_keys_update = 2;
+      // The level 2 keys were updated.
       AuthorizationsV0 level_2_keys_update_v0 = 3;
+      // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
       AuthorizationsV1 level_2_keys_update_v1 = 4;
     }
   }
@@ -1499,8 +1503,11 @@ message UpdatePayload {
   // They can update themselves or level 2 keys. They can only be performed by level 1 keys.
   message Level1UpdatePayload {
     oneof update_type {
+      // The level 1 keys were updated.
       HigherLevelKeys level_1_keys_update = 1;
+      // The level 2 keys were updated.
       AuthorizationsV0 level_2_keys_update_v0 = 2;
+      // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
       AuthorizationsV1 level_2_keys_update_v1 = 3;
     }
   }
@@ -1566,7 +1573,7 @@ message UpdatePayload {
     // The root keys were updated.
     RootUpdatePayload root_update = 10;
     // The level 1 keys were updated.
-    Level1UpdatePayload level_1_root_update = 11;
+    Level1UpdatePayload level_1_update = 11;
     // An anonymity revoker was added.
     ArInfo add_anonymity_revoker_update = 12;
     // An identity provider was added.
