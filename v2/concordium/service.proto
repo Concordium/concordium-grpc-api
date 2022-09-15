@@ -44,6 +44,10 @@ service Queries {
   // given block.
   rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
 
+  // Get the exact state of a specific contract instance, streamed as a list of
+  // key-value pairs. The list is streamed in lexicographic order of keys
+  rpc GetInstanceState (InstanceInfoRequest) returns (stream InstanceStateKVPair);
+
   // Get the best guess as to what the next account sequence number should be.
   // If all account transactions are finalized then this information is reliable.
   // Otherwise this is the best guess, assuming all other transactions will be

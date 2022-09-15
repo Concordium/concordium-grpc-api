@@ -589,6 +589,12 @@ message InstanceInfo {
   }
 }
 
+// A smart contract instance key-value pair.
+message InstanceStateKVPair {
+  bytes key = 1;
+  bytes value = 2;
+}
+
 // The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
 // It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
 message ReceiveName {
