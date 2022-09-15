@@ -53,7 +53,7 @@ service Queries {
   // Get information about the current state of consensus.
   rpc GetConsensusInfo (Empty) returns (ConsensusInfo);
 
-  // Get the status of and information about a specific transaction.
-  rpc GetTransactionStatus (TransactionHash) returns (TransactionStatus);
+  // Get the status of and information about a specific block item (transaction).
+  rpc GetBlockItemStatus (TransactionHash) returns (BlockItemStatus);
 
 }
