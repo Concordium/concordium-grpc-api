@@ -1794,3 +1794,15 @@ message BlockInfo {
   // Absolute height of the block, height 0 is the genesis block.
   AbsoluteBlockHeight height = 2;
 }
+
+message SendTransactionRequest {
+  bytes payload = 1;
+}
+
+message SendTransactionResponse {
+  bool success = 1;
+  // oneof result {
+  //   ModuleRef module_deployed = 1;
+  //   ContractAddress contract_initialized = 2;
+  // }
+}

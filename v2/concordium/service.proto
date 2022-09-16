@@ -56,4 +56,7 @@ service Queries {
   // Get the status of and information about a specific block item (transaction).
   rpc GetBlockItemStatus (TransactionHash) returns (BlockItemStatus);
 
+  // Send a transaction.
+  rpc SendTransaction (SendTransactionRequest) returns (SendTransactionResponse);
+
 }
