@@ -11,6 +11,11 @@ message BlockHash {
   bytes value = 1;
 }
 
+// A SHA256 hash. This is always 32 bytes long.
+message Sha256Hash {
+  bytes value = 1;
+}
+
 // Hash of a transaction. This is always 32 bytes long.
 message TransactionHash {
   bytes value = 1;
@@ -81,6 +86,14 @@ message Release {
   Amount amount = 2;
   // List of transaction hashes that contribute a balance to this release.
   repeated TransactionHash transactions = 3;
+}
+
+// A new individual release. Part of a single transfer with schedule transaction.
+message NewRelease {
+  // Effective time of the release in milliseconds since unix epoch.
+  Timestamp timestamp = 1;
+  // Amount to be released.
+  Amount amount = 2;
 }
 
 // State of the account's release schedule. This is the balance of the account
@@ -158,7 +171,7 @@ message BakerAggregationVerifyKey {
   bytes value = 1;
 }
 
-/// Information about a baker.
+// Information about a baker.
 message BakerInfo {
   // Identity of the baker. This is actually the account index of
   // the account controlling the baker.
@@ -364,8 +377,8 @@ message InitialCredentialValues {
   Policy policy = 4;
 }
 
-/// Data relating to a single anonymity revoker sent by the account holder to
-/// the chain.
+// Data relating to a single anonymity revoker sent by the account holder to
+// the chain.
 message ChainArData {
   // Share of the encryption of IdCredPub.
   bytes enc_id_cred_pub_share = 1;
@@ -588,9 +601,46 @@ message InitName {
   string value = 1;
 }
 
+// Parameter to a smart contract invocation.
+message Parameter {
+  bytes value = 1;
+}
+
 // A smart contract v0 state.
 message ContractStateV0 {
   bytes value = 1;
+}
+
+// Status of a block item known to the node.
+message BlockItemStatus {
+
+  message Committed {
+    repeated BlockItemSummaryInBlock outcomes = 1;
+  }
+
+  message Finalized {
+    BlockItemSummaryInBlock outcome = 1;
+  }
+
+  oneof status {
+    // Block item is received, but not yet in any blocks.
+    Empty received = 1;
+    // Block item is committed to one or more blocks. The outcomes are listed
+    // for each block. Note that in the vast majority of cases the outcome of a
+    // transaction should not be dependent on the block it is in, but this
+    // can in principle happen.
+    Committed committed = 2;
+    // Block item is finalized in the given block, with the given summary.
+    Finalized finalized = 3;
+  }
+}
+
+// A block item summary together with a block hash. Used in BlockItemStatus.
+message BlockItemSummaryInBlock {
+  // The block hash.
+  BlockHash block_hash = 1;
+  // The block item summary.
+  BlockItemSummary outcome = 2;
 }
 
 // Energy is used to count exact execution cost.
@@ -615,6 +665,1053 @@ message NextAccountSequenceNumber {
 // A duration of milliseconds.
 message Duration {
   uint64 value = 1;
+}
+
+// A reason for why a transaction was rejected. Rejected means included in a
+// block, but the desired action was not achieved. The only effect of a
+// rejected transaction is payment.
+message RejectReason {
+
+  message InvalidInitMethod {
+    ModuleRef module_ref = 1;
+    InitName init_name = 2;
+  }
+
+  message InvalidReceiveMethod {
+    ModuleRef module_ref = 1;
+    ReceiveName receive_name = 2;
+  }
+
+  message AmountTooLarge {
+    Address address = 1;
+    Amount amount = 2;
+  }
+
+  message RejectedInit {
+    int32 reject_reason = 1;
+  }
+
+  message RejectedReceive {
+    int32 reject_reason = 1;
+    ContractAddress contract_address = 2;
+    ReceiveName receive_name = 3;
+    Parameter parameter = 4;
+  }
+
+  message DuplicateCredIds {
+    repeated CredentialRegistrationId ids = 1;
+  }
+
+  message NonExistentCredIds {
+    repeated CredentialRegistrationId ids = 1;
+  }
+
+  oneof reason {
+    // Raised while validating a Wasm module that is not well formed.
+    Empty module_not_wf = 1;
+    // The smart contract module hash already exists.
+    ModuleRef module_hash_already_exists = 2;
+    // Account does not exist.
+    AccountAddress invalid_account_reference = 3;
+    // Reference to a non-existing contract init method.
+    InvalidInitMethod invalid_init_method = 4;
+    // Reference to a non-existing contract receive method.
+    InvalidReceiveMethod invalid_receive_method = 5;
+    // Reference to a non-existing smart contract module.
+    ModuleRef invalid_module_reference = 6;
+    // Contract instance does not exist.
+    ContractAddress invalid_contract_address = 7;
+    // Runtime exception occurred when running either the init or receive
+    // method.
+    Empty runtime_failure = 8;
+    // When one wishes to transfer an amount from A to B but there
+    // are not enough funds on account/contract A to make this
+    // possible. The data are the from address and the amount to transfer.
+    AmountTooLarge amount_too_large = 9;
+    // Serialization of the body failed.
+    Empty serialization_failure = 10;
+    // We ran of out energy to process this transaction.
+    Empty out_of_energy = 11;
+    // Rejected due to contract logic in init function of a contract.
+    RejectedInit rejected_init = 12;
+    // Rejected due to contract logic in receive function of a contract.
+    RejectedReceive rejected_receive = 13;
+    // Proof that the baker owns relevant private keys is not valid.
+    Empty invalid_proof = 14;
+    // Tried to add baker for an account that already has a baker.
+    BakerId already_a_baker = 15;
+    // Tried to remove a baker for an account that has no baker.
+    AccountAddress not_a_baker = 16;
+    // The amount on the account was insufficient to cover the proposed stake.
+    Empty insufficient_balance_for_baker_stake = 17;
+    // The amount provided is under the threshold required for becoming a baker.
+    Empty stake_under_minimum_threshold_for_baking = 18;
+    // The change could not be made because the baker is in cooldown for
+    // another change.
+    Empty baker_in_cooldown = 19;
+    // A baker with the given aggregation key already exists.
+    BakerAggregationVerifyKey duplicate_aggregation_key = 20;
+    // Encountered credential ID that does not exist.
+    Empty non_existent_credential_id = 21;
+    // Attempted to add an account key to a key index already in use.
+    Empty key_index_already_in_use = 22;
+    // When the account threshold is updated, it must not exceed the amount of
+    // existing keys.
+    Empty invalid_account_threshold = 23;
+    // When the credential key threshold is updated, it must not exceed the
+    // amount of existing keys.
+    Empty invalid_credential_key_sign_threshold = 24;
+    // Proof for an encrypted amount transfer did not validate.
+    Empty invalid_encrypted_amount_transfer_proof = 25;
+    // Proof for a secret to public transfer did not validate.
+    Empty invalid_transfer_to_public_proof = 26;
+    // Account tried to transfer an encrypted amount to itself, that's not
+    // allowed.
+    AccountAddress encrypted_amount_self_transfer = 27;
+    // The provided index is below the start index or above `startIndex +
+    // length incomingAmounts`.
+    Empty invalid_index_on_encrypted_transfer = 28;
+    // The transfer with schedule is going to send 0 tokens.
+    Empty zero_scheduledAmount = 29;
+    // The transfer with schedule has a non strictly increasing schedule.
+    Empty non_increasing_schedule = 30;
+    // The first scheduled release in a transfer with schedule has already
+    // expired.
+    Empty first_scheduled_release_expired = 31;
+    // Account tried to transfer with schedule to itself, that's not allowed.
+    AccountAddress scheduled_self_transfer = 32;
+    // At least one of the credentials was either malformed or its proof was
+    // incorrect.
+    Empty invalid_credentials = 33;
+    // Some of the credential IDs already exist or are duplicated in the
+    // transaction.
+    DuplicateCredIds duplicate_cred_ids = 34;
+    // A credential id that was to be removed is not part of the account.
+    NonExistentCredIds non_existent_cred_ids = 35;
+    // Attemp to remove the first credential.
+    Empty remove_first_credential = 36;
+    // The credential holder of the keys to be updated did not sign the
+    // transaction.
+    Empty credential_holder_did_not_sign = 37;
+    // Account is not allowed to have multiple credentials because it contains
+    // a non-zero encrypted transfer.
+    Empty not_allowed_multiple_credentials = 38;
+    // The account is not allowed to receive encrypted transfers because it has
+    // multiple credentials.
+    Empty not_allowed_to_receive_encrypted = 39;
+    // The account is not allowed to send encrypted transfers (or transfer
+    // from/to public to/from encrypted).
+    Empty not_allowed_to_handle_encrypted = 40;
+    // A configure baker transaction is missing one or more arguments in order
+    // to add a baker.
+    Empty missing_baker_add_parameters = 41;
+    // Finalization reward commission is not in the valid range for a baker.
+    Empty finalization_reward_commission_not_in_range = 42;
+    // Baking reward commission is not in the valid range for a baker.
+    Empty baking_reward_commission_not_in_range = 43;
+    // Transaction fee commission is not in the valid range for a baker.
+    Empty transaction_fee_commission_not_in_range = 44;
+    // Tried to add baker for an account that already has a delegator.
+    Empty already_a_delegator = 45;
+    // The amount on the account was insufficient to cover the proposed stake.
+    Empty insufficient_balance_for_delegation_stake = 46;
+    // A configure delegation transaction is missing one or more arguments in
+    // order to add a delegator.
+    Empty missing_delegation_add_parameters = 47;
+    // Delegation stake when adding a delegator was 0.
+    Empty insufficient_delegation_stake = 48;
+    // Account is not a delegation account.
+    Empty delegator_in_cooldown = 49;
+    // Account is not a delegation account.
+    AccountAddress not_a_delegator = 50;
+    // Delegation target is not a baker
+    BakerId delegation_target_not_a_baker = 51;
+    // The amount would result in pool capital higher than the maximum
+    // threshold.
+    Empty stake_over_maximum_threshold_for_pool = 52;
+    // The amount would result in pool with a too high fraction of delegated
+    // capital.
+    Empty pool_would_become_over_delegated = 53;
+    // The pool is not open to delegators.
+    Empty pool_closed = 54;
+  }
+}
+
+// Version of smart contract.
+enum ContractVersion {
+  V0 = 0;
+  V1 = 1;
+}
+
+
+// Data generated as part of initializing a single contract instance.
+message ContractInitializedEvent {
+  // Contract version.
+  ContractVersion contract_version = 1;
+  // Module with the source code of the contract.
+  ModuleRef origin_ref = 2;
+  // The newly assigned address of the contract.
+  ContractAddress address = 3;
+  // The amount the instance was initialized with.
+  Amount amount = 4;
+  // The name of the contract.
+  InitName init_name = 5;
+  // Any contract events that might have been genereated by the contract initialization.
+  repeated ContractEvent events = 6;
+}
+
+// An event generated by a smart contract.
+message ContractEvent {
+  bytes value = 1;
+}
+
+// Data generated as part of updating a single contract instance.
+// In general a single Update transaction will
+// generate one or more of these events, together with possibly some transfers.
+message InstanceUpdatedEvent {
+  // Contract version.
+  ContractVersion contract_version = 1;
+  // Address of the affected instance.
+  ContractAddress address = 2;
+  // The origin of the message to the smart contract. This can be
+  // either an account or a smart contract.
+  Address instigator = 3;
+  // The amount the method was invoked with.
+  Amount amount = 4;
+  // The parameter passed to the method.
+  Parameter parameter = 5;
+  // The name of the method that was executed.
+  ReceiveName receive_name = 6;
+  // Any contract events that might have been generated by the contract execution.
+  repeated ContractEvent events = 7;
+}
+
+// Effects produced by successful smart contract invocations.
+// A single invocation will produce a sequence of these effects.
+message ContractTraceElement {
+  // A contract transferred an amount to an account.
+  message Transferred {
+    // Sender contract.
+    ContractAddress sender = 1;
+    // Amount transferred.
+    Amount amount = 2;
+    // Receiver account.
+    AccountAddress receiver = 3;
+  }
+  // A contract was interrupted.
+  // This occurs when a contract invokes another contract or makes a transfer to an account.
+  message Interrupted {
+    // The contract interrupted.
+    ContractAddress address = 1;
+    // The events generated up until the interruption.
+    repeated ContractEvent events = 2;
+  }
+  // A previously interrupted contract was resumed.
+  message Resumed {
+    // The contract resumed.
+    ContractAddress address = 1;
+    // Whether the action that caused the interruption (invoke contract or make transfer) was successful or not.
+    bool success = 2;
+  }
+
+  oneof element {
+    // A contract instance was updated.
+    InstanceUpdatedEvent updated = 1;
+    // A contract transferred an amount to an account.
+    Transferred transferred = 2;
+    // A contract was interrupted.
+    // This occurs when a contract invokes another contract or makes a transfer to an account.
+    Interrupted interrupted = 3;
+    // A previously interrupted contract was resumed.
+    Resumed resumed = 4;
+  }
+}
+
+// Result of a successful change of baker keys.
+message BakerKeysEvent {
+    // ID of the baker whose keys were changed.
+    BakerId baker_id = 1;
+    // Account address of the baker.
+    AccountAddress account = 2;
+    // The new public key for verifying block signatures.
+    BakerSignatureVerifyKey sign_key = 3;
+    // The new public key for verifying whether the baker won the block
+    // lottery.
+    BakerElectionVerifyKey election_key = 4;
+    // The new public key for verifying finalization records.
+    BakerAggregationVerifyKey aggregation_key = 5;
+}
+
+// A memo which can be included as part of a transfer.
+message Memo {
+  bytes value = 1;
+}
+
+message BakerStakeUpdatedData {
+  // Affected baker.
+  BakerId baker_id = 1;
+  // New stake.
+  Amount new_stake = 2;
+  // A boolean which indicates whether it increased
+  // (`true`) or decreased (`false`).
+  bool increased = 3;
+}
+
+// Event generated when one or more encrypted amounts are consumed from the account.
+message EncryptedAmountRemovedEvent {
+  // The affected account.
+  AccountAddress account = 1;
+  // The new self encrypted amount on the affected account.
+  EncryptedAmount new_amount = 2;
+  // The input encrypted amount that was removed.
+  EncryptedAmount input_amount = 3;
+  // The index indicating which amounts were used.
+  uint64 up_to_index = 4;
+}
+
+// Event generated when an account receives a new encrypted amount.
+message NewEncryptedAmountEvent {
+    // The account onto which the amount was added.
+    AccountAddress receiver = 1;
+    // The index the amount was assigned.
+    uint64 new_index = 2;
+    // The encrypted amount that was added.
+    EncryptedAmount encrypted_amount = 3;
+}
+
+message EncryptedSelfAmountAddedEvent {
+ // The affected account.
+ AccountAddress account = 1;
+ // The new self encrypted amount of the account.
+ EncryptedAmount new_amount = 2;
+ // The amount that was transferred from public to encrypted balance.
+ Amount amount = 3;
+}
+
+// Data registered on the chain with a register data transaction.
+message RegisteredData {
+  bytes value = 1;
+}
+
+// Events that may result from the ConfigureBaker transaction.
+message BakerEvent {
+  // A baker was added.
+  message BakerAdded {
+    // The keys with which the baker registered.
+    BakerKeysEvent keys_event = 1;
+    // The amount the account staked to become a baker. This amount is
+    // locked.
+    Amount stake = 2;
+    // Whether the baker will automatically add earnings to their stake or
+    // not.
+    bool restake_earnings = 3;
+  }
+  // Baker stake increased.
+  message BakerStakeIncreased {
+    // Baker's id.
+    BakerId baker_id = 1;
+    // The new stake.
+    Amount new_stake = 2;
+  }
+  message BakerStakeDecreased {
+    // Baker's id.
+    BakerId baker_id = 1;
+    // The new stake.
+    Amount new_stake = 2;
+  }
+  message BakerRestakeEarningsUpdated {
+    // Baker's id.
+    BakerId baker_id = 1;
+    // The new value of the flag.
+    bool restake_earnings = 2;
+  }
+  // Updated open status for a baker pool.
+  message BakerSetOpenStatus {
+    // Baker's id.
+    BakerId baker_id = 1;
+    // The new open status.
+    OpenStatus open_status = 2;
+  }
+  // Updated metadata url for a baker pool.
+  message BakerSetMetadataUrl {
+    // Baker's id.
+    BakerId baker_id = 1;
+    // The URL.
+    string url = 2;
+  }
+  // Updated transaction fee commission for a baker pool.
+  message BakerSetTransactionFeeCommission {
+    // Baker's id.
+    BakerId baker_id = 1;
+    // The transaction fee commission.
+    AmountFraction transaction_fee_commission = 2;
+  }
+  // Updated baking reward commission for baker pool
+  message BakerSetBakingRewardCommission {
+    // Baker's id
+    BakerId baker_id = 1;
+    // The baking reward commission
+    AmountFraction baking_reward_commission = 2;
+  }
+  // Updated finalization reward commission for baker pool
+  message BakerSetFinalizationRewardCommission {
+    // Baker's id
+    BakerId baker_id = 1;
+    // The finalization reward commission
+    AmountFraction finalization_reward_commission = 2;
+  }
+  oneof event {
+    // A baker was added.
+    BakerAdded baker_added = 1;
+    // A baker was removed.
+    BakerId baker_removed = 2;
+    // The baker's stake was increased.
+    BakerStakeIncreased baker_stake_increased = 3;
+    // The baker's stake was decreased.
+    BakerStakeDecreased baker_stake_decreased = 4;
+    // The baker's setting for restaking earnings was updated.
+    BakerRestakeEarningsUpdated baker_restake_earnings_updated = 5;
+    // Baker keys were updated.
+    BakerKeysEvent baker_keys_updated = 6;
+    // The baker's open status was updated.
+    BakerSetOpenStatus baker_set_open_status = 7;
+    // The baker's metadata URL was updated.
+    BakerSetMetadataUrl baker_set_metadata_url = 8;
+    // The baker's transaction fee commission was updated.
+    BakerSetTransactionFeeCommission baker_set_transaction_fee_commission = 9;
+    // The baker's baking reward commission was updated.
+    BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
+    // The baker's finalization reward commission was updated.
+    BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
+  }
+}
+
+// The identifier for a delegator.
+message DelegatorId {
+  AccountIndex id = 1;
+}
+
+message DelegationEvent {
+  message DelegationStakeIncreased {
+    // Delegator's id
+    DelegatorId delegator_id = 1;
+    // New stake
+    Amount new_stake = 2;
+  }
+  message DelegationStakeDecreased {
+    // Delegator's id
+    DelegatorId delegator_id = 1;
+    // New stake
+    Amount new_stake = 2;
+  }
+  message DelegationSetRestakeEarnings {
+    // Delegator's id
+    DelegatorId delegator_id = 1;
+    // Whether earnings will be restaked
+    bool restake_earnings = 2;
+  }
+  message DelegationSetDelegationTarget {
+    // Delegator's id
+    DelegatorId delegator_id = 1;
+    // New delegation target
+    DelegationTarget delegation_target = 2;
+  }
+  oneof event {
+    // The delegator's stake increased.
+    DelegationStakeIncreased delegation_stake_increased = 1;
+    // The delegator's stake decreased.
+    DelegationStakeDecreased delegation_stake_decreased = 2;
+    // The delegator's restaking setting was updated.
+    DelegationSetRestakeEarnings delegation_set_restake_earnings = 3;
+    // The delegator's delegation target was updated.
+    DelegationSetDelegationTarget delegation_set_delegation_target = 4;
+    // A delegator was added.
+    DelegatorId delegation_added = 5;
+    // A delegator was removed.
+    DelegatorId delegation_removed = 6;
+  }
+}
+
+// Effects of an account transaction. All variants except `None`
+// correspond to a unique transaction that was successful.
+message AccountTransactionEffects {
+  // No effects other than payment from this transaction.
+  // The rejection reason indicates why the transaction failed.
+  message None {
+    // Transaction type of a failed transaction, if known.
+    // In case of serialization failure this will not be set.
+    optional TransactionType transaction_type = 1;
+    // Reason for rejection of the transaction.
+    RejectReason reject_reason = 2;
+  }
+  // A contract update transaction was issued and produced the given trace.
+  // This is the result of Update transaction.
+  message ContractUpdateIssued {
+    repeated ContractTraceElement effects = 1;
+  }
+  // A simple account to account transfer occurred. This is the result of a
+  // successful Transfer transaction.
+  message AccountTransfer {
+    // Amount that was transferred.
+    Amount amount = 1;
+    // Receiver account.
+    AccountAddress receiver = 2;
+    // Memo.
+    optional Memo memo = 3;
+  }
+  // An account was deregistered as a baker. This is the result of a
+  // successful UpdateBakerStake transaction.
+  message BakerStakeUpdated {
+    // If the stake was updated (that is, it changed and did not stay the
+    // same) then this is present, otherwise it is not present.
+    optional BakerStakeUpdatedData update = 1;
+  }
+  // An encrypted amount was transferred. This is the result of a successful
+  // EncryptedAmountTransfer transaction.
+  message EncryptedAmountTransferred {
+    EncryptedAmountRemovedEvent removed = 1;
+    NewEncryptedAmountEvent added = 2;
+    optional Memo memo = 3;
+  }
+  // An account transferred part of its encrypted balance to its public
+  // balance. This is the result of a successful TransferToPublic transaction.
+  message TransferredToPublic {
+    EncryptedAmountRemovedEvent removed = 1;
+    Amount amount = 2;
+  }
+  // A transfer with schedule was performed. This is the result of a
+  // successful TransferWithSchedule transaction.
+  message TransferredWithSchedule {
+    // Receiver account.
+    AccountAddress receiver = 1;
+    // The list of releases. Ordered by increasing timestamp.
+    repeated NewRelease amount = 2;
+    // Optional memo.
+    optional Memo memo = 3;
+  }
+  // Account's credentials were updated. This is the result of a
+  // successful UpdateCredentials transaction.
+  message CredentialsUpdated {
+    // The credential ids that were added.
+    repeated CredentialRegistrationId new_cred_ids = 1;
+    // The credentials that were removed.
+    repeated CredentialRegistrationId removed_cred_ids = 2;
+    // The (possibly) updated account threshold.
+    AccountThreshold new_threshold = 3;
+  }
+  // A baker was configured. The details of what happened are contained in
+  // the list of BakerEvents.
+  message BakerConfigured {
+    repeated BakerEvent events = 1;
+  }
+  // An account configured delegation. The details of what happened are
+  // contained in the list of DelegationEvents.
+  message DelegationConfigured {
+    repeated DelegationEvent events = 1;
+  }
+
+  oneof effect {
+    // No effects other than payment from this transaction.
+    // The rejection reason indicates why the transaction failed.
+    None none = 1;
+    // A smart contract module with the attached reference was deployed.
+    ModuleRef module_deployed = 2;
+    // A smart contract was initialized.
+    ContractInitializedEvent contract_initialized = 3;
+    // A smart contract instance updated was issued.
+    ContractUpdateIssued contract_update_issued = 4;
+    // A simple account to account transfer occurred.
+    AccountTransfer account_transfer = 5;
+    // A baker was added.
+    BakerEvent.BakerAdded baker_added = 6;
+    // A baker was removed.
+    BakerId baker_removed = 7;
+    // A baker's stake was updated.
+    BakerStakeUpdated baker_stake_updated = 8;
+    // A baker's restake earnings setting was updated.
+    BakerEvent.BakerRestakeEarningsUpdated baker_restake_earnings_updated = 9;
+    // A baker's keys were updated.
+    BakerKeysEvent baker_keys_updated = 10;
+    // An encrypted amount was transferred.
+    EncryptedAmountTransferred encrypted_amount_transferred = 11;
+    // An account transferred part of its public balance to its encrypted
+    // balance.
+    EncryptedSelfAmountAddedEvent transferred_to_encrypted = 12;
+    // An account transferred part of its encrypted balance to its public balance.
+    TransferredToPublic transferred_to_public = 13;
+    // A transfer with a release schedule was made.
+    TransferredWithSchedule transferred_with_schedule = 14;
+    // Keys of a specific credential were updated.
+    CredentialRegistrationId credential_keys_updated = 15;
+    // Account credentials were updated.
+    CredentialsUpdated credentials_updated = 16;
+    // Some data was registered on the chain.
+    RegisteredData data_registered = 17;
+    // A baker was configured. The details of what happened are contained in a list of BakerEvents.
+    BakerConfigured baker_configured = 18;
+    // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
+    DelegationConfigured delegation_configured = 19;
+  }
+}
+
+// Election difficulty parameter.
+message ElectionDifficulty {
+  AmountFraction value = 1;
+}
+
+// Represents an exchange rate.
+message ExchangeRate {
+  Ratio value = 1;
+}
+
+// Represents a ratio, i.e., 'numerator / denominator'.
+message Ratio {
+  // The numerator.
+  uint64 numerator = 1;
+  // The denominator.
+  uint64 denominator = 2;
+}
+
+// A public key used for chain updates.
+message UpdatePublicKey {
+  bytes value = 1;
+}
+
+// The threshold for how many UpdatePublicKeys are need to make a certain chain update.
+message UpdateKeysThreshold {
+  // Is ensured to be within between 1 and 2^16.
+  uint32 value = 1;
+}
+
+// Index of a key in an authorizations update payload.
+message UpdateKeysIndex {
+  uint32 value = 1;
+}
+
+// Represents root or level 1 keys.
+message HigherLevelKeys {
+  // The keys.
+  repeated UpdatePublicKey keys = 1;
+  // The number of keys needed to make a chain update.
+  UpdateKeysThreshold threshold = 2;
+}
+
+// An access structure which specifies which UpdatePublicKeys in a HigherLevelKeys that are allowed
+// to make chain update of a specific type. The threshold defines the minimum number of allowed keys needed
+// to make the actual update.
+message AccessStructure {
+  // Unique indexes into the set of keys in AuthorizationV0.
+  repeated UpdateKeysIndex access_public_keys = 1;
+  // Number of keys requred to authorize an update.
+  UpdateKeysThreshold access_threshold = 2;
+}
+
+// The set of keys authorized for chain updates, together with access structures
+// determining which keys are authorized for which update types.
+// This is the payload of an update to authorization.
+message AuthorizationsV0 {
+  // The set of keys authorized for chain updates.
+  repeated UpdatePublicKey keys = 1;
+  // New emergency keys.
+  AccessStructure emergency = 2;
+  // New protocol update keys.
+  AccessStructure protocol = 3;
+  // Access structure for updating the election difficulty.
+  AccessStructure parameter_election_difficulty = 4;
+  // Access structure for updating the euro per energy.
+  AccessStructure parameter_euro_per_energy = 5;
+  // Access structure for updating the micro CCD per euro.
+  AccessStructure parameter_micro_CCD_per_euro = 6;
+  // Access structure for updating the foundation account.
+  AccessStructure parameter_foundation_account = 7;
+  // Access structure for updating the mint distribution.
+  AccessStructure parameter_mint_distribution = 8;
+  // Access structure for updating the transaction fee distribution.
+  AccessStructure parameter_transaction_fee_distribution = 9;
+  // Access structure for updating the gas rewards.
+  AccessStructure parameter_gas_rewards = 10;
+  // Access structure for updating the pool parameters. For V0 this is only
+  // the baker stake threshold, for V1 there are more.
+  AccessStructure pool_parameters = 11;
+  // Access structure for adding new anonymity revokers.
+  AccessStructure add_anonymity_revoker = 12;
+  // Access structure for adding new identity providers.
+  AccessStructure add_identity_provider = 13;
+}
+
+// The set of keys authorized for chain updates, together with access structures
+// determining which keys are authorized for which update types.
+// This is the payload of an update to authorization.
+message AuthorizationsV1 {
+  AuthorizationsV0 v0 = 1;
+  // Access structure for updating the cooldown periods related to baking and delegation.
+  AccessStructure parameter_cooldown = 2;
+  // Access structure for updating the length of the reward period.
+  AccessStructure parameter_time = 3;
+}
+
+// Description either of an anonymity revoker or identity provider.
+// Metadata that should be visible on the chain.
+message Description {
+  // The name.
+  string name = 1;
+  // A link to more information about the anonymity revoker or identity provider.
+  string url = 2;
+  // A free form description of the revoker or provider.
+  string description = 3;
+}
+
+// Information on a single anonymity revoker help by the identity provider.
+// Typically an identity provider will hold more than one.
+message ArInfo {
+  // Identity of the anonymity revoker on the chain. This defines their
+  // evaluateion point for secret sharing, and thus it cannot be 0.
+  message ArIdentity {
+    uint32 value = 1;
+  }
+  // Public key of an anonymity revoker.
+  message ArPublicKey {
+    bytes value = 1;
+  }
+  // Unique identifier of the anonymity revoker.
+  ArIdentity identity = 1;
+  // Description of the anonymity revoker.
+  Description description = 2;
+  // Elgamal encryption key of the anonymity revoker.
+  ArPublicKey public_key = 3;
+}
+
+// A succinct identifier of an identity provider on the chain.
+// In credential deployments, and other interactions with the chain this is
+// used to identify which identity provider is meant.
+message IpIdentity {
+  uint32 value = 1;
+}
+
+// Public information about an identity provider.
+message IpInfo {
+  // Pointcheval-Sanders public key of the identity provider.
+  message IpVerifyKey {
+    bytes value = 1;
+  }
+  // Ed25519 public key of the identity provider.
+  message IpCdiVerifyKey {
+    bytes value = 1;
+  }
+  // Unique identifier of the identity provider.
+  IpIdentity identity = 1;
+  // Description of the identity provider.
+  Description description = 2;
+  // Pointcheval-Sanders public key of the identity provider.
+  IpVerifyKey verify_key = 3;
+  // Ed25519 public key of the identity provider.
+  IpCdiVerifyKey cdi_verify_key = 4;
+}
+
+// A duration in seconds.
+message DurationSeconds {
+  uint64 value = 1;
+}
+
+// Inclusive range of amount fractions.
+message InclusiveRangeAmountFraction {
+  AmountFraction min = 1;
+  AmountFraction max_ = 2;
+}
+
+// Ranges of allowed commission values that pools may choose from.
+message CommissionRanges {
+  // The range of allowed finalization commissions.
+  InclusiveRangeAmountFraction finalization = 1;
+  // The range of allowed baker commissions.
+  InclusiveRangeAmountFraction baking = 2;
+  // The range of allowed transaction commissions.
+  InclusiveRangeAmountFraction transaction = 3;
+}
+
+// A bound on the relative share of the total staked capital that a baker can
+// have as its stake. This is required to be greater than 0.
+message CapitalBound {
+  AmountFraction value = 1;
+}
+
+// A leverage factor.
+message LeverageFactor {
+  Ratio value = 1;
+}
+
+// A chain epoch.
+message Epoch {
+  uint64 value = 1;
+}
+
+// Length of a reward period in epochs.
+// Must always be a strictly positive number.
+message RewardPeriodLength {
+  Epoch value = 1;
+}
+
+// A minting rate of CCD.
+// The value is `mantissa * 10^(-exponent)`.
+message MintRate {
+  uint32 mantissa = 1;
+  // This will never exceed 255 and can thus be stored in a single byte.
+  uint32 exponent = 2;
+}
+
+// The payload of a chain update.
+message UpdatePayload {
+  message ProtocolUpdatePayload {
+    // A brief message about the update.
+    string message_ = 1;
+    // A URL of a document describing the update.
+    string specification_url = 2;
+    // SHA256 hash of the specification document.
+    Sha256Hash specificationHash = 3;
+    // Auxiliary data whose interpretation is defined by the new specification.
+    bytes specification_auxiliary_data = 4;
+  }
+  message MintDistributionUpdatePayload {
+    MintRate mint_distribution = 1;
+    AmountFraction baking_reward = 2;
+    AmountFraction finalization_reward = 3;
+  }
+  message TransactionFeeDistributionUpdatePayload {
+    // The fraction allocated to the baker.
+    AmountFraction baker = 1;
+    // The fraction allocated to the GAS account.
+    AmountFraction gas_account = 2;
+  }
+  message GasRewardsUpdatePayload {
+    // The fraction paid to the baker.
+    AmountFraction baker = 1;
+    // Fraction paid for including a finalization proof in a block.
+    AmountFraction finalization_proof = 2;
+    // Fraction paid for including each account creation transaction in a block.
+    AmountFraction account_creation = 3;
+    // Fraction paid for including an update transaction in a block.
+    AmountFraction chain_update = 4;
+  }
+  message BakerStakeThresholdUpdatePayload {
+    // Minimum threshold required for registering as a baker.
+    Amount baker_stake_threshold = 1;
+  }
+  // Root updates are the highest kind of key updates. They can update every other set of keys,
+  // even themselves. They can only be performed by Root level keys.
+  message RootUpdatePayload {
+    oneof update_type {
+      // The root keys were updated.
+      HigherLevelKeys root_keys_update = 1;
+      // The level 1 keys were updated.
+      HigherLevelKeys level_1_keys_update = 2;
+      // The level 2 keys were updated.
+      AuthorizationsV0 level_2_keys_update_v0 = 3;
+      // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
+      AuthorizationsV1 level_2_keys_update_v1 = 4;
+    }
+  }
+  // Level 1 updates are the intermediate update kind.
+  // They can update themselves or level 2 keys. They can only be performed by level 1 keys.
+  message Level1UpdatePayload {
+    oneof update_type {
+      // The level 1 keys were updated.
+      HigherLevelKeys level_1_keys_update = 1;
+      // The level 2 keys were updated.
+      AuthorizationsV0 level_2_keys_update_v0 = 2;
+      // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
+      AuthorizationsV1 level_2_keys_update_v1 = 3;
+    }
+  }
+  message CooldownParametersCpv1UpdatePayload {
+    // Number of seconds that pool owners must cooldown
+    // when reducing their equity capital or closing the pool.
+    DurationSeconds pool_owner_cooldown = 1;
+    // Number of seconds that a delegator must cooldown
+    // when reducing their delegated stake.
+    DurationSeconds delegator_cooldown = 2;
+  }
+  // Parameters related to staking pools.
+  message PoolParametersCpv1UpdatePayload {
+    // Fraction of finalization rewards charged by the passive delegation.
+    AmountFraction passive_finalization_commission = 1;
+    // Fraction of baking rewards charged by the passive delegation.
+    AmountFraction passive_baking_commission = 2;
+    // Fraction of transaction rewards charged by the L-pool.
+    AmountFraction passive_transaction_commission = 3;
+    // Bounds on the commission rates that may be charged by bakers.
+    CommissionRanges commission_bounds = 4;
+    // Minimum equity capital required for a new baker.
+    Amount minimum_equity_capital = 5;
+    // Maximum fraction of the total staked capital of that a new baker can
+    // have.
+    CapitalBound capital_bound = 6;
+    // The maximum leverage that a baker can have as a ratio of total stake
+    // to equity capital.
+    LeverageFactor leverage_bound = 7;
+  }
+  // The time parameters are introduced as of protocol version 4, and consist of
+  // the reward period length and the mint rate per payday. These are coupled as
+  // a change to either affects the overall rate of minting.
+  message TimeParametersCpv1UpdatePayload {
+    RewardPeriodLength reward_period_length = 1;
+    MintRate mint_per_payday = 2;
+  }
+  // Mint distribution payload as it looks in protocol version 4 and onward.
+  message MintDistributionCpv1UpdatePayload {
+    AmountFraction baking_reward = 1;
+    AmountFraction finalization_reward = 2;
+  }
+
+  oneof payload {
+    // The protocol version was updated.
+    ProtocolUpdatePayload protocol_update = 1;
+    // The election difficulty was updated.
+    ElectionDifficulty election_difficulty_update = 2;
+    // The euro per energy exchange rate was updated.
+    ExchangeRate euro_per_energy_update = 3;
+    // The microCCD per euro exchange rate was updated.
+    ExchangeRate micro_ccd_per_euro_update = 4;
+    // The foundation account address was updated.
+    AccountAddress foundation_account_update = 5;
+    // The mint distribution was updated.
+    MintDistributionUpdatePayload mint_distribution_update = 6;
+    // The transaction fee distribtuion was updated.
+    TransactionFeeDistributionUpdatePayload transaction_fee_distribution_update = 7;
+    // The gas rewards were updated.
+    GasRewardsUpdatePayload gas_rewards_update = 8;
+    // The minimum amount of CCD needed to be come a baker was updated.
+    BakerStakeThresholdUpdatePayload baker_stake_threshold_update = 9;
+    // The root keys were updated.
+    RootUpdatePayload root_update = 10;
+    // The level 1 keys were updated.
+    Level1UpdatePayload level_1_update = 11;
+    // An anonymity revoker was added.
+    ArInfo add_anonymity_revoker_update = 12;
+    // An identity provider was added.
+    IpInfo add_identity_provider_update = 13;
+    // The cooldown parameters were updated.
+    CooldownParametersCpv1UpdatePayload cooldown_parameters_cpv_1_update = 14;
+    // The pool parameters were updated.
+    PoolParametersCpv1UpdatePayload pool_parameters_cpv_1_update = 15;
+    // The time parameters were updated.
+    TimeParametersCpv1UpdatePayload time_parameters_cpv_1_update = 16;
+    // The mint distribution was updated.
+    MintDistributionCpv1UpdatePayload mint_distribution_cpv_1_update = 17;
+  }
+}
+
+// Details about an account transaction.
+message AccountTransactionDetails {
+  // The cost of the transaction. Paid by the sender.
+  Amount cost = 1;
+  // The sender of the transaction.
+  AccountAddress sender = 2;
+  // The effects of the transaction.
+  AccountTransactionEffects effects = 3;
+}
+
+// Details of an account creation. These transactions are free, and we only
+// ever get a response for them if the account is created, hence no failure
+// cases.
+message AccountCreationDetails {
+  // Whether this is an initial or normal account.
+  CredentialType credential_type = 1;
+  // Address of the newly created account.
+  AccountAddress address = 2;
+  // Credential registration ID of the first credential.
+  CredentialRegistrationId reg_id = 3;
+}
+
+// The type of a credential.
+enum CredentialType {
+  // An initial credential created by the identity provider.
+  CREDENTIAL_TYPE_INITIAL = 0;
+  // A normal credential type created by the account.
+  CREDENTIAL_TYPE_NORMAL = 1;
+}
+
+// Transaction time specified as seconds since unix epoch.
+message TransactionTime {
+  uint64 value = 1;
+}
+
+// Details of an update instruction. These are free, and we only ever get a
+// response for them if the update is successfully enqueued, hence no failure
+// cases.
+message UpdateDetails {
+  // The time at which the update will be effective.
+  TransactionTime effective_time = 1;
+  // The paylaod for the update.
+  UpdatePayload payload = 2;
+}
+
+// Summary of the outcome of a block item in structured form.
+// The summary determines which transaction type it was.
+message BlockItemSummary {
+  message TransactionIndex {
+    uint64 value = 1;
+  }
+
+  // Index of the transaction in the block where it is included.
+  TransactionIndex index = 1;
+  // The amount of NRG the transaction cost.
+  Energy energy_cost = 2;
+  // Hash of the transaction.
+  TransactionHash hash = 3;
+  // Details that are specific to different transaction types.
+  oneof details {
+    // Detailsa about an account transaction.
+    AccountTransactionDetails account_transaction = 4;
+    // Details about an account creation.
+    AccountCreationDetails account_creation = 5;
+    // Details about a chain update.
+    UpdateDetails update = 6;
+  }
+}
+
+// The type of chain update.
+enum UpdateType {
+    UPDATE_PROTOCOL = 0;
+    UPDATE_ELECTION_DIFFICULTY = 1;
+    UPDATE_EURO_PER_ENERGY = 2;
+    UPDATE_MICRO_GTU_PER_EURO = 3;
+    UPDATE_FOUNDATION_ACCOUNT = 4;
+    UPDATE_MINT_DISTRIBUTION = 5;
+    UPDATE_TRANSACTION_FEE_DISTRIBUTION = 6;
+    UPDATE_GAS_REWARDS = 7;
+    UPDATE_POOL_PARAMETERS = 8;
+    ADD_ANONYMITY_REVOKER = 9;
+    ADD_IDENTITY_PROVIDER = 10;
+    UPDATE_ROOT_KEYS = 11;
+    UPDATE_LEVEL1_KEYS = 12;
+    UPDATE_LEVEL2_KEYS = 13;
+    UPDATE_COOLDOWN_PARAMETERS = 14;
+    UPDATE_TIME_PARAMETERS = 15;
+}
+
+// The type of transaction.
+enum TransactionType {
+  DEPLOY_MODULE = 0;
+  INIT_CONTRACT = 1;
+  UPDATE = 2;
+  TRANSFER = 3;
+  ADD_BAKER = 4;
+  REMOVE_BAKER = 5;
+  UPDATE_BAKER_STAKE = 6;
+  UPDATE_BAKER_RESTAKE_EARNINGS = 7;
+  UPDATE_BAKER_KEYS = 8;
+  UPDATE_CREDENTIAL_KEYS = 9;
+  ENCRYPTED_AMOUNT_TRANSFER = 10;
+  TRANSFER_TO_ENCRYPTED = 11;
+  TRANSFER_TO_PUBLIC = 12;
+  TRANSFER_WITH_SCHEDULE = 13;
+  UPDATE_CREDENTIALS = 14;
+  REGISTER_DATA = 15;
+  TRANSFER_WITH_MEMO = 16;
+  ENCRYPTED_AMOUNT_TRANSFER_WITH_MEMO = 17;
+  TRANSFER_WITH_SCHEDULE_AND_MEMO = 18;
+  CONFIGURE_BAKER = 19;
+  CONFIGURE_DELEGATION = 20;
 }
 
 // The different versions of the protocol.
@@ -875,19 +1972,6 @@ message BlocksAtHeightRequest {
 message BlocksAtHeightResponse {
   // Live blocks at the given height.
   repeated BlockHash blocks = 1;
-}
-
-// A base-10 floating point number representation.
-// The value is `mantissa * 10^(-exponent)`.
-//
-// At least 6 significant figures were required by the specification,
-// and 'uint32' provides 9.  Exponent values greater than about
-// 29 will not be necessary, since such a rate will be effectively
-// 0 (when we compute the amount that is minted based on a 64-bit
-// value as the current number of CCDs.)
-message MintRate {
-  uint32 mantissa = 1;
-  uint32 exponent = 2;
 }
 
 // Type for the response of GetTokenomicsInfo.
