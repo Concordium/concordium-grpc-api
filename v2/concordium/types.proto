@@ -605,7 +605,8 @@ message InstanceStateLookupRequest {
   bytes key = 3;
 }
 
-// Value at the requested key of a smart contract instance state.
+// Value at the requested key of a smart contract instance state. For V0
+// contracts this will always be the entire state of the contract.
 message InstanceStateValueAtKey {
   bytes value = 1;
 }

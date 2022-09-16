@@ -45,7 +45,7 @@ service Queries {
   rpc GetInstanceInfo (InstanceInfoRequest) returns (InstanceInfo);
 
   // Get the exact state of a specific contract instance, streamed as a list of
-  // key-value pairs. The list is streamed in lexicographic order of keys
+  // key-value pairs. The list is streamed in lexicographic order of keys.
   rpc GetInstanceState (InstanceInfoRequest) returns (stream InstanceStateKVPair);
 
   // Get the value at a specific key of a contract state. In contrast to
