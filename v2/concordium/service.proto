@@ -79,5 +79,5 @@ service Queries {
 
   // Run the smart contract entrypoint in a given context and in the state at
   // the end of the given block.
-  rpc InvokeContract (InvokeContractRequest) returns (InvokeContractResponse);
+  rpc InvokeInstance (InvokeInstanceRequest) returns (InvokeInstanceResponse);
 }
