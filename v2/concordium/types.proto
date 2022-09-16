@@ -714,9 +714,11 @@ message CryptographicParameters {
   // A free-form string used to distinguish between different chains even if they share other parameters.
   string genesis_string = 1;
   // Generators for the bulletproofs.
+  // It is a serialized list of 256 group elements in the G1 group of the BLS12-381 curve.
   bytes bulletproof_generators = 2;
   // A shared commitment key known to the chain and the account holder (and therefore it is public).
   // The account holder uses this commitment key to generate commitments to values in the attribute list.
+  // It is a serialized pair of group elements  in the G1 group of the BLS12-381 curve.
   bytes on_chain_commitment_key = 3;
 }
 
@@ -758,8 +760,8 @@ message BlockInfo {
   StateHash state_hash = 16;
 }
 
-// Request for GetPoolStatus.
-message PoolStatusRequest {
+// Request for GetPoolInfo.
+message PoolInfoRequest {
   // Block in which to query the pool information.
   BlockHashInput block_hash = 1;
   // The 'BakerId' of the pool owner.
@@ -788,8 +790,8 @@ message PoolPendingChange {
   }
 }
 
-// Information about the status of a baker pool in the current reward period.
-message PoolCurrentPaydayStatus {
+// Information about a baker pool in the current reward period.
+message PoolCurrentPaydayInfo {
   // The number of blocks baked in the current reward period.
   uint64 blocks_baked = 1;
   // Whether the baker has contributed a finalization proof in the current reward period.
@@ -806,8 +808,9 @@ message PoolCurrentPaydayStatus {
   Amount delegated_capital = 7;
 }
 
-// Status information about a given pool.
-message PoolStatus {
+// Type for the response of GetPoolInfo.
+// Contains information about a given pool at the end of a given block.
+message PoolInfoResponse {
   // The 'BakerId' of the pool owner.
   BakerId baker = 1;
   // The account address of the pool owner.
@@ -822,14 +825,15 @@ message PoolStatus {
   BakerPoolInfo pool_info = 6;
   // Any pending change to the equity carpital.
   optional PoolPendingChange equity_pending_change = 7;
-  // Status of the pool in the current reward period.
-  optional PoolCurrentPaydayStatus current_payday_status = 8;
+  // Information of the pool in the current reward period.
+  optional PoolCurrentPaydayInfo current_payday_info = 8;
   // Total capital staked across all pools, including passive delegation.
   Amount all_pool_total_capital = 9;
 }
 
-// Status information about passive delegators.
-message PassiveDelegationStatus {
+// Type for the response of GetPassiveDelegationInfo.
+// Contains information about passive delegators at the end of a given block.
+message PassiveDelegationInfo {
   // The total capital delegated passively.
   Amount delegated_capital = 1;
   // The passive delegation commission rates.
@@ -867,6 +871,12 @@ message BlocksAtHeightRequest {
   }
 }
 
+// Response for GetBlocksAtHeight.
+message BlocksAtHeightResponse {
+  // Live blocks at the given height.
+  repeated BlockHash blocks = 1;
+}
+
 // A base-10 floating point number representation.
 // The value is `mantissa * 10^(-exponent)`.
 //
@@ -880,8 +890,9 @@ message MintRate {
   uint32 exponent = 2;
 }
 
-// The status of the tokenomics at the end of a given block.
-message TokenomicsStatus {
+// Type for the response of GetTokenomicsInfo.
+// Contains information related to tokenomics at the end of a given block.
+message TokenomicsInfo {
   // Version 0 tokenomics.
   message V0 {
     // The total CCD in existence.

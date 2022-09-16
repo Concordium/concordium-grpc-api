@@ -62,15 +62,15 @@ service Queries {
   // Get all the bakers at the end of the given block.
   rpc GetBakerList (BlockHashInput) returns (stream BakerId);
 
-  // Get status information about a given pool.
-  rpc GetPoolStatus (PoolStatusRequest) returns (PoolStatus);
+  // Get information about a given pool at the end of a given block.
+  rpc GetPoolInfo (PoolInfoRequest) returns (PoolInfoResponse);
 
-  // Get status information about the passive delegators.
-  rpc GetPassiveDelegationStatus (BlockHashInput) returns (PassiveDelegationStatus);
+  // Get information about the passive delegators at the end of a given block.
+  rpc GetPassiveDelegationInfo (BlockHashInput) returns (PassiveDelegationInfo);
 
-  // Get a stream of live blocks at a given height.
-  rpc GetBlocksAtHeight (BlocksAtHeightRequest) returns (stream BlockHash);
+  // Get a list of live blocks at a given height.
+  rpc GetBlocksAtHeight (BlocksAtHeightRequest) returns (BlocksAtHeightResponse);
 
-  // Get status of the tokenomics at the end of a given block.
-  rpc GetTokenomicsStatus (BlockHashInput) returns (TokenomicsStatus);
+  // Get information about tokenomics at the end of a given block.
+  rpc GetTokenomicsInfo (BlockHashInput) returns (TokenomicsInfo);
 }
