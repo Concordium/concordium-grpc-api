@@ -85,4 +85,8 @@ service Queries {
 
   // Get information about tokenomics at the end of a given block.
   rpc GetTokenomicsInfo (BlockHashInput) returns (TokenomicsInfo);
+
+  // Run the smart contract entrypoint in a given context and in the state at
+  // the end of the given block.
+  rpc InvokeInstance (InvokeInstanceRequest) returns (InvokeInstanceResponse);
 }
