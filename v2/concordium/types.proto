@@ -589,6 +589,28 @@ message InstanceInfo {
   }
 }
 
+// A smart contract instance key-value pair.
+message InstanceStateKVPair {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+// Request for a specific key of a smart contract instance state.
+message InstanceStateLookupRequest {
+  // The block to be used for the query.
+  BlockHashInput block_hash = 1;
+  // The address of the smart contract instance.
+  ContractAddress address = 2;
+  // Key to look up. If the instance is a V0 instance then this will not be used.
+  bytes key = 3;
+}
+
+// Value at the requested key of a smart contract instance state. For V0
+// contracts this will always be the entire state of the contract.
+message InstanceStateValueAtKey {
+  bytes value = 1;
+}
+
 // The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
 // It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
 message ReceiveName {
