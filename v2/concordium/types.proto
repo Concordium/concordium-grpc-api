@@ -2027,20 +2027,21 @@ message InvokeInstanceRequest {
   // Block to invoke the contract. The invocation will be at the end of the given block.
   BlockHashInput block_hash = 1;
   // Invoker of the contract. If this is not supplied then the contract will be
-  // invoked, by an account with address 0, no credentials and sufficient amount
-  // of CCD to cover the transfer amount. If given, the relevant address must
-  // exist in the blockstate.
+  // invoked by an account with address 0, no credentials and sufficient amount
+  // of CCD to cover the transfer amount. If given, the relevant address (either
+  // account or contract) must exist in the blockstate.
   optional Address invoker = 2;
   // Address of the contract instance to invoke.
   ContractAddress instance = 3;
-  // Amount to invoke the smart contract with.
+  // Amount to invoke the smart contract instance with.
   Amount amount = 4;
-  // The entrypoint of the smart contract to invoke.
+  // The entrypoint of the smart contract instance to invoke.
   ReceiveName entrypoint = 5;
   // The parameter bytes to include in the invocation of the entrypoint.
   Parameter parameter = 6;
-  // And what amount of energy to allow for execution. This should be small
-  // enough so that it can be converted to interpreter energy.
+  // And what amount of energy to allow for execution. This cannot exceed
+  // `100_000_000_000`, but in practice it should be much less. The maximum
+  // block energy is typically in the range of a few million.
   Energy energy = 7;
 }
 
@@ -2048,9 +2049,10 @@ message InvokeInstanceRequest {
 message InvokeInstanceResponse {
   // Contract execution failed.
   message Failure {
-    // If invoking a V0 contract this is not provided, otherwise it is potentially
-    // return value produced by the call unless the call failed with out of
-    // energy or runtime error.
+    // If invoking a V0 contract this is not provided, otherwise it is
+    // potentially return value produced by the call unless the call failed with
+    // out of energy or runtime error. If the V1 contract terminated with a
+    // logic error then the return value is present.
     optional bytes return_value = 1;
     // Energy used by the execution.
     Energy used_energy = 2;
@@ -2060,9 +2062,8 @@ message InvokeInstanceResponse {
 
   // Contract execution succeeded.
   message Success {
-    // If invoking a V0 contract this is not provided, otherwise it is potentially
-    // return value produced by the call unless the call failed with out of
-    // energy or runtime error.
+    // If invoking a V0 contract this is absent. Otherwise it is the return
+    // value produced by the contract.
     optional bytes return_value = 1;
     // Energy used by the execution.
     Energy used_energy = 2;
