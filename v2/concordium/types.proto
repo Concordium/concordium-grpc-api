@@ -272,7 +272,15 @@ message AccountStakingInfo {
 // A sequence number that determines the ordering of transactions from the
 // account. The minimum sequence number is 1.
 message SequenceNumber {
-  // The nonce
+  // The sequence number.
+  uint64 value = 1;
+}
+
+// A sequence number that determines the ordering of update transactions.
+// Equivalent to `SequenceNumber` for account transactions.
+// Update sequence numbers are per update type and the minimum value is 1.
+message UpdateSequenceNumber {
+  // The sequence number.
   uint64 value = 1;
 }
 
@@ -1796,5 +1804,99 @@ message BlockInfo {
 }
 
 message SendBlockItemRequest {
-  bytes payload = 1;
+  oneof block_item_type {
+    // Account transactions are messages which are signed and paid for by an account.
+    AccountTransaction account_transaction = 1;
+    // Credential deployments create new accounts. They are not paid for
+    // directly by the sender. Instead, bakers are rewarded by the protocol for
+    // including them.
+    CredentialDeployment credential_deployment = 2;
+    // Update instructions are messages which can update the chain parameters. Including which keys are allowed
+    // to make future update instructions.
+    UpdateInstruction update_instruction = 3;
+  }
+}
+
+// Credential deployments create new accounts. They are not paid for
+// directly by the sender. Instead, bakers are rewarded by the protocol for
+// including them.
+message CredentialDeployment {
+  TransactionTime message_expiry = 1;
+  // The credential to be added.
+  oneof payload {
+    // A raw payload, which is just the encoded payload.
+    // A typed variant might be added in the future.
+    bytes raw_payload = 2;
+  }
+}
+
+// A single signature. Used when sending block items to a node with `SendBlockItem`.
+message Signature {
+  bytes value = 1;
+}
+
+// The size of a transaction payload.
+message PayloadSize {
+  uint32 value = 1;
+}
+
+// Account transactions are messages which are signed and paid for by an account.
+message AccountTransaction {
+  // Wrapper for a map from key indexes to signatures.
+  // Needed because protobuf doesn't allow nested maps directly.
+  message SignatureMap {
+    map<uint32, Signature> signatures_for_credential = 1;
+  }
+  message TransactionSignature {
+    // A map from `CredentialIndex` to `SignatureMap`s.
+    // The type `CredentialIndex` is not used directly, as messages cannot be keys in maps.
+    map<uint32, SignatureMap> signatures = 1;
+  }
+  // Header of an account transaction that contains basic data to check whether
+  // the sender and the transaction is valid.
+  message TransactionHeader {
+    // Sender of the transaction.
+    AccountAddress sender = 1;
+    // Sequence number of the transaction.
+    SequenceNumber senquence_number = 2;
+    // Maximum amount of nergy the transaction can take to execute.
+    Energy energy_amount = 3;
+    // Size of the transaction payload. This is used to deserialize the payload.
+    // TODO: Can we avoid this field for structured payloads?
+    PayloadSize payload_size = 4;
+    // Latest time the transaction can included in a block.
+    TransactionTime expiry = 5;
+  }
+  TransactionSignature signature = 1;
+  TransactionHeader header = 2;
+  oneof payload {
+    // A raw payload, which is just the encoded payload.
+    // Is needed because not all payloads have protobuf definitions.
+    // More typed payload types might be added in the future.
+    bytes raw_payload = 4;
+    // A transfer between two accounts.
+    AccountTransactionEffects.AccountTransfer transfer = 5; // TODO: This has optional memo, ok?
+  }
+}
+
+message UpdateInstruction {
+  message UpdateInstructionSignature {
+    // A map from `UpdateKeysIndex` to `Signature`.
+    // The type `UpdateKeysIndex`is not used directly, as messages cannot be keys in maps.
+    map<uint32, Signature> signatures = 1;
+  }
+  message UpdateInstructionHeader {
+    UpdateSequenceNumber sequence_number = 1;
+    TransactionTime effective_time = 2;
+    TransactionTime timeout = 3;
+    PayloadSize payload_size = 4;
+  }
+  UpdateInstructionSignature signatures = 1;
+  UpdateInstructionHeader header = 2;
+  oneof payload {
+    // A raw payload, which is just the encoded payload.
+    // Is needed because not all payloads have protobuf definitions.
+    // More typed payload types might be added in the future.
+    bytes raw_payload = 3;
+  }
 }
