@@ -194,7 +194,7 @@ message StakePendingChange {
     // Unix timestamp in milliseconds when the change takes effect.
     Timestamp effective_time = 2;
   }
-  
+
   oneof change {
     Reduce reduce = 1;
     // Remove the stake. The value is a Unix timestamp of the effective time in
@@ -2097,4 +2097,38 @@ message InvokeInstanceResponse {
     Success success = 1;
     Failure failure = 2;
   }
+}
+
+// Request for GetPoolDelegators.
+message GetPoolDelegatorsRequest {
+  // Block in which to query the delegators.
+  BlockHashInput block_hash = 1;
+  // The 'BakerId' of the pool owner.
+  BakerId baker = 2;
+}
+
+// Request for GetPoolDelegatorsRewardPeriod.
+message GetPoolDelegatorsRewardPeriodRequest {
+  // Block in which to query the delegators.
+  BlockHashInput block_hash = 1;
+  // The 'BakerId' of the pool owner.
+  BakerId baker = 2;
+}
+
+// Stream item for GetPoolDelegators.
+message PoolDelegator {
+  // The delegator account address.
+  AccountAddress account = 1;
+  // The amount of stake currently staked to the pool.
+  Amount stake = 2;
+  // Pending change to the current stake of the delegator.
+  optional StakePendingChange pending_change = 3;
+}
+
+// Stream item for GetPoolDelegators.
+message PoolDelegatorRewardPeriod {
+  // The delegator account address.
+  AccountAddress account = 1;
+  // The amount of stake currently staked to the pool.
+  Amount stake = 2;
 }
