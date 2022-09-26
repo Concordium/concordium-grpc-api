@@ -106,4 +106,6 @@ service Queries {
   // The stream will end when all the delegators has been returned.
   rpc GetPassiveDelegatorsRewardPeriod (BlockHashInput) returns (stream PoolDelegatorRewardPeriod);
 
+  // Get the current branches of blocks starting and including from the last finalized block.
+  rpc GetBranches (Empty) returns (Branch);
 }

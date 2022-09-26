@@ -2132,3 +2132,11 @@ message PoolDelegatorRewardPeriod {
   // The amount of stake currently staked to the pool.
   Amount stake = 2;
 }
+
+// Response type for GetBranches.
+message Branch {
+  // The hash of the block.
+  BlockHash block_hash = 1;
+  // Further blocks branching of this block.
+  repeated Branch children = 2;
+}
