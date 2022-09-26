@@ -594,17 +594,20 @@ message InstanceInfo {
 
 // The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
 // It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
+// TODO: Consider changing this to entrypointname by removing the contract name prefix.
 message ReceiveName {
   string value = 1;
 }
 
 // The init name of a smart contract function. Expected format: "init_<contract_name>".
 // It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
+// TODO: Consider removing the init_ prefix.
 message InitName {
   string value = 1;
 }
 
 // Parameter to a smart contract invocation.
+// TODO: Consider renaming to ContractParameter or similar.
 message Parameter {
   bytes value = 1;
 }
@@ -1868,6 +1871,20 @@ message AccountTransactionHeader {
   TransactionTime expiry = 5;
 }
 
+message InitContractPayload {
+  Amount amount = 1;
+  ModuleRef module_ref = 2;
+  InitName init_name = 3;
+  Parameter parameter = 4;
+}
+
+message UpdateContractPayload {
+  Amount amount = 1;
+  ContractAddress address = 2;
+  ReceiveName receive_name = 3;
+  Parameter parameter = 4;
+}
+
 // Account transactions are messages which are signed and paid for by an account.
 message AccountTransaction {
   AccountTransactionSignature signature = 1;
@@ -1878,7 +1895,11 @@ message AccountTransaction {
     // More typed payload types might be added in the future.
     bytes raw_payload = 4;
     // A transfer between two accounts. With an optional memo.
-    AccountTransactionEffects.AccountTransfer transfer = 5;
+    VersionedModuleSource deploy_module = 5;
+    InitContractPayload init_contract = 6;
+    UpdateContractPayload update_contract = 7;
+    AccountTransactionEffects.AccountTransfer transfer = 8;
+    RegisteredData register_data = 9;
   }
 }
 
