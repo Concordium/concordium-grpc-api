@@ -122,4 +122,7 @@ service Queries {
 
   // Get the current branches of blocks starting from and including the last finalized block.
   rpc GetBranches (Empty) returns (Branch);
+
+  // Get information related to the baker election for a particular block.
+  rpc GetElectionInfo (BlockHashInput) returns (ElectionInfo);
 }
