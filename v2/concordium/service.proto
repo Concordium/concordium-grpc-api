@@ -59,4 +59,7 @@ service Queries {
   // Send a block item (transaction). Returns a hash of the block item, which can be used with GetBlockItemStatus.
   rpc SendBlockItem (SendBlockItemRequest) returns (TransactionHash);
 
+  // Get the hash to be signed for an account transaction.
+  // The hash returned should be signed and the signatures included as an AccountTransactionSignature when calling SendBlockItem.
+  rpc GetAccountTransactionSignHash (UnsignedAccountTransaction) returns (AccountTransactionSignHash);
 }

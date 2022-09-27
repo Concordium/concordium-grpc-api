@@ -1885,10 +1885,8 @@ message UpdateContractPayload {
   Parameter parameter = 4;
 }
 
-// Account transactions are messages which are signed and paid for by an account.
-message AccountTransaction {
-  AccountTransactionSignature signature = 1;
-  AccountTransactionHeader header = 2;
+// The payload for an account transaction.
+message AccountTransactionPayload {
   oneof payload {
     // A raw payload, which is just the encoded payload.
     // Is needed because not all payloads have protobuf definitions.
@@ -1903,6 +1901,20 @@ message AccountTransaction {
   }
 }
 
+// An unsigned account transaction.
+// This is used with the GetTransactionSignHash endpoint.
+message UnsignedAccountTransaction {
+  AccountTransactionHeader header = 1;
+  AccountTransactionPayload payload = 2;
+}
+
+// Account transactions are messages which are signed and paid for by an account.
+message AccountTransaction {
+  AccountTransactionSignature signature = 1;
+  AccountTransactionHeader header = 2;
+  AccountTransactionPayload payload = 3;
+}
+
 message UpdateInstructionSignature {
   // A map from `UpdateKeysIndex` to `Signature`.
   // The type `UpdateKeysIndex`is not used directly, as messages cannot be keys in maps.
@@ -1915,14 +1927,25 @@ message UpdateInstructionHeader {
   TransactionTime timeout = 3;
 }
 
-message UpdateInstruction {
-  // A map from `UpdateKeysIndex` to `Signature`. Keys must not exceed 2^16.
-  SignatureMap signatures = 1;
-  UpdateInstructionHeader header = 2;
+// The payload for an UpdateInstruction.
+message UpdateInstructionPayload {
   oneof payload {
     // A raw payload, which is just the encoded payload.
     // Is needed because not all payloads have protobuf definitions.
     // More typed payload types might be added in the future.
     bytes raw_payload = 3;
   }
+}
+
+message UpdateInstruction {
+  // A map from `UpdateKeysIndex` to `Signature`. Keys must not exceed 2^16.
+  SignatureMap signatures = 1;
+  UpdateInstructionHeader header = 2;
+  UpdateInstructionPayload payload = 3;
+}
+
+// A hash of an UnsignedAccountTransaction, which is signed and used in the
+// AccountTransactionSignature when sending an block item.
+message AccountTransactionSignHash {
+  bytes value = 1;
 }
