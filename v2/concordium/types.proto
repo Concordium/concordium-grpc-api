@@ -2115,8 +2115,8 @@ message GetPoolDelegatorsRewardPeriodRequest {
   BakerId baker = 2;
 }
 
-// Stream item for GetPoolDelegators.
-message PoolDelegator {
+// Stream item for GetPoolDelegators and GetPassiveDelegators.
+message DelegatorInfo {
   // The delegator account address.
   AccountAddress account = 1;
   // The amount of stake currently staked to the pool.
@@ -2125,8 +2125,8 @@ message PoolDelegator {
   optional StakePendingChange pending_change = 3;
 }
 
-// Stream item for GetPoolDelegators.
-message PoolDelegatorRewardPeriod {
+// Stream item for GetPoolDelegatorsRewardPeriod and GetPassiveDelegatorsRewardPeriod.
+message DelegatorRewardPeriodInfo {
   // The delegator account address.
   AccountAddress account = 1;
   // The amount of stake currently staked to the pool.
