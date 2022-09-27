@@ -2099,16 +2099,8 @@ message InvokeInstanceResponse {
   }
 }
 
-// Request for GetPoolDelegators.
+// Request for GetPoolDelegators and GetPoolDelegatorsRewardPeriod.
 message GetPoolDelegatorsRequest {
-  // Block in which to query the delegators.
-  BlockHashInput block_hash = 1;
-  // The 'BakerId' of the pool owner.
-  BakerId baker = 2;
-}
-
-// Request for GetPoolDelegatorsRewardPeriod.
-message GetPoolDelegatorsRewardPeriodRequest {
   // Block in which to query the delegators.
   BlockHashInput block_hash = 1;
   // The 'BakerId' of the pool owner.

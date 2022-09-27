@@ -103,7 +103,7 @@ service Queries {
   // for the given block, this endpoint returns the fixed delegators contributing
   // stake in the reward period containing the given block.
   // The stream will end when all the delegators has been returned.
-  rpc GetPoolDelegatorsRewardPeriod (GetPoolDelegatorsRewardPeriodRequest) returns (stream DelegatorRewardPeriodInfo);
+  rpc GetPoolDelegatorsRewardPeriod (GetPoolDelegatorsRequest) returns (stream DelegatorRewardPeriodInfo);
 
   // Get the registered passive delegators at the end of a given block.
   // In contrast to the `GetPassiveDelegatorsRewardPeriod` which returns delegators
@@ -120,6 +120,6 @@ service Queries {
   // The stream will end when all the delegators has been returned.
   rpc GetPassiveDelegatorsRewardPeriod (BlockHashInput) returns (stream DelegatorRewardPeriodInfo);
 
-  // Get the current branches of blocks starting and including from the last finalized block.
+  // Get the current branches of blocks starting from and including the last finalized block.
   rpc GetBranches (Empty) returns (Branch);
 }
