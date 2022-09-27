@@ -90,11 +90,14 @@ service Queries {
   // the end of the given block.
   rpc InvokeInstance (InvokeInstanceRequest) returns (InvokeInstanceResponse);
 
-  // Get the pool delegators of a given pool at the end of a given block.
+  // Get the delegators of a given pool at the end of a given block.
+  // In contrast to the `GetPoolDelegatorsRewardPeriod` which returns delegators that are fixed for the reward period
+  // of the block, this endpoint returns the list of delegators that are registered in the block. Any changes to delegators
+  // are immediately visible in this list.
   // The stream will end when all the delegators has been returned.
   rpc GetPoolDelegators (GetPoolDelegatorsRequest) returns (stream PoolDelegator);
 
-  // Get the reward period pool delegators of a given pool at the end of a given block.
+  // Get the reward period delegators of a given pool at the end of a given block.
   // The stream will end when all the delegators has been returned.
   rpc GetPoolDelegatorsRewardPeriod (GetPoolDelegatorsRewardPeriodRequest) returns (stream PoolDelegatorRewardPeriod);
 
