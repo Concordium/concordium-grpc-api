@@ -125,4 +125,8 @@ service Queries {
 
   // Get information related to the baker election for a particular block.
   rpc GetElectionInfo (BlockHashInput) returns (ElectionInfo);
+
+  // Get the identity providers registered as of the end of a given block.
+  // The stream will end when all the identity providers have been returned.
+  rpc GetIdentityProviders (BlockHashInput) returns (stream IpInfo);
 }
