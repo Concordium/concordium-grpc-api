@@ -2132,3 +2132,98 @@ message Branch {
   // Further blocks branching of this block.
   repeated Branch children = 2;
 }
+
+// ---------- Node Status ----------
+
+// Type
+enum NodeType {
+  // The node is of type `bootstrapper` and
+  // does not run the consensus protocol.
+  BOOTSTRAPPER = 1;
+  // The node is of type `Node` and
+  // runs the consensus protocol.
+  NODE = 2;
+}
+
+// The local time of the node given by
+// a unix time stamp (seconds).
+message UnixTimestamp {
+  uint64 timestamp = 1;
+}
+
+// Network related information of the node.
+message NetworkStatus {
+  // The node id.
+  string node_id = 1;
+  // Total number of packets sent by the node.
+  uint64 peer_total_sent = 2;
+  // Total number of packets received by the node.
+  uint64 peer_total_received = 3;
+  // Average outbound throughput in bytes per second.
+  uint64 avg_bps_in = 4;
+  // Average inbound throughput in bytes per second.
+  uint64 avg_bps_out = 5;
+}
+
+// The node is not running consensus.
+// This is the case only when the node is
+// not supporting the protocol on the chain.
+// The node does not process blocks.
+message ConsensusNotRunningStatus {
+  NodeInfo node_info = 1;
+}
+
+// Consensus status for a node that is
+// not configured with baker keys.
+// The node is only processing blocks.
+message PassiveConsensusStatus {
+  NodeInfo node_info = 1;
+}
+
+// Consensus status for a node configured with baker keys.
+message BakerConsensusStatus {
+  // The committee status of the node.
+  enum CommitteeStatus {
+    // The node is started with baker keys however it is currently not in the baking committee.
+    // The node is __not__ baking.
+    NOT_IN_COMMITTEE = 0;
+    // The account is registered as a baker but not in the current `Epoch`.
+    // The node is __not__ baking.
+    ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
+    // The node has configured invalid baker keys i.e., the configured
+    // baker keys do not match the current keys on the baker account.
+    // The node is __not__ baking.
+    ADDED_BUT_WRONG_KEYS = 2;
+    // The node has valid baker keys and is active in the baker committee.
+    // The node __is__ baking.
+    ACTIVE_IN_COMMITTEE = 3;
+  }
+  NodeInfo node_info = 1;
+  CommitteeStatus committee_status = 2;
+  uint64 baker_id = 3;
+  bool is_finalizer = 4;
+
+}
+
+message NodeInfo {
+  // The version of the node.
+  string peer_version = 1;
+  // The type of the node.
+  NodeType node_type = 2;
+  // local time of the node.
+  UnixTimestamp local_time = 3;
+  // Number of milliseconds that the node
+  // has been alive.
+  Duration peer_uptime = 4;
+}
+
+message NodeStatus {
+  // Information related to the p2p protocol.
+  NetworkStatus network_status = 1;
+  // Information related to the consensus protocol.
+  oneof consensus_status {
+    PassiveConsensusStatus passive_consensus_status = 3;
+    ConsensusNotRunningStatus consensus_not_running_status = 4;
+    BakerConsensusStatus baker_consensus_status = 5;
+  }
+}
