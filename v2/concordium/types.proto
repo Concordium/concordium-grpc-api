@@ -2139,10 +2139,10 @@ message Branch {
 enum NodeType {
   // The node is of type `bootstrapper` and
   // does not run the consensus protocol.
-  BOOTSTRAPPER = 1;
+  BOOTSTRAPPER = 0;
   // The node is of type `Node` and
   // runs the consensus protocol.
-  NODE = 2;
+  NODE = 1;
 }
 
 // The local time of the node given by
