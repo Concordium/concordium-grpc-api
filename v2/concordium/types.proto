@@ -2159,3 +2159,131 @@ message ElectionInfo {
   // List of the currently eligible bakers.
   repeated Baker baker_election_info = 3;
 }
+
+// Special event for a block.
+message BlockSpecialEvent {
+
+  // Represents a mapping from an account address to an amount.
+  message AccountAmounts {
+    // The entry for the map.
+    message Entry {
+      // The key type
+      AccountAddress account = 1;
+      // The value type
+      Amount amount = 2;
+    }
+
+    repeated Entry entries = 1;
+  }
+
+  // Payment to each baker of a previous epoch, in proportion to the number
+  // of blocks they contributed.
+  message BakingRewards {
+    // The amount awarded to each baker.
+    AccountAmounts baker_rewards = 1;
+    // The remaining balance of the baker reward account.
+    Amount remainder = 2;
+  }
+
+  // Minting of new GTU.
+  message Mint {
+    // The amount allocated to the banking reward account.
+    Amount mint_baking_reward = 1;
+    // The amount allocated to the finalization reward account.
+    Amount mint_finalization_reward = 2;
+    // The amount allocated as the platform development charge.
+    Amount mint_platform_development_charge = 3;
+    // The account to which the platform development charge is paid.
+    AccountAddress foundation_account = 4;
+  }
+
+  // Payment to each finalizer on inclusion of a finalization record in a block.
+  message FinalizationRewards {
+    // The amount awarded to each finalizer.
+    AccountAmounts finalization_rewards = 1;
+    // The remaining balance of the finalization reward account.
+    Amount remainder = 2;
+  }
+
+  // Disbursement of fees from a block between the GAS account,
+  // the baker, and the foundation. It should always be that:
+  //
+  // > transaction_fees + old_gas_account = new_gas_account + baker_reward + foundation_charge
+  message BlockReward {
+    // The total fees paid for transactions in the block.
+    Amount transaction_fees = 1;
+    // The old balance of the GAS account.
+    Amount old_gas_account = 2;
+    // The new balance of the GAS account.
+    Amount new_gas_account = 3;
+    // The amount awarded to the baker.
+    Amount baker_reward = 4;
+    // The amount awarded to the foundation.
+    Amount foundation_charge = 5;
+    // The baker of the block, who receives the award.
+    AccountAddress baker = 6;
+    // The foundation account.
+    AccountAddress foundation_account = 7;
+  }
+
+  // Payment for a particular account.
+  message PaydayFoundationReward {
+    // The account that got rewarded.
+    AccountAddress foundation_account = 1;
+    // The transaction fee reward at payday to the account.
+    Amount development_charge = 2;
+  }
+
+  // Payment for a particular account.
+  message PaydayAccountReward {
+    // The account that got rewarded.
+    AccountAddress account = 1;
+    // The transaction fee reward at payday to the account.
+    Amount transaction_fees = 2;
+    // The baking reward at payday to the account.
+    Amount baker_reward = 3;
+    // The finalization reward at payday to the account.
+    Amount finalization_reward = 4;
+  }
+
+  // Amounts accrued to accounts for each baked block.
+  message BlockAccrueReward {
+    // The total fees paid for transactions in the block.
+    Amount transaction_fees = 1;
+    // The old balance of the GAS account.
+    Amount old_gas_account = 2;
+    // The new balance of the GAS account.
+    Amount new_gas_account = 3;
+    // The amount awarded to the baker.
+    Amount baker_reward = 4;
+    // The amount awarded to the passive delegators.
+    Amount passive_reward = 5;
+    // The amount awarded to the foundation.
+    Amount foundation_charge = 6;
+    // The baker of the block, who will receive the award.
+    BakerId baker = 7;
+  }
+
+  // Payment distributed to a pool or passive delegators.
+  message PaydayPoolReward {
+    // The pool owner (passive delegators when 'Nothing').
+    optional BakerId pool_owner = 1;
+    // Accrued transaction fees for pool.
+    Amount transaction_fees = 2;
+    // Accrued baking rewards for pool.
+    Amount baker_reward = 3;
+    // Accrued finalization rewards for pool.
+    Amount finalization_reward = 4;
+  }
+
+  oneof event {
+    BakingRewards baking_rewards = 1;
+    Mint mint = 2;
+    FinalizationRewards finalization_rewards = 3;
+    BlockReward block_reward = 4;
+    PaydayFoundationReward payday_foundation_reward = 5;
+    PaydayAccountReward payday_account_reward = 6;
+    BlockAccrueReward block_accrue_reward = 7;
+    PaydayPoolReward payday_pool_reward = 8;
+  }
+}
