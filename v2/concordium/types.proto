@@ -21,6 +21,11 @@ message TransactionHash {
   bytes value = 1;
 }
 
+// Hash of the state after some block. This is always 32 bytes long.
+message StateHash {
+  bytes value = 1;
+}
+
 // The absolute height of a block. This is the number of ancestors of a block
 // since the genesis block. In particular, the chain genesis block has absolute
 // height 0.
@@ -189,7 +194,7 @@ message StakePendingChange {
     // Unix timestamp in milliseconds when the change takes effect.
     Timestamp effective_time = 2;
   }
-  
+
   oneof change {
     Reduce reduce = 1;
     // Remove the stake. The value is a Unix timestamp of the effective time in
@@ -592,6 +597,28 @@ message InstanceInfo {
   }
 }
 
+// A smart contract instance key-value pair.
+message InstanceStateKVPair {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+// Request for a specific key of a smart contract instance state.
+message InstanceStateLookupRequest {
+  // The block to be used for the query.
+  BlockHashInput block_hash = 1;
+  // The address of the smart contract instance.
+  ContractAddress address = 2;
+  // Key to look up. If the instance is a V0 instance then this will not be used.
+  bytes key = 3;
+}
+
+// Value at the requested key of a smart contract instance state. For V0
+// contracts this will always be the entire state of the contract.
+message InstanceStateValueAtKey {
+  bytes value = 1;
+}
+
 // The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
 // It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
 // TODO: Consider changing this to entrypointname by removing the contract name prefix.
@@ -652,6 +679,11 @@ message BlockItemSummaryInBlock {
 // Energy is used to count exact execution cost.
 // This cost is then converted to CCD amounts.
 message Energy {
+  uint64 value = 1;
+}
+
+// A number representing a slot for baking a block.
+message Slot {
   uint64 value = 1;
 }
 
@@ -1453,6 +1485,7 @@ message RewardPeriodLength {
 }
 
 // A minting rate of CCD.
+// The value is `mantissa * 10^(-exponent)`.
 message MintRate {
   uint32 mantissa = 1;
   // This will never exceed 255 and can thus be stored in a single byte.
@@ -1799,11 +1832,316 @@ message ConsensusInfo {
 }
 
 // Information about an arrived block that is part of the streaming response.
+message ArrivedBlockInfo {
+  // Hash of the block.
+  BlockHash hash = 1;
+  // Absolute height of the block, height 0 is the genesis block.
+  AbsoluteBlockHeight height = 2;
+}
+
+// The response for GetCryptographicParameters.
+message CryptographicParameters {
+  // A free-form string used to distinguish between different chains even if they share other parameters.
+  string genesis_string = 1;
+  // Generators for the bulletproofs.
+  // It is a serialized list of 256 group elements in the G1 group of the BLS12-381 curve.
+  bytes bulletproof_generators = 2;
+  // A shared commitment key known to the chain and the account holder (and therefore it is public).
+  // The account holder uses this commitment key to generate commitments to values in the attribute list.
+  // It is a serialized pair of group elements  in the G1 group of the BLS12-381 curve.
+  bytes on_chain_commitment_key = 3;
+}
+
+// The response for GetBlockInfo.
 message BlockInfo {
   // Hash of the block.
   BlockHash hash = 1;
   // Absolute height of the block, height 0 is the genesis block.
   AbsoluteBlockHeight height = 2;
+  // The parent block hash. For a re-genesis block, this will be the terminal block of the
+  // previous chain. For the initial genesis block, this will be the hash of the block itself.
+  BlockHash parent_block = 3;
+  // The last finalized block when this block was baked.
+  BlockHash last_finalized_block = 4;
+  // The genesis index for this block. This counts the number of protocol updates that have
+  // preceded this block, and defines the era of the block.
+  GenesisIndex genesis_index = 5;
+  // The height of this block relative to the (re)genesis block of its era.
+  BlockHeight era_block_height = 6;
+  // The time the block was received.
+  Timestamp receive_time = 7;
+  // The time the block was verified.
+  Timestamp arrive_time = 8;
+  // The slot number in which the block was baked.
+  Slot slot_number = 9;
+  // The time of the slot in which the block was baked.
+  Timestamp slot_time = 10;
+  // The baker id of account baking this block. Not provided for a genesis block.
+  optional BakerId baker = 11;
+  // Whether the block is finalized.
+  bool finalized = 12;
+  // The number of transactions in the block.
+  uint32 transaction_count = 13;
+  // The energy cost of the transactions in the block.
+  Energy transactions_energy_cost = 14;
+  // The total byte size of all transactions in the block.
+  uint32 transactions_size = 15;
+  // The hash of the block state after this block.
+  StateHash state_hash = 16;
+}
+
+// Request for GetPoolInfo.
+message PoolInfoRequest {
+  // Block in which to query the pool information.
+  BlockHashInput block_hash = 1;
+  // The 'BakerId' of the pool owner.
+  BakerId baker = 2;
+}
+
+// A pending change to a baker pool.
+message PoolPendingChange {
+  // A reduction in baker equity capital is pending.
+  message Reduce {
+    // New baker equity capital.
+    Amount reduced_equity_capital = 1;
+    // Timestamp when the change takes effect.
+    Timestamp effective_time = 2;
+  }
+
+  // Removal of the pool is pending.
+  message Remove {
+    // Timestamp when the change takes effect.
+    Timestamp effective_time = 1;
+  }
+
+  oneof change {
+    Reduce reduce = 1;
+    Remove remove = 2;
+  }
+}
+
+// Information about a baker pool in the current reward period.
+message PoolCurrentPaydayInfo {
+  // The number of blocks baked in the current reward period.
+  uint64 blocks_baked = 1;
+  // Whether the baker has contributed a finalization proof in the current reward period.
+  bool finalization_live = 2;
+  // The transaction fees accruing to the pool in the current reward period.
+  Amount transaction_fees_earned = 3;
+  // The effective stake of the baker in the current reward period.
+  Amount effective_stake = 4;
+  // The lottery power of the baker in the current reward period.
+  double lottery_power = 5;
+  // The effective equity capital of the baker for the current reward period.
+  Amount baker_equity_capital = 6;
+  // The effective delegated capital to the pool for the current reward period.
+  Amount delegated_capital = 7;
+}
+
+// Type for the response of GetPoolInfo.
+// Contains information about a given pool at the end of a given block.
+message PoolInfoResponse {
+  // The 'BakerId' of the pool owner.
+  BakerId baker = 1;
+  // The account address of the pool owner.
+  AccountAddress address = 2;
+  // The equity capital provided by the pool owner.
+  Amount equity_capital = 3;
+  // The capital delegated to the pool by other accounts.
+  Amount delegated_capital = 4;
+  // The maximum amount that may be delegated to the pool, accounting for leverage and stake limits.
+  Amount delegated_capital_cap = 5;
+  // The pool info associated with the pool: open status, metadata URL and commission rates.
+  BakerPoolInfo pool_info = 6;
+  // Any pending change to the equity carpital.
+  optional PoolPendingChange equity_pending_change = 7;
+  // Information of the pool in the current reward period.
+  optional PoolCurrentPaydayInfo current_payday_info = 8;
+  // Total capital staked across all pools, including passive delegation.
+  Amount all_pool_total_capital = 9;
+}
+
+// Type for the response of GetPassiveDelegationInfo.
+// Contains information about passive delegators at the end of a given block.
+message PassiveDelegationInfo {
+  // The total capital delegated passively.
+  Amount delegated_capital = 1;
+  // The passive delegation commission rates.
+  CommissionRates commission_rates = 2;
+  // The transaction fees accruing to the passive delegators in the current reward period.
+  Amount current_payday_transaction_fees_earned = 3;
+  // The effective delegated capital of passive delegators for the current reward period.
+  Amount current_payday_delegated_capital = 4;
+  // Total capital staked across all pools, including passive delegation.
+  Amount all_pool_total_capital = 5;
+}
+
+// Request for GetBlocksAtHeight.
+message BlocksAtHeightRequest {
+  // Request using an absolute block height.
+  message Absolute {
+    // The absolute block height.
+    AbsoluteBlockHeight height = 1;
+  }
+
+  // Request using a relative block height.
+  message Relative {
+    // Genesis index to start from.
+    GenesisIndex genesis_index = 1;
+    // Height starting from the genesis block at the genesis index.
+    BlockHeight height = 2;
+    // Whether to return results only from the specified genesis index (`true`),
+    // or allow results from more recent genesis indices as well (`false`).
+    bool restrict = 3;
+  }
+
+  oneof blocks_at_height {
+    Absolute absolute = 1;
+    Relative relative = 2;
+  }
+}
+
+// Response for GetBlocksAtHeight.
+message BlocksAtHeightResponse {
+  // Live blocks at the given height.
+  repeated BlockHash blocks = 1;
+}
+
+// Type for the response of GetTokenomicsInfo.
+// Contains information related to tokenomics at the end of a given block.
+message TokenomicsInfo {
+  // Version 0 tokenomics.
+  message V0 {
+    // The total CCD in existence.
+    Amount total_amount = 1;
+    // The total CCD in encrypted balances.
+    Amount total_encrypted_amount = 2;
+    // The amount in the baking reward account.
+    Amount baking_reward_account = 3;
+    // The amount in the finalization reward account.
+    Amount finalization_reward_account = 4;
+    // The amount in the GAS account.
+    Amount gas_account = 5;
+    // The protocol version.
+    ProtocolVersion protocol_version = 6;
+  }
+  // Version 1 tokenomics.
+  message V1 {
+    // The total CCD in existence.
+    Amount total_amount = 1;
+    // The total CCD in encrypted balances.
+    Amount total_encrypted_amount = 2;
+    // The amount in the baking reward account.
+    Amount baking_reward_account = 3;
+    // The amount in the finalization reward account.
+    Amount finalization_reward_account = 4;
+    // The amount in the GAS account.
+    Amount gas_account = 5;
+    // The transaction reward fraction accruing to the foundation (to be paid at next payday).
+    Amount foundation_transaction_rewards = 6;
+    // The time of the next payday.
+    Timestamp next_payday_time = 7;
+    // The rate at which CCD will be minted (as a proportion of the total supply) at the next payday.
+    MintRate next_payday_mint_rate = 8;
+    // The total capital put up as stake by bakers and delegators.
+    Amount total_staked_capital = 9;
+    // The protocol version.
+    ProtocolVersion protocol_version = 10;
+  }
+
+  oneof tokenomics {
+    V0 v0 = 1;
+    V1 v1 = 2;
+  }
+}
+
+// Request for InvokeInstance.
+message InvokeInstanceRequest {
+  // Block to invoke the contract. The invocation will be at the end of the given block.
+  BlockHashInput block_hash = 1;
+  // Invoker of the contract. If this is not supplied then the contract will be
+  // invoked by an account with address 0, no credentials and sufficient amount
+  // of CCD to cover the transfer amount. If given, the relevant address (either
+  // account or contract) must exist in the blockstate.
+  optional Address invoker = 2;
+  // Address of the contract instance to invoke.
+  ContractAddress instance = 3;
+  // Amount to invoke the smart contract instance with.
+  Amount amount = 4;
+  // The entrypoint of the smart contract instance to invoke.
+  ReceiveName entrypoint = 5;
+  // The parameter bytes to include in the invocation of the entrypoint.
+  Parameter parameter = 6;
+  // And what amount of energy to allow for execution. This cannot exceed
+  // `100_000_000_000`, but in practice it should be much less. The maximum
+  // block energy is typically in the range of a few million.
+  Energy energy = 7;
+}
+
+// Response type for InvokeInstance.
+message InvokeInstanceResponse {
+  // Contract execution failed.
+  message Failure {
+    // If invoking a V0 contract this is not provided, otherwise it is
+    // potentially return value produced by the call unless the call failed with
+    // out of energy or runtime error. If the V1 contract terminated with a
+    // logic error then the return value is present.
+    optional bytes return_value = 1;
+    // Energy used by the execution.
+    Energy used_energy = 2;
+    // Contract execution failed for the given reason.
+    RejectReason reason = 3;
+  }
+
+  // Contract execution succeeded.
+  message Success {
+    // If invoking a V0 contract this is absent. Otherwise it is the return
+    // value produced by the contract.
+    optional bytes return_value = 1;
+    // Energy used by the execution.
+    Energy used_energy = 2;
+    // Effects produced by contract execution.
+    repeated ContractTraceElement effects = 3;
+  }
+
+  oneof result {
+    Success success = 1;
+    Failure failure = 2;
+  }
+}
+
+// Request for GetPoolDelegators and GetPoolDelegatorsRewardPeriod.
+message GetPoolDelegatorsRequest {
+  // Block in which to query the delegators.
+  BlockHashInput block_hash = 1;
+  // The 'BakerId' of the pool owner.
+  BakerId baker = 2;
+}
+
+// Stream item for GetPoolDelegators and GetPassiveDelegators.
+message DelegatorInfo {
+  // The delegator account address.
+  AccountAddress account = 1;
+  // The amount of stake currently staked to the pool.
+  Amount stake = 2;
+  // Pending change to the current stake of the delegator.
+  optional StakePendingChange pending_change = 3;
+}
+
+// Stream item for GetPoolDelegatorsRewardPeriod and GetPassiveDelegatorsRewardPeriod.
+message DelegatorRewardPeriodInfo {
+  // The delegator account address.
+  AccountAddress account = 1;
+  // The amount of stake currently staked to the pool.
+  Amount stake = 2;
+}
+
+// Response type for GetBranches.
+message Branch {
+  // The hash of the block.
+  BlockHash block_hash = 1;
+  // Further blocks branching of this block.
+  repeated Branch children = 2;
 }
 
 message SendBlockItemRequest {
