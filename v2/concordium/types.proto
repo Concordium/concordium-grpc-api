@@ -2135,16 +2135,6 @@ message Branch {
 
 // ---------- Node Status ----------
 
-// Type
-enum NodeType {
-  // The node is of type `bootstrapper` and
-  // does not run the consensus protocol.
-  BOOTSTRAPPER = 0;
-  // The node is of type `Node` and
-  // runs the consensus protocol.
-  NODE = 1;
-}
-
 // The local time of the node given by
 // a unix time stamp (seconds).
 message UnixTimestamp {
@@ -2202,24 +2192,32 @@ message BakerConsensusStatus {
   CommitteeStatus committee_status = 2;
   uint64 baker_id = 3;
   bool is_finalizer = 4;
-
 }
 
 message NodeInfo {
   // The version of the node.
   string peer_version = 1;
-  // The type of the node.
-  NodeType node_type = 2;
   // local time of the node.
-  UnixTimestamp local_time = 3;
+  UnixTimestamp local_time = 2;
   // Number of milliseconds that the node
   // has been alive.
-  Duration peer_uptime = 4;
+  Duration peer_uptime = 3;
 }
 
 message NodeStatus {
+  // Type of the node.
+  enum NodeType {
+    // The node is of type `bootstrapper` and
+    // does not run the consensus protocol.
+    BOOTSTRAPPER = 0;
+    // The node is of type `Node` and
+    // runs the consensus protocol.
+    NODE = 1;
+  }
+  // The type of the node.
+  NodeType node_type = 1;
   // Information related to the p2p protocol.
-  NetworkStatus network_status = 1;
+  NetworkStatus network_status = 2;
   // Information related to the consensus protocol.
   oneof consensus_status {
     PassiveConsensusStatus passive_consensus_status = 3;
