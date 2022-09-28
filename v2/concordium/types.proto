@@ -2135,7 +2135,7 @@ message Branch {
 
 // The leadership election nonce is an unpredictable value updated once an
 // epoch to make sure that bakers cannot predict too far in the future when
-// they will win blocks.
+// they will win the right to bake blocks.
 message LeadershipElectionNonce {
   bytes value = 1;
 }
@@ -2148,7 +2148,7 @@ message ElectionInfo {
     BakerId baker = 1;
     // The account address of the baker.
     AccountAddress account = 2;
-    // The approximate lottery power of the baker.
+    // The lottery power of the baker, rounded to the nearest representable "double".
     double lottery_power = 3;
   }
 
