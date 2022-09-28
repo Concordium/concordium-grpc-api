@@ -129,4 +129,8 @@ service Queries {
   // Get the identity providers registered as of the end of a given block.
   // The stream will end when all the identity providers have been returned.
   rpc GetIdentityProviders (BlockHashInput) returns (stream IpInfo);
+
+  // Get the anonymity revokers registered as of the end of a given block.
+  // The stream will end when all the anonymity revokers have been returned.
+  rpc GetAnonymityRevokers (BlockHashInput) returns (stream ArInfo);
 }
