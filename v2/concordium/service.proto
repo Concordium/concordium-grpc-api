@@ -123,7 +123,24 @@ service Queries {
   // Get the current branches of blocks starting from and including the last finalized block.
   rpc GetBranches (Empty) returns (Branch);
 
-  // Get the information about the node.
+  // Get information related to the baker election for a particular block.
+  rpc GetElectionInfo (BlockHashInput) returns (ElectionInfo);
+
+  // Get the identity providers registered as of the end of a given block.
+  // The stream will end when all the identity providers have been returned.
+  rpc GetIdentityProviders (BlockHashInput) returns (stream IpInfo);
+
+  // Get the anonymity revokers registered as of the end of a given block.
+  // The stream will end when all the anonymity revokers have been returned.
+  rpc GetAnonymityRevokers (BlockHashInput) returns (stream ArInfo);
+
+  // Get a list of non-finalized transaction hashes for a given account.
+  // This endpoint is not expected to return a large amount of data, but is streaming
+  // for API consistency.
+  // The stream will end when all the non-finalized transaction hashes have been returned.
+  rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
+
+  // Get information about the node.
   // The `NodeInfo` includes information of
   // * Meta information such as the, version of the node, type of the node, uptime and the local time of the node.
   // * NetworkInfo which yields data such as the node id, packets sent/received,
