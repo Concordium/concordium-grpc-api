@@ -2155,23 +2155,6 @@ message NetworkStatus {
   uint64 avg_bps_out = 5;
 }
 
-// The node is not running consensus.
-// This is the case only when the node is
-// not supporting the protocol on the chain.
-// The node does not process blocks.
-message ConsensusNotRunningStatus {
-  // The basic node information.
-  NodeInfo node_info = 1;
-}
-
-// Consensus status for a node that is
-// not configured with baker keys.
-// The node is only processing blocks.
-message PassiveConsensusStatus {
-  // The basic node information.
-  NodeInfo node_info = 1;
-}
-
 // Consensus status for a node configured with baker keys.
 message BakerConsensusStatus {
 
@@ -2221,6 +2204,19 @@ message NodeStatus {
     // runs the consensus protocol.
     NODE = 1;
   }
+
+  enum NoBakerConsensusStatus {
+    // The node is not running consensus.
+    // This is the case only when the node is
+    // not supporting the protocol on the chain.
+    // The node does not process blocks.
+    NOT_RUNNING = 0;
+    // Consensus status for a node that is
+    // not configured with baker keys.
+    // The node is only processing blocks.
+    PASSIVE = 1;
+  }
+
   // The version of the node.
   string peer_version = 1;
   // The type of the node.
@@ -2234,8 +2230,7 @@ message NodeStatus {
   NetworkStatus network_status = 5;
   // Information related to the consensus protocol.
   oneof consensus_status {
-    PassiveConsensusStatus passive_consensus_status = 6;
-    ConsensusNotRunningStatus consensus_not_running_status = 7;
-    BakerConsensusStatus baker_consensus_status = 8;
+    NoBakerConsensusStatus no_baker = 6;
+    BakerConsensusStatus baker_consensus_status = 7;
   }
 }
