@@ -2142,7 +2142,7 @@ message UnixTimestamp {
 }
 
 // Network related information of the node.
-message NetworkStatus {
+message NetworkInfo {
   // The node id.
   string node_id = 1;
   // Total number of packets sent by the node.
@@ -2156,12 +2156,11 @@ message NetworkStatus {
 }
 
 // Consensus status for a node configured with baker keys.
-message BakerConsensusStatus {
-
+message BakerConsensusInfo {
   // The committee status of a node configured with 
   // baker keys but somehow the node is part of the 
   // baking committee.
-  enum PassiveCommitteeStatus {
+  enum PassiveCommitteeInfo {
     // The node is started with baker keys however it is currently not in the baking committee.
     // The node is __not__ baking.
     NOT_IN_COMMITTEE = 0;
@@ -2176,25 +2175,25 @@ message BakerConsensusStatus {
 
   // The node is configured with baker keys and 
   // is member of the baking committee.
-  message ActiveBakerCommitteeStatus {
+  message ActiveBakerCommitteeInfo {
     BakerId baker_id = 1;
   }
 
   // The node is configured with baker keys and 
   // is member of the baking and finalization committees.
-  message ActiveFinalizerCommitteeStatus {
+  message ActiveFinalizerCommitteeInfo {
     BakerId baker_id = 1;
   }
   
   // The committee status
   oneof committee_status {
-    PassiveCommitteeStatus passive_committee_status = 2;
-    ActiveBakerCommitteeStatus active_baker_committee_status = 3;
-    ActiveFinalizerCommitteeStatus active_finalizer_committee_status = 4;
+    PassiveCommitteeInfo passive_committee_status = 2;
+    ActiveBakerCommitteeInfo active_baker_committee_status = 3;
+    ActiveFinalizerCommitteeInfo active_finalizer_committee_status = 4;
   }
 }
 
-message NodeStatus {
+message NodeInfo {
   // Type of the node.
   enum NodeType {
     // The node is of type `bootstrapper` and
@@ -2205,7 +2204,8 @@ message NodeStatus {
     NODE = 1;
   }
 
-  enum NoBakerConsensusStatus {
+  // The node is not configureed with baker keys.
+  enum NoBakerConsensusInfo {
     // The node is not running consensus.
     // This is the case only when the node is
     // not supporting the protocol on the chain.
@@ -2227,10 +2227,10 @@ message NodeStatus {
   // has been alive.
   Duration peer_uptime = 4;
   // Information related to the p2p protocol.
-  NetworkStatus network_status = 5;
+  NetworkInfo network_info = 5;
   // Information related to the consensus protocol.
-  oneof consensus_status {
-    NoBakerConsensusStatus no_baker = 6;
-    BakerConsensusStatus baker_consensus_status = 7;
+  oneof consensus_info {
+    NoBakerConsensusInfo no_baker = 6;
+    BakerConsensusInfo baker_consensus_info = 7;
   }
 }
