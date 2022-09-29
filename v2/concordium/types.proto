@@ -2132,3 +2132,30 @@ message Branch {
   // Further blocks branching of this block.
   repeated Branch children = 2;
 }
+
+// The leadership election nonce is an unpredictable value updated once an
+// epoch to make sure that bakers cannot predict too far in the future when
+// they will win the right to bake blocks.
+message LeadershipElectionNonce {
+  bytes value = 1;
+}
+
+// Response type for GetElectionInfo.
+// Contains information related to baker election for a perticular block.
+message ElectionInfo {
+  message Baker {
+    // The ID of the baker.
+    BakerId baker = 1;
+    // The account address of the baker.
+    AccountAddress account = 2;
+    // The lottery power of the baker, rounded to the nearest representable "double".
+    double lottery_power = 3;
+  }
+
+  // Baking lottery election difficulty.
+  ElectionDifficulty election_difficulty = 1;
+  // Current leadership election nonce for the lottery.
+  LeadershipElectionNonce election_nonce = 2;
+  // List of the currently eligible bakers.
+  repeated Baker baker_election_info = 3;
+}
