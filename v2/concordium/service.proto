@@ -135,6 +135,8 @@ service Queries {
   rpc GetAnonymityRevokers (BlockHashInput) returns (stream ArInfo);
 
   // Get a list of non-finalized transaction hashes for a given account.
+  // This endpoint is not expected to return a large amount of data, but is streaming
+  // for API consistency.
   // The stream will end when all the non-finalized transaction hashes have been returned.
   rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
 
