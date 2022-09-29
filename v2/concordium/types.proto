@@ -2155,9 +2155,9 @@ message NetworkInfo {
   uint64 avg_bps_out = 5;
 }
 
-// Consensus status for a node configured with baker keys.
+// Consensus info for a node configured with baker keys.
 message BakerConsensusInfo {
-  // The committee status of a node configured with 
+  // The committee information of a node configured with 
   // baker keys but somehow the node is part of the 
   // baking committee.
   enum PassiveCommitteeInfo {
@@ -2185,11 +2185,11 @@ message BakerConsensusInfo {
     BakerId baker_id = 1;
   }
   
-  // The committee status
-  oneof committee_status {
-    PassiveCommitteeInfo passive_committee_status = 2;
-    ActiveBakerCommitteeInfo active_baker_committee_status = 3;
-    ActiveFinalizerCommitteeInfo active_finalizer_committee_status = 4;
+  // The committee info
+  oneof committee_info {
+    PassiveCommitteeInfo passive_committee_info = 2;
+    ActiveBakerCommitteeInfo active_baker_committee_info = 3;
+    ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
   }
 }
 
@@ -2211,9 +2211,11 @@ message NodeInfo {
     // not supporting the protocol on the chain.
     // The node does not process blocks.
     NOT_RUNNING = 0;
-    // Consensus status for a node that is
+    // Consensus info for a node that is
     // not configured with baker keys.
-    // The node is only processing blocks.
+    // The node is only processing blocks and 
+    // relaying blocks and transactions and responding to 
+    // catchup messages.
     PASSIVE = 1;
   }
 
