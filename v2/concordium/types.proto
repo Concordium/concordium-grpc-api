@@ -2159,3 +2159,63 @@ message ElectionInfo {
   // List of the currently eligible bakers.
   repeated Baker baker_election_info = 3;
 }
+
+// Peers and their assoicated network related statistics 
+message PeersInfo {    
+  // A peer that the node is connected to.
+  message Peer {
+      enum CatchupStatus {
+          // The peer does not have any data unknown to us. If we receive a message from the
+          // peer that refers to unknown data (e.g., an unknown block) the peer is marked as pending.
+          UPTODATE = 0;
+          // The peer might have some data unknown to us. A peer can be in this state either because
+          // it sent a message that refers to data unknown to us, or before we have established a baseline with it.
+          // The latter happens during node startup, as well as upon protocol updates until the initial catchup handshake
+          // completes.
+          PENDING = 1;
+          // The node is currently catching up by requesting blocks from this peer.
+          // There will be at most one peer with this status at a time.
+          // Once the peer has responded to the request, its status will be changed to:
+          // - 'UPTODATE' if the peer has no more data that is not known to us
+          // - 'PENDING' if the node has more data that is unknown to us.
+          CATCHINGUP = 2;
+      }
+      // Network statistics for the peer
+      message NetworkStats {                
+        // The number of messages sent to the peer.
+        uint64 packets_sent = 2;
+    
+        // The number of messages received from the peer.
+        uint64 packets_received = 3;
+    
+        // The connection latency (i.e., ping time) in milliseconds.
+        uint64 latency = 4;
+      }
+      // Type of the peer whether it's a 
+      // bootstrapper or a node.
+      // A bootstrapper does not participate in consensus it is only 
+      // relaying peers.
+      // A 'Node' can either be a passive or active paricipant of the consensus depending 
+      // whether it's a baker or not.
+      enum PeerType {
+          BOOTSTRAPPER = 0;
+          NODE = 1;
+      }
+
+      // The identifier of the peer that it
+      // wishes to be identified by.
+      string peer_id = 1;
+      // The type of the peer 
+      PeerType peer_type = 2;
+      // The port of the peer.
+      uint32 port = 3;
+      // The IP of the peer.
+      string ip = 4;
+      // The status of the peer. 
+      CatchupStatus catchup_status = 5;
+      // Network related statistics for the peer.
+      NetworkStats network_stats = 6;
+  }
+
+  repeated Peer peers = 1;
+}
