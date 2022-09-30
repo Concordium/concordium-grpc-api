@@ -2160,66 +2160,6 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
-// ---------- Node and Network queries ----------
-
-// The local time of the node given by
-// a unix time stamp (seconds).
-message UnixTimestamp {
-  uint64 timestamp = 1;
-}
-
-// Network related information of the node.
-message NetworkInfo {
-  // The node id.
-  string node_id = 1;
-  // Total number of packets sent by the node.
-  uint64 peer_total_sent = 2;
-  // Total number of packets received by the node.
-  uint64 peer_total_received = 3;
-  // Average outbound throughput in bytes per second.
-  uint64 avg_bps_in = 4;
-  // Average inbound throughput in bytes per second.
-  uint64 avg_bps_out = 5;
-}
-
-// Consensus info for a node configured with baker keys.
-message BakerConsensusInfo {
-  // The committee information of a node configured with 
-  // baker keys but somehow the node is part of the 
-  // baking committee.
-  enum PassiveCommitteeInfo {
-    // The node is started with baker keys however it is currently not in the baking committee.
-    // The node is __not__ baking.
-    NOT_IN_COMMITTEE = 0;
-    // The account is registered as a baker but not in the current `Epoch`.
-    // The node is __not__ baking.
-    ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
-    // The node has configured invalid baker keys i.e., the configured
-    // baker keys do not match the current keys on the baker account.
-    // The node is __not__ baking.
-    ADDED_BUT_WRONG_KEYS = 2;
-  }
-
-  // The node is configured with baker keys and 
-  // is member of the baking committee.
-  message ActiveBakerCommitteeInfo {
-    BakerId baker_id = 1;
-  }
-
-  // The node is configured with baker keys and 
-  // is member of the baking and finalization committees.
-  message ActiveFinalizerCommitteeInfo {
-    BakerId baker_id = 1;
-  }
-  
-  // The committee info
-  oneof committee_info {
-    PassiveCommitteeInfo passive_committee_info = 2;
-    ActiveBakerCommitteeInfo active_baker_committee_info = 3;
-    ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
-  }
-}
-
 message NodeInfo {
   // Type of the node.
   enum NodeType {
@@ -2246,20 +2186,72 @@ message NodeInfo {
     PASSIVE = 1;
   }
 
-  // The version of the node.
-  string peer_version = 1;
-  // The type of the node.
-  NodeType node_type = 2;
-  // local time of the node.
-  UnixTimestamp local_time = 3;
-  // Number of milliseconds that the node
-  // has been alive.
-  Duration peer_uptime = 4;
-  // Information related to the p2p protocol.
-  NetworkInfo network_info = 5;
-  // Information related to the consensus protocol.
-  oneof consensus_info {
-    NoBakerConsensusInfo no_baker = 6;
-    BakerConsensusInfo baker_consensus_info = 7;
+  // Network related information of the node.
+  message NetworkInfo {
+    // The node id.
+    string node_id = 1;
+    // Total number of packets sent by the node.
+    uint64 peer_total_sent = 2;
+    // Total number of packets received by the node.
+    uint64 peer_total_received = 3;
+    // Average outbound throughput in bytes per second.
+    uint64 avg_bps_in = 4;
+    // Average inbound throughput in bytes per second.
+    uint64 avg_bps_out = 5;
   }
+
+  // Consensus info for a node configured with baker keys.
+  message BakerConsensusInfo {
+    // The committee information of a node configured with 
+    // baker keys but somehow the node is part of the 
+    // baking committee.
+    enum PassiveCommitteeInfo {
+      // The node is started with baker keys however it is currently not in the baking committee.
+      // The node is __not__ baking.
+      NOT_IN_COMMITTEE = 0;
+      // The account is registered as a baker but not in the current `Epoch`.
+      // The node is __not__ baking.
+      ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
+      // The node has configured invalid baker keys i.e., the configured
+      // baker keys do not match the current keys on the baker account.
+      // The node is __not__ baking.
+      ADDED_BUT_WRONG_KEYS = 2;
+    }
+
+    // The node is configured with baker keys and 
+    // is member of the baking committee.
+    message ActiveBakerCommitteeInfo {
+      BakerId baker_id = 1;
+    }
+
+    // The node is configured with baker keys and 
+    // is member of the baking and finalization committees.
+    message ActiveFinalizerCommitteeInfo {
+      BakerId baker_id = 1;
+    }
+  
+    // The committee info
+    oneof committee_info {
+      PassiveCommitteeInfo passive_committee_info = 2;
+      ActiveBakerCommitteeInfo active_baker_committee_info = 3;
+      ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
+    }
+  }
+
+    // The version of the node.
+    string peer_version = 1;
+    // The type of the node.
+    NodeType node_type = 2;
+    // local time of the node.
+    Timestamp local_time = 3;
+    // Number of milliseconds that the node
+    // has been alive.
+    Duration peer_uptime = 4;
+    // Information related to the p2p protocol.
+    NetworkInfo network_info = 5;
+    // Information related to the consensus protocol.
+    oneof consensus_info {
+      NoBakerConsensusInfo no_baker = 6;
+      BakerConsensusInfo baker_consensus_info = 7;
+    }
 }
