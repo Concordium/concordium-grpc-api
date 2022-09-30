@@ -147,4 +147,11 @@ service Queries {
   // Get a list of special events in a given block.
   // The stream will end when all the special events for a given block have been returned.
   rpc GetBlockSpecialEvents (BlockHashInput) returns (stream BlockSpecialEvent);
+
+  // Get the pending updates to chain parameters at the end of a given block.
+  // The stream will end when all the pending updates for a given block have been returned.
+  rpc GetBlockPendingUpdates (BlockHashInput) returns (stream PendingUpdate);
+
+  // Get next available sequence numbers for updating chain parameters after a given block.
+  rpc GetNextUpdateSequenceNumbers (BlockHashInput) returns (NextUpdateSequenceNumbers);
 }
