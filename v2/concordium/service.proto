@@ -139,4 +139,12 @@ service Queries {
   // for API consistency.
   // The stream will end when all the non-finalized transaction hashes have been returned.
   rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
+
+   // Start dumping packages into the specified file.
+  // Only enabled if the node was built with the `network_dump` feature.
+  rpc DumpStart(DumpRequest) returns (BoolResponse) {}
+
+  // Stop dumping packages.
+  // Only enabled if the node was built with the `network_dump` feature.
+  rpc DumpStop(Empty) returns (BoolResponse) {}
 }
