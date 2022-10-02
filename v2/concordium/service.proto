@@ -144,8 +144,8 @@ service Queries {
   rpc GetBannedPeers(Empty) returns (BannedPeers) {}
 
   // Ban a the given peer.
-  rpc BanPeer(Peer) returns (BoolResponse) {}
+  rpc BanPeer(Peer) returns (BooleanResponse) {}
   
   // Unban the banned peer.
-  rpc UnbanPeer(BannedPeer) returns (BoolResponse) {}
+  rpc UnbanPeer(BannedPeer) returns (BooleanResponse) {}
 }
