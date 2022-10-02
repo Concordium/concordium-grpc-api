@@ -2159,3 +2159,41 @@ message ElectionInfo {
   // List of the currently eligible bakers.
   repeated Baker baker_election_info = 3;
 }
+
+// todo: this is obsolete after a merge with 
+// network dump pr.
+message BooleanResponse {
+  bool value = 1;
+}
+
+// A banned peer
+message BannedPeer {
+    // The IP address of the banned peer.
+    string ip_address = 1;
+}
+
+// The banned peers given by 
+// their IP addresses.
+message BannedPeers {
+  repeated BannedPeer peers = 1;
+}
+
+// An Ip address.
+message IpAddress {
+  string value = 1;
+}
+
+// A peer id.
+// todo: this type should match the 
+// one given by 'PeersInfo'.
+message PeerId {
+  string value = 1;
+}
+
+// A peer to ban
+message PeerToBan {
+  oneof peer {
+    IpAddress ip_address = 1;
+    PeerId peer_id = 2;
+  }
+}
