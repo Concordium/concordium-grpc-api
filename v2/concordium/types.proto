@@ -2144,6 +2144,33 @@ message Branch {
   repeated Branch children = 2;
 }
 
+// The leadership election nonce is an unpredictable value updated once an
+// epoch to make sure that bakers cannot predict too far in the future when
+// they will win the right to bake blocks.
+message LeadershipElectionNonce {
+  bytes value = 1;
+}
+
+// Response type for GetElectionInfo.
+// Contains information related to baker election for a perticular block.
+message ElectionInfo {
+  message Baker {
+    // The ID of the baker.
+    BakerId baker = 1;
+    // The account address of the baker.
+    AccountAddress account = 2;
+    // The lottery power of the baker, rounded to the nearest representable "double".
+    double lottery_power = 3;
+  }
+
+  // Baking lottery election difficulty.
+  ElectionDifficulty election_difficulty = 1;
+  // Current leadership election nonce for the lottery.
+  LeadershipElectionNonce election_nonce = 2;
+  // List of the currently eligible bakers.
+  repeated Baker baker_election_info = 3;
+}
+
 message SendBlockItemRequest {
   oneof block_item_type {
     // Account transactions are messages which are signed and paid for by an account.
@@ -2184,7 +2211,7 @@ message SignatureMap {
 
 // Wrapper for a map from indexes to signatures.
 // Needed because protobuf doesn't allow nested maps directly.
-  // The keys in the SignatureMap must not exceed 2^8.
+// The keys in the SignatureMap must not exceed 2^8.
 message AccountSignatureMap {
   map<uint32, Signature> signatures = 1;
 }
@@ -2197,7 +2224,7 @@ message AccountTransactionSignature {
 }
 
 // Header of an account transaction that contains basic data to check whether
-// the sender and the transaction is valid.
+// the sender and the transaction are valid. The header is shared by all transaction types.
 message AccountTransactionHeader {
   // Sender of the transaction.
   AccountAddress sender = 1;
@@ -2209,44 +2236,75 @@ message AccountTransactionHeader {
   TransactionTime expiry = 5;
 }
 
+// Data required to initialize a new contract instance.
 message InitContractPayload {
+  // Amount of CCD to send to the instance.
   Amount amount = 1;
+  // Reference to the module from which the instance will be created.
   ModuleRef module_ref = 2;
+  // Name of the contract to initialize. This is expected to be in the format
+  // `init_name`.
   InitName init_name = 3;
+  // Parameter to call the `init` of the contract with.
   Parameter parameter = 4;
 }
 
+// Data required to update a contract instance.
 message UpdateContractPayload {
+  // Amount of CCD to send to the instance.
   Amount amount = 1;
+  // Address of the instance to update.
   ContractAddress address = 2;
+  // Name of the entrypoint to call to update the instance.
+  // This is expected to be in the format `contractName.entrypointName`.
   ReceiveName receive_name = 3;
+  // Parameter to pass to the entrypoint.
   Parameter parameter = 4;
+}
+
+// Payload of a transfer between two accounts.
+message TransferPayload {
+  // Amount of CCD to send.
+  Amount amount = 1;
+  // Receiver address.
+  AccountAddress receiver = 2;
+}
+
+// Payload of a transfer between two accounts with a memo.
+message TransferWithMemoPayload {
+  // Amount of CCD to send.
+  Amount amount = 1;
+  // Receiver address.
+  AccountAddress receiver = 2;
+  // Memo to include with the transfer.
+  Memo memo = 3;
 }
 
 // The payload for an account transaction.
 message AccountTransactionPayload {
   oneof payload {
-    // A raw payload, which is just the encoded payload.
-    // Is needed because not all payloads have protobuf definitions.
-    // More typed payload types might be added in the future.
-    bytes raw_payload = 4;
+    // A pre-serialized payload in the binary serialization format defined
+    // by the protocol.
+    bytes raw_payload = 1;
     // A transfer between two accounts. With an optional memo.
-    VersionedModuleSource deploy_module = 5;
-    InitContractPayload init_contract = 6;
-    UpdateContractPayload update_contract = 7;
-    AccountTransactionEffects.AccountTransfer transfer = 8;
-    RegisteredData register_data = 9;
+    VersionedModuleSource deploy_module = 2;
+    InitContractPayload init_contract = 3;
+    UpdateContractPayload update_contract = 4;
+    TransferPayload transfer = 5;
+    TransferWithMemoPayload transfer_with_memo = 6;
+    RegisteredData register_data = 7;
   }
 }
 
-// An unsigned account transaction.
-// This is used with the GetTransactionSignHash endpoint.
-message UnsignedAccountTransaction {
+// An unsigned account transaction. This is used with the
+// `GetTransactionSignHash` endpoint to obtain the message to sign.
+message PreAccountTransaction {
   AccountTransactionHeader header = 1;
   AccountTransactionPayload payload = 2;
 }
 
-// Account transactions are messages which are signed and paid for by an account.
+// Account transactions are messages which are signed and paid for by the sender
+// account.
 message AccountTransaction {
   AccountTransactionSignature signature = 1;
   AccountTransactionHeader header = 2;
@@ -2268,9 +2326,7 @@ message UpdateInstructionHeader {
 // The payload for an UpdateInstruction.
 message UpdateInstructionPayload {
   oneof payload {
-    // A raw payload, which is just the encoded payload.
-    // Is needed because not all payloads have protobuf definitions.
-    // More typed payload types might be added in the future.
+    // A raw payload encoded according to the format defined by the protocol.
     bytes raw_payload = 3;
   }
 }
@@ -2282,8 +2338,8 @@ message UpdateInstruction {
   UpdateInstructionPayload payload = 3;
 }
 
-// A hash of an UnsignedAccountTransaction, which is signed and used in the
-// AccountTransactionSignature when sending an block item.
+// Signature on an account transaction is defined to be the signature on the
+// hash of the `PreAccountTransaction`.
 message AccountTransactionSignHash {
   bytes value = 1;
 }

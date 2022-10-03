@@ -123,10 +123,39 @@ service Queries {
   // Get the current branches of blocks starting from and including the last finalized block.
   rpc GetBranches (Empty) returns (Branch);
 
-  // Send a block item (transaction). Returns a hash of the block item, which can be used with GetBlockItemStatus.
+  // Get information related to the baker election for a particular block.
+  rpc GetElectionInfo (BlockHashInput) returns (ElectionInfo);
+
+  // Get the identity providers registered as of the end of a given block.
+  // The stream will end when all the identity providers have been returned.
+  rpc GetIdentityProviders (BlockHashInput) returns (stream IpInfo);
+
+  // Get the anonymity revokers registered as of the end of a given block.
+  // The stream will end when all the anonymity revokers have been returned.
+  rpc GetAnonymityRevokers (BlockHashInput) returns (stream ArInfo);
+
+  // Get a list of non-finalized transaction hashes for a given account. This
+  // endpoint is not expected to return a large amount of data in most cases,
+  // but in bad network condtions it might. The stream will end when all the
+  // non-finalized transaction hashes have been returned.
+  rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
+
+  // Send a block item. A block item is either an `AccountTransaction`, which is
+  // a transaction signed and paid for by an account, a `CredentialDeployment`,
+  // which creates a new account, or `UpdateInstruction`, which is an
+  // instruction to change some parameters of the chain. Update instructions can
+  // only be sent by the governance committee.
+  //
+  // Returns a hash of the block item, which can be used with
+  // `GetBlockItemStatus`.
   rpc SendBlockItem (SendBlockItemRequest) returns (TransactionHash);
 
-  // Get the hash to be signed for an account transaction.
-  // The hash returned should be signed and the signatures included as an AccountTransactionSignature when calling SendBlockItem.
-  rpc GetAccountTransactionSignHash (UnsignedAccountTransaction) returns (AccountTransactionSignHash);
+  // Get the hash to be signed for an account transaction. The hash returned
+  // should be signed and the signatures included as an
+  // AccountTransactionSignature when calling `SendBlockItem`. This is provided as
+  // a convenience to support cases where the right SDK is not available for
+  // interacting with the node. If an SDK is available then it is strongly
+  // recommended to compute this hash off-line using it. That reduces the trust
+  // in the node, removes networking failure modes, and will perform better.
+  rpc GetAccountTransactionSignHash (PreAccountTransaction) returns (AccountTransactionSignHash);
 }
