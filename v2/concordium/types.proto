@@ -2172,7 +2172,7 @@ message ElectionInfo {
 }
 
 message SendBlockItemRequest {
-  oneof block_item_type {
+  oneof block_item {
     // Account transactions are messages which are signed and paid for by an account.
     AccountTransaction account_transaction = 1;
     // Credential deployments create new accounts. They are not paid for
