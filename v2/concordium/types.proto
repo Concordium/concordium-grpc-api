@@ -2169,7 +2169,7 @@ message BooleanResponse {
 // A banned peer
 message BannedPeer {
     // The IP address of the banned peer.
-    string ip_address = 1;
+    IpAddress ip_address = 1;
 }
 
 // The banned peers given by 
