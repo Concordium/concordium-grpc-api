@@ -139,4 +139,7 @@ service Queries {
   // for API consistency.
   // The stream will end when all the non-finalized transaction hashes have been returned.
   rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
+
+    // Shut down the node.
+    rpc Shutdown(Empty) returns (BooleanResponse);
 }

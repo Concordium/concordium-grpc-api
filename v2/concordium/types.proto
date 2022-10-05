@@ -2159,3 +2159,8 @@ message ElectionInfo {
   // List of the currently eligible bakers.
   repeated Baker baker_election_info = 3;
 }
+
+// Represents a boolean value retured from the server.
+message BooleanResponse {
+  bool value = 1;
+}
