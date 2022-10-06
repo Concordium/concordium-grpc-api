@@ -2331,7 +2331,7 @@ message PendingUpdate {
     // Updates to the CCD:EUR exchange rate.
     ExchangeRate micro_ccd_per_euro = 9;
     // Updates to the foundation account.
-    AccountIndex foundation_account = 10;
+    AccountAddress foundation_account = 10;
     // Updates to the mint distribution. Is only relevant prior to protocol version 4.
     UpdatePayload.MintDistributionUpdatePayload mint_distribution_cpv_0 = 11;
     // The mint distribution was updated. Introduced in protocol version 4.
