@@ -2340,3 +2340,17 @@ message UpdateInstruction {
 message AccountTransactionSignHash {
   bytes value = 1;
 }
+
+message BlockItem {
+  oneof block_item {
+    // Account transactions are messages which are signed and paid for by an account.
+    AccountTransaction account_transaction = 1;
+    // Credential deployments create new accounts. They are not paid for
+    // directly by the sender. Instead, bakers are rewarded by the protocol for
+    // including them.
+    CredentialDeployment credential_deployment = 2;
+    // Update instructions are messages which can update the chain parameters. Including which keys are allowed
+    // to make future update instructions.
+    UpdateInstruction update_instruction = 3;
+  }
+}

@@ -160,6 +160,5 @@ service Queries {
   rpc GetAccountTransactionSignHash (PreAccountTransaction) returns (AccountTransactionSignHash);
 
   // Get the items of a block.
-  // todo: Maybe 'SendBlockItemRequest' should be renamed to simply 'BlockItem'
-  rpc GetBlockItems(BlockHashInput) returns (stream SendBlockItemRequest);
+  rpc GetBlockItems(BlockHashInput) returns (stream BlockItem);
 }
