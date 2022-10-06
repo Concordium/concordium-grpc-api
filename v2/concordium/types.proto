@@ -2223,7 +2223,7 @@ message BlockSpecialEvent {
   // Disbursement of fees from a block between the GAS account,
   // the baker, and the foundation. It should always be that:
   //
-  // > transaction_fees + old_gas_account = new_gas_account + baker_reward + foundation_charge
+  // ```transaction_fees + old_gas_account = new_gas_account + baker_reward + foundation_charge```
   message BlockReward {
     // The total fees paid for transactions in the block.
     Amount transaction_fees = 1;
@@ -2241,7 +2241,7 @@ message BlockSpecialEvent {
     AccountAddress foundation_account = 7;
   }
 
-  // Payment for a particular account.
+  // Foundation tax.
   message PaydayFoundationReward {
     // The account that got rewarded.
     AccountAddress foundation_account = 1;
@@ -2249,7 +2249,7 @@ message BlockSpecialEvent {
     Amount development_charge = 2;
   }
 
-  // Payment for a particular account.
+  // Reward payment to the given account.
   message PaydayAccountReward {
     // The account that got rewarded.
     AccountAddress account = 1;
@@ -2281,7 +2281,7 @@ message BlockSpecialEvent {
 
   // Payment distributed to a pool or passive delegators.
   message PaydayPoolReward {
-    // The pool owner (passive delegators when 'Nothing').
+    // The pool owner (passive delegators when not present).
     optional BakerId pool_owner = 1;
     // Accrued transaction fees for pool.
     Amount transaction_fees = 2;
@@ -2350,7 +2350,7 @@ message PendingUpdate {
   }
 }
 
-// The response for GetNextUpdateSequenceNumbers.
+// The response for `GetNextUpdateSequenceNumbers`.
 message NextUpdateSequenceNumbers {
   // Updates to the root keys.
   SequenceNumber root_keys = 1;
@@ -2386,6 +2386,7 @@ message NextUpdateSequenceNumbers {
   SequenceNumber time_parameters = 16;
 }
 
+// A request to send a new block item to the chain.
 message SendBlockItemRequest {
   oneof block_item {
     // Account transactions are messages which are signed and paid for by an account.
@@ -2413,7 +2414,8 @@ message CredentialDeployment {
   }
 }
 
-// A single signature. Used when sending block items to a node with `SendBlockItem`.
+// A single signature. Used when sending block items to a node with
+// `SendBlockItem`.
 message Signature {
   bytes value = 1;
 }
