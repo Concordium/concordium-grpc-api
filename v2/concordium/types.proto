@@ -619,14 +619,17 @@ message InstanceStateValueAtKey {
   bytes value = 1;
 }
 
-// The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
-// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
+// The receive name of a smart contract function. Expected format:
+// `<contract_name>.<func_name>`. It must only consist of atmost 100 ASCII
+// alphanumeric or punctuation characters, and must contain a '.'.
 message ReceiveName {
   string value = 1;
 }
 
-// The init name of a smart contract function. Expected format: "init_<contract_name>".
-// It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
+// The init name of a smart contract function. Expected format:
+// `init_<contract_name>`. It must only consist of atmost 100 ASCII alphanumeric
+// or punctuation characters, must not contain a '.' and must start with
+// 'init_'.
 message InitName {
   string value = 1;
 }
@@ -1501,16 +1504,18 @@ message UpdatePayload {
     // Auxiliary data whose interpretation is defined by the new specification.
     bytes specification_auxiliary_data = 4;
   }
-  // The minting rate and the distribution of newly-minted GTU
-  // among bakers, finalizers, and the foundation account.
-  // It must be the case that baking_reward + finalization_reward <= 1.
-  // The remaining amount is the platform development charge.
+  // The minting rate and the distribution of newly-minted CCD among bakers,
+  // finalizers, and the foundation account. It must be the case that
+  // baking_reward + finalization_reward <= 1. The remaining amount is the
+  // platform development charge.
   message MintDistributionUpdatePayload {
-    // Mint rate per slot.
+    // Mint rate. The meaning is protocol dependent. In protocol version 1-3
+    // this is the mint rate per slot. In protocol version 4 this is the mint
+    // rate per payday.
     MintRate mint_distribution = 1;
-    // The fraction allocated to baker rewards.
+    // The fraction of newly created CCD allocated to baker rewards.
     AmountFraction baking_reward = 2;
-    // The fraction allocated to finalization rewards.
+    // The fraction of newly created CCD allocated to finalization rewards.
     AmountFraction finalization_reward = 3;
   }
   message TransactionFeeDistributionUpdatePayload {
@@ -1711,7 +1716,7 @@ enum UpdateType {
     UPDATE_PROTOCOL = 0;
     UPDATE_ELECTION_DIFFICULTY = 1;
     UPDATE_EURO_PER_ENERGY = 2;
-    UPDATE_MICRO_GTU_PER_EURO = 3;
+    UPDATE_MICRO_CCD_PER_EURO = 3;
     UPDATE_FOUNDATION_ACCOUNT = 4;
     UPDATE_MINT_DISTRIBUTION = 5;
     UPDATE_TRANSACTION_FEE_DISTRIBUTION = 6;
@@ -2175,10 +2180,10 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
-// Special event for a block.
+// A protocol generated event that is not directly caused by a transaction. This
+// includes minting new CCD, rewarding different bakers and delegators, etc.
 message BlockSpecialEvent {
-
-  // Represents a mapping from an account address to an amount.
+  // A representation of a mapping from an account address to an amount.
   message AccountAmounts {
     // The entry for the map.
     message Entry {
@@ -2200,7 +2205,7 @@ message BlockSpecialEvent {
     Amount remainder = 2;
   }
 
-  // Minting of new GTU.
+  // Minting of new CCD.
   message Mint {
     // The amount allocated to the banking reward account.
     Amount mint_baking_reward = 1;
