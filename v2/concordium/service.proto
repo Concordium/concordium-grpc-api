@@ -158,4 +158,8 @@ service Queries {
   // recommended to compute this hash off-line using it. That reduces the trust
   // in the node, removes networking failure modes, and will perform better.
   rpc GetAccountTransactionSignHash (PreAccountTransaction) returns (AccountTransactionSignHash);
+
+  // Get the transactions of a block.
+  // todo: Maybe 'SendBlockItemRequest' should be renamed to simply 'BlockItem'
+  rpc GetBlockTransactions(BlockHashInput) returns (stream SendBlockItemRequest);
 }
