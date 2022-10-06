@@ -621,20 +621,17 @@ message InstanceStateValueAtKey {
 
 // The receive name of a smart contract function. Expected format: "<contract_name>.<func_name>".
 // It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, and must contain a '.'.
-// TODO: Consider changing this to entrypointname by removing the contract name prefix.
 message ReceiveName {
   string value = 1;
 }
 
 // The init name of a smart contract function. Expected format: "init_<contract_name>".
 // It must only consist of atmost 100 ASCII alphanumeric or punctuation characters, must not contain a '.' and must start with 'init_'.
-// TODO: Consider removing the init_ prefix.
 message InitName {
   string value = 1;
 }
 
-// Parameter to a smart contract invocation.
-// TODO: Consider renaming to ContractParameter or similar.
+// Parameter to a smart contract initialization or invocation.
 message Parameter {
   bytes value = 1;
 }
