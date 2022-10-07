@@ -2160,36 +2160,19 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
+// Node info response
+// Contains various information of the
+// enquired node.
 message NodeInfo {
-  // Type of the node.
-  enum NodeType {
-    // The node is of type `bootstrapper` and
-    // does not run the consensus protocol.
-    BOOTSTRAPPER = 0;
-    // The node is of type `Node` and
-    // runs the consensus protocol.
-    NODE = 1;
-  }
-
-  // The node is not configureed with baker keys.
-  enum NoBakerConsensusInfo {
-    // The node is not running consensus.
-    // This is the case only when the node is
-    // not supporting the protocol on the chain.
-    // The node does not process blocks.
-    NOT_RUNNING = 0;
-    // Consensus info for a node that is
-    // not configured with baker keys.
-    // The node is only processing blocks and 
-    // relaying blocks and transactions and responding to 
-    // catchup messages.
-    PASSIVE = 1;
+  // Identifier of a node.
+  message PeerId {
+    string value = 1;
   }
 
   // Network related information of the node.
-  message NetworkInfo {
+  message NetworkInfo {   
     // The node id.
-    string node_id = 1;
+    PeerId node_id = 1;
     // Total number of packets sent by the node.
     uint64 peer_total_sent = 2;
     // Total number of packets received by the node.
@@ -2230,28 +2213,51 @@ message NodeInfo {
       BakerId baker_id = 1;
     }
   
-    // The committee info
-    oneof committee_info {
+    // Status of the baker configured node.
+    oneof status {
+      // The node is currently not baking.
       PassiveCommitteeInfo passive_committee_info = 2;
+      // The node is an active member of the baker committee.
       ActiveBakerCommitteeInfo active_baker_committee_info = 3;
+      // The node is an active member of the baker and finalizer committee.
       ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
     }
   }
 
-    // The version of the node.
-    string peer_version = 1;
-    // The type of the node.
-    NodeType node_type = 2;
-    // local time of the node.
-    Timestamp local_time = 3;
-    // Number of milliseconds that the node
-    // has been alive.
-    Duration peer_uptime = 4;
-    // Information related to the p2p protocol.
-    NetworkInfo network_info = 5;
-    // Information related to the consensus protocol.
-    oneof consensus_info {
-      NoBakerConsensusInfo no_baker = 6;
-      BakerConsensusInfo baker_consensus_info = 7;
+  // The node is a regular node.
+  message Node {
+    oneof consensus_status {
+      // The node is not running consensus.
+      // This is the case only when the node is
+      // not supporting the protocol on the chain.
+      // The node does not process blocks.
+      Empty not_running = 1;
+      // Consensus info for a node that is
+      // not configured with baker keys.
+      // The node is only processing blocks and 
+      // relaying blocks and transactions and responding to 
+      // catchup messages.
+      Empty passive = 2;
+      // The node is configured with baker credentials and consensus is running.    
+      BakerConsensusInfo active = 3;
     }
+  }
+
+  // The version of the node.
+  string peer_version = 1;
+  // local time of the node.
+  Timestamp local_time = 3;
+  // Number of milliseconds that the node
+  // has been alive.
+  Duration peer_uptime = 4;
+  // Information related to the p2p protocol.
+  NetworkInfo network_info = 5;
+  // Details of the node.
+  oneof details {
+    // The node is a bootstrapper and is not running consensus.
+    Empty bootstrapper = 6;
+    // The node is a regular node and runs the consensus 
+    // protocol.
+    Node node = 7;
+  }    
 }
