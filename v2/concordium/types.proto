@@ -277,7 +277,15 @@ message AccountStakingInfo {
 // A sequence number that determines the ordering of transactions from the
 // account. The minimum sequence number is 1.
 message SequenceNumber {
-  // The nonce
+  // The sequence number.
+  uint64 value = 1;
+}
+
+// A sequence number that determines the ordering of update transactions.
+// Equivalent to `SequenceNumber` for account transactions.
+// Update sequence numbers are per update type and the minimum value is 1.
+message UpdateSequenceNumber {
+  // The sequence number.
   uint64 value = 1;
 }
 
@@ -623,7 +631,7 @@ message InitName {
   string value = 1;
 }
 
-// Parameter to a smart contract invocation.
+// Parameter to a smart contract initialization or invocation.
 message Parameter {
   bytes value = 1;
 }
@@ -964,7 +972,7 @@ message BakerKeysEvent {
     BakerAggregationVerifyKey aggregation_key = 5;
 }
 
-// A memo which can be included as part of a transfer.
+// A memo which can be included as part of a transfer. Max size is 256 bytes.
 message Memo {
   bytes value = 1;
 }
@@ -2357,4 +2365,175 @@ message NodeInfo {
     // protocol.
     Node node = 7;
   }    
+message SendBlockItemRequest {
+  oneof block_item {
+    // Account transactions are messages which are signed and paid for by an account.
+    AccountTransaction account_transaction = 1;
+    // Credential deployments create new accounts. They are not paid for
+    // directly by the sender. Instead, bakers are rewarded by the protocol for
+    // including them.
+    CredentialDeployment credential_deployment = 2;
+    // Update instructions are messages which can update the chain parameters. Including which keys are allowed
+    // to make future update instructions.
+    UpdateInstruction update_instruction = 3;
+  }
+}
+
+// Credential deployments create new accounts. They are not paid for
+// directly by the sender. Instead, bakers are rewarded by the protocol for
+// including them.
+message CredentialDeployment {
+  TransactionTime message_expiry = 1;
+  // The credential to be added.
+  oneof payload {
+    // A raw payload, which is just the encoded payload.
+    // A typed variant might be added in the future.
+    bytes raw_payload = 2;
+  }
+}
+
+// A single signature. Used when sending block items to a node with `SendBlockItem`.
+message Signature {
+  bytes value = 1;
+}
+
+// Wrapper for a map from indexes to signatures.
+// Needed because protobuf doesn't allow nested maps directly.
+message SignatureMap {
+  map<uint32, Signature> signatures = 1;
+}
+
+// Wrapper for a map from indexes to signatures.
+// Needed because protobuf doesn't allow nested maps directly.
+// The keys in the SignatureMap must not exceed 2^8.
+message AccountSignatureMap {
+  map<uint32, Signature> signatures = 1;
+}
+
+message AccountTransactionSignature {
+  // A map from `CredentialIndex` to `SignatureMap`s.
+  // The type `CredentialIndex` is not used directly, as messages cannot be keys in maps.
+  // The map cannot contain more than 2^8 signatures.
+  map<uint32, AccountSignatureMap> signatures = 1;
+}
+
+// Header of an account transaction that contains basic data to check whether
+// the sender and the transaction are valid. The header is shared by all transaction types.
+message AccountTransactionHeader {
+  // Sender of the transaction.
+  AccountAddress sender = 1;
+  // Sequence number of the transaction.
+  SequenceNumber sequence_number = 2;
+  // Maximum amount of nergy the transaction can take to execute.
+  Energy energy_amount = 3;
+  // Latest time the transaction can included in a block.
+  TransactionTime expiry = 5;
+}
+
+// Data required to initialize a new contract instance.
+message InitContractPayload {
+  // Amount of CCD to send to the instance.
+  Amount amount = 1;
+  // Reference to the module from which the instance will be created.
+  ModuleRef module_ref = 2;
+  // Name of the contract to initialize. This is expected to be in the format
+  // `init_name`.
+  InitName init_name = 3;
+  // Parameter to call the `init` of the contract with.
+  Parameter parameter = 4;
+}
+
+// Data required to update a contract instance.
+message UpdateContractPayload {
+  // Amount of CCD to send to the instance.
+  Amount amount = 1;
+  // Address of the instance to update.
+  ContractAddress address = 2;
+  // Name of the entrypoint to call to update the instance.
+  // This is expected to be in the format `contractName.entrypointName`.
+  ReceiveName receive_name = 3;
+  // Parameter to pass to the entrypoint.
+  Parameter parameter = 4;
+}
+
+// Payload of a transfer between two accounts.
+message TransferPayload {
+  // Amount of CCD to send.
+  Amount amount = 1;
+  // Receiver address.
+  AccountAddress receiver = 2;
+}
+
+// Payload of a transfer between two accounts with a memo.
+message TransferWithMemoPayload {
+  // Amount of CCD to send.
+  Amount amount = 1;
+  // Receiver address.
+  AccountAddress receiver = 2;
+  // Memo to include with the transfer.
+  Memo memo = 3;
+}
+
+// The payload for an account transaction.
+message AccountTransactionPayload {
+  oneof payload {
+    // A pre-serialized payload in the binary serialization format defined
+    // by the protocol.
+    bytes raw_payload = 1;
+    // A transfer between two accounts. With an optional memo.
+    VersionedModuleSource deploy_module = 2;
+    InitContractPayload init_contract = 3;
+    UpdateContractPayload update_contract = 4;
+    TransferPayload transfer = 5;
+    TransferWithMemoPayload transfer_with_memo = 6;
+    RegisteredData register_data = 7;
+  }
+}
+
+// An unsigned account transaction. This is used with the
+// `GetTransactionSignHash` endpoint to obtain the message to sign.
+message PreAccountTransaction {
+  AccountTransactionHeader header = 1;
+  AccountTransactionPayload payload = 2;
+}
+
+// Account transactions are messages which are signed and paid for by the sender
+// account.
+message AccountTransaction {
+  AccountTransactionSignature signature = 1;
+  AccountTransactionHeader header = 2;
+  AccountTransactionPayload payload = 3;
+}
+
+message UpdateInstructionSignature {
+  // A map from `UpdateKeysIndex` to `Signature`.
+  // The type `UpdateKeysIndex`is not used directly, as messages cannot be keys in maps.
+  map<uint32, Signature> signatures = 1;
+}
+
+message UpdateInstructionHeader {
+  UpdateSequenceNumber sequence_number = 1;
+  TransactionTime effective_time = 2;
+  TransactionTime timeout = 3;
+}
+
+// The payload for an UpdateInstruction.
+message UpdateInstructionPayload {
+  oneof payload {
+    // A raw payload encoded according to the format defined by the protocol.
+    bytes raw_payload = 3;
+  }
+}
+
+message UpdateInstruction {
+  // A map from `UpdateKeysIndex` to `Signature`. Keys must not exceed 2^16.
+  SignatureMap signatures = 1;
+  UpdateInstructionHeader header = 2;
+  UpdateInstructionPayload payload = 3;
+}
+
+// Signature on an account transaction is defined to be the signature on the
+// hash of the `PreAccountTransaction`.
+message AccountTransactionSignHash {
+  bytes value = 1;
 }
