@@ -140,6 +140,16 @@ service Queries {
   // The stream will end when all the non-finalized transaction hashes have been returned.
   rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
 
+  // Suggest to a peer to connect to the submitted peer details.
+  // This, if successful, adds the peer to the list of given addresses.
+  // Otherwise return a GRPC error.
+  rpc PeerConnect (IpSocketAddress) returns (Empty);
+
+  // Disconnect from the peer and remove them from the given addresses list
+  // if they are on it. Return if the request was processed successfully.
+  // Otherwise return a GRPC error.
+  rpc PeerDisconnect (IpSocketAddress) returns (Empty);
+  
   // Get a list of banned peers.
   rpc GetBannedPeers(Empty) returns (BannedPeers);
 
