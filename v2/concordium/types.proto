@@ -2160,7 +2160,29 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
-// Peers and their assoicated network related statistics 
+// An IP address
+message IpAddress {
+  string value = 1;
+}
+
+// A port
+message Port {
+  uint32 value = 1;
+}
+
+// A socket address consisting of 
+// an IP + port.
+message IpSocketAddress {
+  IpAddress ip = 1;
+  Port port = 2;
+}
+
+// A peer id
+message PeerId {
+  string value = 1;
+}
+
+// Peers and their associated network related statistics 
 message PeersInfo {    
   // A peer that the node is connected to.
   message Peer {
@@ -2191,30 +2213,23 @@ message PeersInfo {
         // The connection latency (i.e., ping time) in milliseconds.
         uint64 latency = 4;
       }
-      // Type of the peer whether it's a 
-      // bootstrapper or a node.
-      // A bootstrapper does not participate in consensus it is only 
-      // relaying peers.
-      // A 'Node' can either be a passive or active paricipant of the consensus depending 
-      // whether it's a baker or not.
-      enum PeerType {
-          BOOTSTRAPPER = 0;
-          NODE = 1;
-      }
 
       // The identifier of the peer that it
       // wishes to be identified by.
-      string peer_id = 1;
-      // The type of the peer 
-      PeerType peer_type = 2;
+      PeerId peer_id = 1;
       // The port of the peer.
-      uint32 port = 3;
-      // The IP of the peer.
-      string ip = 4;
-      // The status of the peer. 
-      CatchupStatus catchup_status = 5;
+      IpSocketAddress socket_address = 2;
       // Network related statistics for the peer.
-      NetworkStats network_stats = 6;
+      NetworkStats network_stats = 3;
+      // catchup status of the peer.
+      oneof catchup_status {
+        // The peer is of type `Bootstrapper` is not participating in consensus 
+        // and thus has no catchup status.
+        Empty bootstrapper = 4;
+        // The peer is a regular node and have 
+        // an associated catchup status.
+        CatchupStatus node_catchup_status = 5;
+      }
   }
 
   repeated Peer peers = 1;
