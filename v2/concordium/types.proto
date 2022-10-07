@@ -2160,6 +2160,16 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
+// Request to enable dumping of network packages.
+message DumpRequest {
+  // Which file to dump the packages into.
+  // Requires a valid path. 
+  string file = 1;
+
+  // Whether the node should dump raw packages.
+  bool raw = 2;
+}
+
 // An IP address
 message IpAddress {
   string value = 1;

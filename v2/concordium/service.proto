@@ -140,6 +140,16 @@ service Queries {
   // The stream will end when all the non-finalized transaction hashes have been returned.
   rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
 
+  // Start dumping packages into the specified file.
+  // Only enabled if the node was built with the `network_dump` feature.
+  // Returns a GRPC error if the network dump failed to start.
+  rpc DumpStart(DumpRequest) returns (Empty);
+
+  // Stop dumping packages.
+  // Only enabled if the node was built with the `network_dump` feature.
+  // Returns a GRPC error if the network dump failed to be stopped.
+  rpc DumpStop(Empty) returns (Empty);
+
   /// Get a list of the peers that the node is connected to 
   /// and assoicated network related information for each peer.
   rpc GetPeersInfo(Empty) returns (PeersInfo);
