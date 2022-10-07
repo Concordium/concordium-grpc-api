@@ -2221,8 +2221,8 @@ message PeersInfo {
       IpSocketAddress socket_address = 2;
       // Network related statistics for the peer.
       NetworkStats network_stats = 3;
-      // catchup status of the peer.
-      oneof catchup_status {
+      // consensus related information of the peer.
+      oneof consensus_info {
         // The peer is of type `Bootstrapper` is not participating in consensus 
         // and thus has no catchup status.
         Empty bootstrapper = 4;
