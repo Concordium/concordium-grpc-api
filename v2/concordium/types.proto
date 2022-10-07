@@ -1508,11 +1508,9 @@ message UpdatePayload {
   // finalizers, and the foundation account. It must be the case that
   // baking_reward + finalization_reward <= 1. The remaining amount is the
   // platform development charge.
-  message MintDistributionUpdatePayload {
-    // Mint rate. The meaning is protocol dependent. In protocol version 1-3
-    // this is the mint rate per slot. In protocol version 4 this is the mint
-    // rate per payday.
-    MintRate mint_distribution = 1;
+  message MintDistributionCpv0UpdatePayload {
+    // Mint rate per slot.
+    MintRate mint_per_slot = 1;
     // The fraction of newly created CCD allocated to baker rewards.
     AmountFraction baking_reward = 2;
     // The fraction of newly created CCD allocated to finalization rewards.
@@ -1616,7 +1614,7 @@ message UpdatePayload {
     // The foundation account address was updated.
     AccountAddress foundation_account_update = 5;
     // The mint distribution was updated.
-    MintDistributionUpdatePayload mint_distribution_update = 6;
+    MintDistributionCpv0UpdatePayload mint_distribution_update = 6;
     // The transaction fee distribtuion was updated.
     TransactionFeeDistributionUpdatePayload transaction_fee_distribution_update = 7;
     // The gas rewards were updated.
@@ -2333,7 +2331,7 @@ message PendingUpdate {
     // Updates to the foundation account.
     AccountAddress foundation_account = 10;
     // Updates to the mint distribution. Is only relevant prior to protocol version 4.
-    UpdatePayload.MintDistributionUpdatePayload mint_distribution_cpv_0 = 11;
+    UpdatePayload.MintDistributionCpv0UpdatePayload mint_distribution_cpv_0 = 11;
     // The mint distribution was updated. Introduced in protocol version 4.
     UpdatePayload.MintDistributionCpv1UpdatePayload mint_distribution_cpv_1 = 12;
     // Updates to the transaction fee distribution.
