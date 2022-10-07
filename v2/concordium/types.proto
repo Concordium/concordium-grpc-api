@@ -2160,12 +2160,6 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
-// todo: this is obsolete after a merge with 
-// network dump pr.
-message BooleanResponse {
-  bool value = 1;
-}
-
 // A banned peer
 message BannedPeer {
     // The IP address of the banned peer.
@@ -2178,22 +2172,7 @@ message BannedPeers {
   repeated BannedPeer peers = 1;
 }
 
-// An Ip address.
-message IpAddress {
-  string value = 1;
-}
-
-// A peer id.
-// todo: this type should match the 
-// one given by 'PeersInfo'.
-message PeerId {
-  string value = 1;
-}
-
-// A peer to ban
+// A peer to ban specified by its ip.
 message PeerToBan {
-  oneof peer {
-    IpAddress ip_address = 1;
-    PeerId peer_id = 2;
-  }
+  IpAddress ip_address = 1;
 }
