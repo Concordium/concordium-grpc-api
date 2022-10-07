@@ -1492,119 +1492,131 @@ message MintRate {
   uint32 exponent = 2;
 }
 
+message CooldownParametersCpv1 {
+  // Number of seconds that pool owners must cooldown
+  // when reducing their equity capital or closing the pool.
+  DurationSeconds pool_owner_cooldown = 1;
+  // Number of seconds that a delegator must cooldown
+  // when reducing their delegated stake.
+  DurationSeconds delegator_cooldown = 2;
+}
+
+// Parameters related to staking pools.
+message PoolParametersCpv1 {
+  // Fraction of finalization rewards charged by the passive delegation.
+  AmountFraction passive_finalization_commission = 1;
+  // Fraction of baking rewards charged by the passive delegation.
+  AmountFraction passive_baking_commission = 2;
+  // Fraction of transaction rewards charged by the L-pool.
+  AmountFraction passive_transaction_commission = 3;
+  // Bounds on the commission rates that may be charged by bakers.
+  CommissionRanges commission_bounds = 4;
+  // Minimum equity capital required for a new baker.
+  Amount minimum_equity_capital = 5;
+  // Maximum fraction of the total staked capital of that a new baker can
+  // have.
+  CapitalBound capital_bound = 6;
+  // The maximum leverage that a baker can have as a ratio of total stake
+  // to equity capital.
+  LeverageFactor leverage_bound = 7;
+}
+
+// The time parameters are introduced as of protocol version 4, and consist of
+// the reward period length and the mint rate per payday. These are coupled as
+// a change to either affects the overall rate of minting.
+message TimeParametersCpv1 {
+  RewardPeriodLength reward_period_length = 1;
+  MintRate mint_per_payday = 2;
+}
+
+// Mint distribution payload as it looks in protocol version 4 and onward.
+message MintDistributionCpv1 {
+  AmountFraction baking_reward = 1;
+  AmountFraction finalization_reward = 2;
+}
+
+message ProtocolUpdate {
+  // A brief message about the update.
+  string message_ = 1;
+  // A URL of a document describing the update.
+  string specification_url = 2;
+  // SHA256 hash of the specification document.
+  Sha256Hash specificationHash = 3;
+  // Auxiliary data whose interpretation is defined by the new specification.
+  bytes specification_auxiliary_data = 4;
+}
+// The minting rate and the distribution of newly-minted CCD among bakers,
+// finalizers, and the foundation account. It must be the case that
+// baking_reward + finalization_reward <= 1. The remaining amount is the
+// platform development charge.
+message MintDistributionCpv0 {
+  // Mint rate per slot.
+  MintRate mint_per_slot = 1;
+  // The fraction of newly created CCD allocated to baker rewards.
+  AmountFraction baking_reward = 2;
+  // The fraction of newly created CCD allocated to finalization rewards.
+  AmountFraction finalization_reward = 3;
+}
+
+// Parameters determining the distribution of transaction fees.
+message TransactionFeeDistribution {
+  // The fraction allocated to the baker.
+  AmountFraction baker = 1;
+  // The fraction allocated to the GAS account.
+  AmountFraction gas_account = 2;
+}
+
+// Distribution of gas rewards.
+message GasRewards {
+  // The fraction paid to the baker.
+  AmountFraction baker = 1;
+  // Fraction paid for including a finalization proof in a block.
+  AmountFraction finalization_proof = 2;
+  // Fraction paid for including each account creation transaction in a block.
+  AmountFraction account_creation = 3;
+  // Fraction paid for including an update transaction in a block.
+  AmountFraction chain_update = 4;
+}
+
+// Minimum stake needed to become a baker. This only applies to protocol version
+// 1-3.
+message BakerStakeThreshold {
+  // Minimum threshold required for registering as a baker.
+  Amount baker_stake_threshold = 1;
+}
+
+// Root updates are the highest kind of key updates. They can update every other set of keys,
+// even themselves. They can only be performed by Root level keys.
+message RootUpdate {
+  oneof update_type {
+    // The root keys were updated.
+    HigherLevelKeys root_keys_update = 1;
+    // The level 1 keys were updated.
+    HigherLevelKeys level_1_keys_update = 2;
+    // The level 2 keys were updated.
+    AuthorizationsV0 level_2_keys_update_v0 = 3;
+    // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
+    AuthorizationsV1 level_2_keys_update_v1 = 4;
+  }
+}
+// Level 1 updates are the intermediate update kind.
+// They can update themselves or level 2 keys. They can only be performed by level 1 keys.
+message Level1Update {
+  oneof update_type {
+    // The level 1 keys were updated.
+    HigherLevelKeys level_1_keys_update = 1;
+    // The level 2 keys were updated.
+    AuthorizationsV0 level_2_keys_update_v0 = 2;
+    // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
+    AuthorizationsV1 level_2_keys_update_v1 = 3;
+  }
+}
+
 // The payload of a chain update.
 message UpdatePayload {
-  message ProtocolUpdatePayload {
-    // A brief message about the update.
-    string message_ = 1;
-    // A URL of a document describing the update.
-    string specification_url = 2;
-    // SHA256 hash of the specification document.
-    Sha256Hash specificationHash = 3;
-    // Auxiliary data whose interpretation is defined by the new specification.
-    bytes specification_auxiliary_data = 4;
-  }
-  // The minting rate and the distribution of newly-minted CCD among bakers,
-  // finalizers, and the foundation account. It must be the case that
-  // baking_reward + finalization_reward <= 1. The remaining amount is the
-  // platform development charge.
-  message MintDistributionCpv0UpdatePayload {
-    // Mint rate per slot.
-    MintRate mint_per_slot = 1;
-    // The fraction of newly created CCD allocated to baker rewards.
-    AmountFraction baking_reward = 2;
-    // The fraction of newly created CCD allocated to finalization rewards.
-    AmountFraction finalization_reward = 3;
-  }
-  message TransactionFeeDistributionUpdatePayload {
-    // The fraction allocated to the baker.
-    AmountFraction baker = 1;
-    // The fraction allocated to the GAS account.
-    AmountFraction gas_account = 2;
-  }
-  message GasRewardsUpdatePayload {
-    // The fraction paid to the baker.
-    AmountFraction baker = 1;
-    // Fraction paid for including a finalization proof in a block.
-    AmountFraction finalization_proof = 2;
-    // Fraction paid for including each account creation transaction in a block.
-    AmountFraction account_creation = 3;
-    // Fraction paid for including an update transaction in a block.
-    AmountFraction chain_update = 4;
-  }
-  message BakerStakeThresholdUpdatePayload {
-    // Minimum threshold required for registering as a baker.
-    Amount baker_stake_threshold = 1;
-  }
-  // Root updates are the highest kind of key updates. They can update every other set of keys,
-  // even themselves. They can only be performed by Root level keys.
-  message RootUpdatePayload {
-    oneof update_type {
-      // The root keys were updated.
-      HigherLevelKeys root_keys_update = 1;
-      // The level 1 keys were updated.
-      HigherLevelKeys level_1_keys_update = 2;
-      // The level 2 keys were updated.
-      AuthorizationsV0 level_2_keys_update_v0 = 3;
-      // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
-      AuthorizationsV1 level_2_keys_update_v1 = 4;
-    }
-  }
-  // Level 1 updates are the intermediate update kind.
-  // They can update themselves or level 2 keys. They can only be performed by level 1 keys.
-  message Level1UpdatePayload {
-    oneof update_type {
-      // The level 1 keys were updated.
-      HigherLevelKeys level_1_keys_update = 1;
-      // The level 2 keys were updated.
-      AuthorizationsV0 level_2_keys_update_v0 = 2;
-      // The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated.
-      AuthorizationsV1 level_2_keys_update_v1 = 3;
-    }
-  }
-  message CooldownParametersCpv1UpdatePayload {
-    // Number of seconds that pool owners must cooldown
-    // when reducing their equity capital or closing the pool.
-    DurationSeconds pool_owner_cooldown = 1;
-    // Number of seconds that a delegator must cooldown
-    // when reducing their delegated stake.
-    DurationSeconds delegator_cooldown = 2;
-  }
-  // Parameters related to staking pools.
-  message PoolParametersCpv1UpdatePayload {
-    // Fraction of finalization rewards charged by the passive delegation.
-    AmountFraction passive_finalization_commission = 1;
-    // Fraction of baking rewards charged by the passive delegation.
-    AmountFraction passive_baking_commission = 2;
-    // Fraction of transaction rewards charged by the L-pool.
-    AmountFraction passive_transaction_commission = 3;
-    // Bounds on the commission rates that may be charged by bakers.
-    CommissionRanges commission_bounds = 4;
-    // Minimum equity capital required for a new baker.
-    Amount minimum_equity_capital = 5;
-    // Maximum fraction of the total staked capital of that a new baker can
-    // have.
-    CapitalBound capital_bound = 6;
-    // The maximum leverage that a baker can have as a ratio of total stake
-    // to equity capital.
-    LeverageFactor leverage_bound = 7;
-  }
-  // The time parameters are introduced as of protocol version 4, and consist of
-  // the reward period length and the mint rate per payday. These are coupled as
-  // a change to either affects the overall rate of minting.
-  message TimeParametersCpv1UpdatePayload {
-    RewardPeriodLength reward_period_length = 1;
-    MintRate mint_per_payday = 2;
-  }
-  // Mint distribution payload as it looks in protocol version 4 and onward.
-  message MintDistributionCpv1UpdatePayload {
-    AmountFraction baking_reward = 1;
-    AmountFraction finalization_reward = 2;
-  }
-
   oneof payload {
     // The protocol version was updated.
-    ProtocolUpdatePayload protocol_update = 1;
+    ProtocolUpdate protocol_update = 1;
     // The election difficulty was updated.
     ElectionDifficulty election_difficulty_update = 2;
     // The euro per energy exchange rate was updated.
@@ -1614,29 +1626,29 @@ message UpdatePayload {
     // The foundation account address was updated.
     AccountAddress foundation_account_update = 5;
     // The mint distribution was updated.
-    MintDistributionCpv0UpdatePayload mint_distribution_update = 6;
+    MintDistributionCpv0 mint_distribution_update = 6;
     // The transaction fee distribtuion was updated.
-    TransactionFeeDistributionUpdatePayload transaction_fee_distribution_update = 7;
+    TransactionFeeDistribution transaction_fee_distribution_update = 7;
     // The gas rewards were updated.
-    GasRewardsUpdatePayload gas_rewards_update = 8;
+    GasRewards gas_rewards_update = 8;
     // The minimum amount of CCD needed to be come a baker was updated.
-    BakerStakeThresholdUpdatePayload baker_stake_threshold_update = 9;
+    BakerStakeThreshold baker_stake_threshold_update = 9;
     // The root keys were updated.
-    RootUpdatePayload root_update = 10;
+    RootUpdate root_update = 10;
     // The level 1 keys were updated.
-    Level1UpdatePayload level_1_update = 11;
+    Level1Update level_1_update = 11;
     // An anonymity revoker was added.
     ArInfo add_anonymity_revoker_update = 12;
     // An identity provider was added.
     IpInfo add_identity_provider_update = 13;
     // The cooldown parameters were updated.
-    CooldownParametersCpv1UpdatePayload cooldown_parameters_cpv_1_update = 14;
+    CooldownParametersCpv1 cooldown_parameters_cpv_1_update = 14;
     // The pool parameters were updated.
-    PoolParametersCpv1UpdatePayload pool_parameters_cpv_1_update = 15;
+    PoolParametersCpv1 pool_parameters_cpv_1_update = 15;
     // The time parameters were updated.
-    TimeParametersCpv1UpdatePayload time_parameters_cpv_1_update = 16;
+    TimeParametersCpv1 time_parameters_cpv_1_update = 16;
     // The mint distribution was updated.
-    MintDistributionCpv1UpdatePayload mint_distribution_cpv_1_update = 17;
+    MintDistributionCpv1 mint_distribution_cpv_1_update = 17;
   }
 }
 
@@ -2321,7 +2333,7 @@ message PendingUpdate {
     // Updates to the level 2 keys.
     AuthorizationsV1 level2_keys_cpv_1 = 5;
     // Protocol updates.
-    UpdatePayload.ProtocolUpdatePayload protocol = 6;
+    ProtocolUpdate protocol = 6;
     // Updates to the election difficulty parameter.
     ElectionDifficulty election_difficulty = 7;
     // Updates to the euro:energy exchange rate.
@@ -2331,25 +2343,25 @@ message PendingUpdate {
     // Updates to the foundation account.
     AccountAddress foundation_account = 10;
     // Updates to the mint distribution. Is only relevant prior to protocol version 4.
-    UpdatePayload.MintDistributionCpv0UpdatePayload mint_distribution_cpv_0 = 11;
+    MintDistributionCpv0 mint_distribution_cpv_0 = 11;
     // The mint distribution was updated. Introduced in protocol version 4.
-    UpdatePayload.MintDistributionCpv1UpdatePayload mint_distribution_cpv_1 = 12;
+    MintDistributionCpv1 mint_distribution_cpv_1 = 12;
     // Updates to the transaction fee distribution.
-    UpdatePayload.TransactionFeeDistributionUpdatePayload transaction_fee_distribution = 13;
+    TransactionFeeDistribution transaction_fee_distribution = 13;
     // Updates to the GAS rewards.
-    UpdatePayload.GasRewardsUpdatePayload gas_rewards = 14;
+    GasRewards gas_rewards = 14;
     // Updates baker stake threshold. Is only relevant prior to protocol version 4.
-    UpdatePayload.BakerStakeThresholdUpdatePayload pool_parameters_cpv_0 = 15;
+    BakerStakeThreshold pool_parameters_cpv_0 = 15;
     // Updates pool parameters. Introduced in protocol version 4.
-    UpdatePayload.PoolParametersCpv1UpdatePayload pool_parameters_cpv_1 = 16;
+    PoolParametersCpv1 pool_parameters_cpv_1 = 16;
     // Adds a new anonymity revoker.
     ArInfo add_anonymity_revoker = 17;
     // Adds a new identity provider.
     IpInfo add_identity_provider = 18;
     // Updates to cooldown parameters for chain parameters version 1 introduced in protocol version 4.
-    UpdatePayload.CooldownParametersCpv1UpdatePayload cooldown_parameters = 19;
+    CooldownParametersCpv1 cooldown_parameters = 19;
     // Updates to time parameters for chain parameters version 1 introduced in protocol version 4.
-    UpdatePayload.TimeParametersCpv1UpdatePayload time_parameters = 20;
+    TimeParametersCpv1 time_parameters = 20;
   }
 }
 
@@ -2562,4 +2574,71 @@ message UpdateInstruction {
 // hash of the `PreAccountTransaction`.
 message AccountTransactionSignHash {
   bytes value = 1;
+}
+
+// The number of credential deployments allowed in a block. This in effect
+// determines the number of accounts that can be created in a block.
+message CredentialsPerBlockLimit {
+  uint32 value = 1;
+}
+
+// Updatable chain parameters that apply to protocol versions 1-3.
+message ChainParametersV0 {
+  // Election difficulty for consensus lottery.
+  ElectionDifficulty election_difficulty = 1;
+  // Euro per energy exchange rate.
+  ExchangeRate euro_per_energy = 2;
+  // Micro CCD per euro exchange rate.
+  ExchangeRate micro_ccd_per_euro = 3;
+  // Extra number of epochs before reduction in stake, or baker
+  // deregistration is completed.
+  Epoch baker_cooldown_epochs = 4;
+  // The limit for the number of account creations in a block.
+  CredentialsPerBlockLimit account_creation_limit = 5;
+  // Current mint distribution
+  MintDistributionCpv0 mint_distribution = 6;
+  // Current transaction fee distribution.
+  TransactionFeeDistribution transaction_fee_distribution = 7;
+  // Current gas reward parameters.
+  GasRewards gas_rewards = 8;
+  // The foundation account.
+  AccountAddress foundation_account = 9;
+  // Minimum threshold for becoming a baker.
+  Amount minimum_threshold_for_baking = 10;
+}
+
+// Updatable chain parameters that apply to protocol versions 1-3.
+message ChainParametersV1 {
+  // Election difficulty for consensus lottery.
+  ElectionDifficulty election_difficulty = 1;
+  // Euro per energy exchange rate.
+  ExchangeRate euro_per_energy = 2;
+  // Micro CCD per euro exchange rate.
+  ExchangeRate micro_ccd_per_euro = 3;
+  // Extra number of epochs before reduction in stake, or baker
+  // deregistration is completed.
+  CooldownParametersCpv1 cooldown_parameters = 4;
+  TimeParametersCpv1 time_parameters = 5;
+  // The limit for the number of account creations in a block.
+  CredentialsPerBlockLimit account_creation_limit = 6;
+  // Current mint distribution
+  MintDistributionCpv1 mint_distribution = 7;
+  // Current transaction fee distribution.
+  TransactionFeeDistribution transaction_fee_distribution = 8;
+  // Current gas reward parameters.
+  GasRewards gas_rewards = 9;
+  // The foundation account.
+  AccountAddress foundation_account = 10;
+  // Parameters governing baking pools and their commissions.
+  PoolParametersCpv1 pool_parameters = 11;
+}
+
+// Chain parameters.
+message ChainParameters {
+  oneof parameters {
+    // Chain parameters that apply when the block is a protocol version 1-3 block.
+    ChainParametersV0 v0 = 1;
+    // Chain parameters that apply when the block is a protocol version 4 or up block.
+    ChainParametersV1 v1 = 2;
+  }
 }
