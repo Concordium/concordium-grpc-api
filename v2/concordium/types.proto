@@ -2174,6 +2174,8 @@ message IpAddress {
 }
 
 // A port
+// Valid port numbers are expected thus 
+// the value is expected to be in the range (0..u16::MAX).
 message Port {
   uint32 value = 1;
 }
@@ -2186,6 +2188,11 @@ message IpSocketAddress {
 }
 
 // A peer id
+// An identifier that the peer wants to be 
+// be recoknized by.
+// The underlying value is simply a u64.
+// Note. There is no authenticity of the peer id and 
+// as such it is only used for logging purposes.
 message PeerId {
   string value = 1;
 }
@@ -2202,7 +2209,9 @@ message BannedPeers {
   repeated BannedPeer peers = 1;
 }
 
-// A peer to ban specified by its ip.
+// A peer to ban specified by its IP.
+// Note. This will ban all peers located behind the 
+// specified IP even though they are using different ports.
 message PeerToBan {
   IpAddress ip_address = 1;
 } 
@@ -2240,9 +2249,13 @@ message PeersInfo {
       // Network statistics for the peer
       message NetworkStats {                
         // The number of messages sent to the peer.
+        // Packets are blocks, transactions, catchup messages, finalization records 
+        // and network messages such as pings and peer requests.
         uint64 packets_sent = 2;
     
         // The number of messages received from the peer.
+        // Packets are blocks, transactions, catchup messages, finalization records 
+        // and network messages such as pings and peer requests.
         uint64 packets_received = 3;
     
         // The connection latency (i.e., ping time) in milliseconds.
@@ -2291,8 +2304,8 @@ message NodeInfo {
   // Consensus info for a node configured with baker keys.
   message BakerConsensusInfo {
     // The committee information of a node configured with 
-    // baker keys but somehow the node is part of the 
-    // baking committee.
+    // baker keys but somehow the node is _not_ part of the 
+    // current baking committee.
     enum PassiveCommitteeInfo {
       // The node is started with baker keys however it is currently not in the baking committee.
       // The node is __not__ baking.
@@ -2306,25 +2319,29 @@ message NodeInfo {
       ADDED_BUT_WRONG_KEYS = 2;
     }
 
-    // The node is configured with baker keys and 
-    // is member of the baking committee.
+    // Tagging message type for a node that 
+    // is configured with baker keys and active in 
+    // the current baking committee
     message ActiveBakerCommitteeInfo {
-      BakerId baker_id = 1;
     }
 
-    // The node is configured with baker keys and 
-    // is member of the baking and finalization committees.
+    // Tagging message type for a node that 
+    // is configured with baker keys and active in 
+    // the current finalizer committee (and also baking committee).
     message ActiveFinalizerCommitteeInfo {
-      BakerId baker_id = 1;
     }
+
+    BakerId baker_id = 1;
   
     // Status of the baker configured node.
     oneof status {
       // The node is currently not baking.
       PassiveCommitteeInfo passive_committee_info = 2;
-      // The node is an active member of the baker committee.
+      // The node is configured with baker keys and 
+      // is member of the baking committee.
       ActiveBakerCommitteeInfo active_baker_committee_info = 3;
-      // The node is an active member of the baker and finalizer committee.
+      // The node is configured with baker keys and 
+      // is member of the baking and finalization committees.
       ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
     }
   }
