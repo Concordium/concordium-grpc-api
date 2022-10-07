@@ -140,6 +140,17 @@ service Queries {
   // The stream will end when all the non-finalized transaction hashes have been returned.
   rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
 
+  // Get a list of banned peers.
+  rpc GetBannedPeers(Empty) returns (BannedPeers);
+
+  // Ban the given peer.
+  // Returns a GRPC error if the action failed.
+  rpc BanPeer(PeerToBan) returns (Empty);
+  
+  // Unban the banned peer.
+  // Returns a GRPC error if the action failed.
+  rpc UnbanPeer(BannedPeer) returns (Empty);
+  
   // Start dumping packages into the specified file.
   // Only enabled if the node was built with the `network_dump` feature.
   // Returns a GRPC error if the network dump failed to start.
