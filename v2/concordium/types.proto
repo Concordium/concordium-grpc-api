@@ -2364,7 +2364,9 @@ message NodeInfo {
     // The node is a regular node and runs the consensus 
     // protocol.
     Node node = 7;
-  }    
+  }
+}
+
 message SendBlockItemRequest {
   oneof block_item {
     // Account transactions are messages which are signed and paid for by an account.
