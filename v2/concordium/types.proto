@@ -2159,29 +2159,3 @@ message ElectionInfo {
   // List of the currently eligible bakers.
   repeated Baker baker_election_info = 3;
 }
-
-// todo: this should be merged with 
-// the ip address from bans and peersinfo pr. 
-message IpAddress {
-  string value = 1;
-}
-
-// todo: this should be merged with peersinfo pr. 
-// A network port.
-message Port {
-  uint32 value = 1;
-}
-
-//todo: this should be merged with the banning feature pr.
-// A boolean response representing a boolean value
-message BooleanResponse {
-  bool value = 1;
-}
-
-// Represents the connection consisting of ip and port.
-message PeerConnection {
-  // The IP of the peer.
-  IpAddress ip = 1;
-  // The port of the peer.
-  Port port = 2;
-}

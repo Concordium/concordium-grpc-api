@@ -142,9 +142,11 @@ service Queries {
 
   // Suggest to a peer to connect to the submitted peer details.
   // This, if successful, adds the peer to the list of given addresses.
-  rpc PeerConnect (PeerConnection) returns (BooleanResponse);
+  // Otherwise return a GRPC error.
+  rpc PeerConnect (IpSocketAddress) returns (Empty);
 
   // Disconnect from the peer and remove them from the given addresses list
   // if they are on it. Return if the request was processed successfully.
-  rpc PeerDisconnect (PeerConnection) returns (BooleanResponse);
+  // Otherwise return a GRPC error.
+  rpc PeerDisconnect (IpSocketAddress) returns (Empty);
 }
