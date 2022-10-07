@@ -2234,3 +2234,100 @@ message PeersInfo {
 
   repeated Peer peers = 1;
 }
+
+// Node info response
+// Contains various information of the
+// enquired node.
+message NodeInfo {
+  // Network related information of the node.
+  message NetworkInfo {   
+    // The node id.
+    PeerId node_id = 1;
+    // Total number of packets sent by the node.
+    uint64 peer_total_sent = 2;
+    // Total number of packets received by the node.
+    uint64 peer_total_received = 3;
+    // Average outbound throughput in bytes per second.
+    uint64 avg_bps_in = 4;
+    // Average inbound throughput in bytes per second.
+    uint64 avg_bps_out = 5;
+  }
+
+  // Consensus info for a node configured with baker keys.
+  message BakerConsensusInfo {
+    // The committee information of a node configured with 
+    // baker keys but somehow the node is part of the 
+    // baking committee.
+    enum PassiveCommitteeInfo {
+      // The node is started with baker keys however it is currently not in the baking committee.
+      // The node is __not__ baking.
+      NOT_IN_COMMITTEE = 0;
+      // The account is registered as a baker but not in the current `Epoch`.
+      // The node is __not__ baking.
+      ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
+      // The node has configured invalid baker keys i.e., the configured
+      // baker keys do not match the current keys on the baker account.
+      // The node is __not__ baking.
+      ADDED_BUT_WRONG_KEYS = 2;
+    }
+
+    // The node is configured with baker keys and 
+    // is member of the baking committee.
+    message ActiveBakerCommitteeInfo {
+      BakerId baker_id = 1;
+    }
+
+    // The node is configured with baker keys and 
+    // is member of the baking and finalization committees.
+    message ActiveFinalizerCommitteeInfo {
+      BakerId baker_id = 1;
+    }
+  
+    // Status of the baker configured node.
+    oneof status {
+      // The node is currently not baking.
+      PassiveCommitteeInfo passive_committee_info = 2;
+      // The node is an active member of the baker committee.
+      ActiveBakerCommitteeInfo active_baker_committee_info = 3;
+      // The node is an active member of the baker and finalizer committee.
+      ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
+    }
+  }
+
+  // The node is a regular node.
+  message Node {
+    oneof consensus_status {
+      // The node is not running consensus.
+      // This is the case only when the node is
+      // not supporting the protocol on the chain.
+      // The node does not process blocks.
+      Empty not_running = 1;
+      // Consensus info for a node that is
+      // not configured with baker keys.
+      // The node is only processing blocks and 
+      // relaying blocks and transactions and responding to 
+      // catchup messages.
+      Empty passive = 2;
+      // The node is configured with baker credentials and consensus is running.    
+      BakerConsensusInfo active = 3;
+    }
+  }
+
+  // The version of the node.
+  string peer_version = 1;
+  // local time of the node.
+  Timestamp local_time = 3;
+  // Number of milliseconds that the node
+  // has been alive.
+  Duration peer_uptime = 4;
+  // Information related to the p2p protocol.
+  NetworkInfo network_info = 5;
+  // Details of the node.
+  oneof details {
+    // The node is a bootstrapper and is not running consensus.
+    Empty bootstrapper = 6;
+    // The node is a regular node and runs the consensus 
+    // protocol.
+    Node node = 7;
+  }    
+}
