@@ -2160,15 +2160,10 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
-// A response consisting of a boolean.
-message BoolResponse {
-  bool value = 1;
-}
-
 // Request to enable dumping of network packages.
 message DumpRequest {
   // Which file to dump the packages into.
-  // If this is not set then a default value of 'dump' will be used.
+  // Requires a valid path. 
   string file = 1;
 
   // Whether the node should dump raw packages.
