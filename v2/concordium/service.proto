@@ -140,6 +140,10 @@ service Queries {
   // The stream will end when all the non-finalized transaction hashes have been returned.
   rpc GetAccountNonFinalizedTransactions (AccountAddress) returns (stream TransactionHash);
 
+  // Shut down the node.
+  // Return a GRPC error if the shutdown failed.
+  rpc Shutdown(Empty) returns (Empty);
+  
   // Suggest to a peer to connect to the submitted peer details.
   // This, if successful, adds the peer to the list of given addresses.
   // Otherwise return a GRPC error.
