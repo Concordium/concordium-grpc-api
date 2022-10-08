@@ -2168,6 +2168,222 @@ message ElectionInfo {
   repeated Baker baker_election_info = 3;
 }
 
+// An IP address
+message IpAddress {
+  string value = 1;
+}
+
+// A port
+// Valid port numbers are expected thus 
+// the value is expected to be in the range (0..u16::MAX).
+message Port {
+  uint32 value = 1;
+}
+
+// A socket address consisting of 
+// an IP + port.
+message IpSocketAddress {
+  IpAddress ip = 1;
+  Port port = 2;
+}
+
+// A peer id
+// An identifier that the peer wants to be 
+// be recoknized by.
+// The underlying value is simply a u64.
+// Note. There is no authenticity of the peer id and 
+// as such it is only used for logging purposes.
+message PeerId {
+  string value = 1;
+}
+
+// A banned peer
+message BannedPeer {
+    // The IP address of the banned peer.
+    IpAddress ip_address = 1;
+}
+
+// The banned peers given by 
+// their IP addresses.
+message BannedPeers {
+  repeated BannedPeer peers = 1;
+}
+
+// A peer to ban specified by its IP.
+// Note. This will ban all peers located behind the 
+// specified IP even though they are using different ports.
+message PeerToBan {
+  IpAddress ip_address = 1;
+} 
+
+// Request to enable dumping of network packages.
+message DumpRequest {
+  // Which file to dump the packages into.
+  // Requires a valid path. 
+  string file = 1;
+
+  // Whether the node should dump raw packages.
+  bool raw = 2;
+}
+
+// Peers and their associated network related statistics 
+message PeersInfo {    
+  // A peer that the node is connected to.
+  message Peer {
+      enum CatchupStatus {
+          // The peer does not have any data unknown to us. If we receive a message from the
+          // peer that refers to unknown data (e.g., an unknown block) the peer is marked as pending.
+          UPTODATE = 0;
+          // The peer might have some data unknown to us. A peer can be in this state either because
+          // it sent a message that refers to data unknown to us, or before we have established a baseline with it.
+          // The latter happens during node startup, as well as upon protocol updates until the initial catchup handshake
+          // completes.
+          PENDING = 1;
+          // The node is currently catching up by requesting blocks from this peer.
+          // There will be at most one peer with this status at a time.
+          // Once the peer has responded to the request, its status will be changed to:
+          // - 'UPTODATE' if the peer has no more data that is not known to us
+          // - 'PENDING' if the node has more data that is unknown to us.
+          CATCHINGUP = 2;
+      }
+      // Network statistics for the peer
+      message NetworkStats {                
+        // The number of messages sent to the peer.
+        // Packets are blocks, transactions, catchup messages, finalization records 
+        // and network messages such as pings and peer requests.
+        uint64 packets_sent = 2;
+    
+        // The number of messages received from the peer.
+        // Packets are blocks, transactions, catchup messages, finalization records 
+        // and network messages such as pings and peer requests.
+        uint64 packets_received = 3;
+    
+        // The connection latency (i.e., ping time) in milliseconds.
+        uint64 latency = 4;
+      }
+
+      // The identifier of the peer that it
+      // wishes to be identified by.
+      PeerId peer_id = 1;
+      // The port of the peer.
+      IpSocketAddress socket_address = 2;
+      // Network related statistics for the peer.
+      NetworkStats network_stats = 3;
+      // consensus related information of the peer.
+      oneof consensus_info {
+        // The peer is of type `Bootstrapper` is not participating in consensus 
+        // and thus has no catchup status.
+        Empty bootstrapper = 4;
+        // The peer is a regular node and have 
+        // an associated catchup status.
+        CatchupStatus node_catchup_status = 5;
+      }
+  }
+
+  repeated Peer peers = 1;
+}
+
+// Node info response
+// Contains various information of the
+// enquired node.
+message NodeInfo {
+  // Network related information of the node.
+  message NetworkInfo {   
+    // The node id.
+    PeerId node_id = 1;
+    // Total number of packets sent by the node.
+    uint64 peer_total_sent = 2;
+    // Total number of packets received by the node.
+    uint64 peer_total_received = 3;
+    // Average outbound throughput in bytes per second.
+    uint64 avg_bps_in = 4;
+    // Average inbound throughput in bytes per second.
+    uint64 avg_bps_out = 5;
+  }
+
+  // Consensus info for a node configured with baker keys.
+  message BakerConsensusInfo {
+    // The committee information of a node configured with 
+    // baker keys but somehow the node is _not_ part of the 
+    // current baking committee.
+    enum PassiveCommitteeInfo {
+      // The node is started with baker keys however it is currently not in the baking committee.
+      // The node is __not__ baking.
+      NOT_IN_COMMITTEE = 0;
+      // The account is registered as a baker but not in the current `Epoch`.
+      // The node is __not__ baking.
+      ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
+      // The node has configured invalid baker keys i.e., the configured
+      // baker keys do not match the current keys on the baker account.
+      // The node is __not__ baking.
+      ADDED_BUT_WRONG_KEYS = 2;
+    }
+
+    // Tagging message type for a node that 
+    // is configured with baker keys and active in 
+    // the current baking committee
+    message ActiveBakerCommitteeInfo {
+    }
+
+    // Tagging message type for a node that 
+    // is configured with baker keys and active in 
+    // the current finalizer committee (and also baking committee).
+    message ActiveFinalizerCommitteeInfo {
+    }
+
+    BakerId baker_id = 1;
+  
+    // Status of the baker configured node.
+    oneof status {
+      // The node is currently not baking.
+      PassiveCommitteeInfo passive_committee_info = 2;
+      // The node is configured with baker keys and 
+      // is member of the baking committee.
+      ActiveBakerCommitteeInfo active_baker_committee_info = 3;
+      // The node is configured with baker keys and 
+      // is member of the baking and finalization committees.
+      ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
+    }
+  }
+
+  // The node is a regular node.
+  message Node {
+    oneof consensus_status {
+      // The node is not running consensus.
+      // This is the case only when the node is
+      // not supporting the protocol on the chain.
+      // The node does not process blocks.
+      Empty not_running = 1;
+      // Consensus info for a node that is
+      // not configured with baker keys.
+      // The node is only processing blocks and 
+      // relaying blocks and transactions and responding to 
+      // catchup messages.
+      Empty passive = 2;
+      // The node is configured with baker credentials and consensus is running.    
+      BakerConsensusInfo active = 3;
+    }
+  }
+
+  // The version of the node.
+  string peer_version = 1;
+  // local time of the node.
+  Timestamp local_time = 3;
+  // Number of milliseconds that the node
+  // has been alive.
+  Duration peer_uptime = 4;
+  // Information related to the p2p protocol.
+  NetworkInfo network_info = 5;
+  // Details of the node.
+  oneof details {
+    // The node is a bootstrapper and is not running consensus.
+    Empty bootstrapper = 6;
+    // The node is a regular node and runs the consensus 
+    // protocol.
+    Node node = 7;
+  }
+}
+
 message SendBlockItemRequest {
   oneof block_item {
     // Account transactions are messages which are signed and paid for by an account.
