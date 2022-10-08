@@ -2642,3 +2642,42 @@ message ChainParameters {
     ChainParametersV1 v1 = 2;
   }
 }
+
+// Details about a finalizer for the finalization round.
+message FinalizationSummaryParty {
+  // Baker ID. Every finalizer is in particular a baker.
+  BakerId baker = 1;
+  // The weight of the finalizer in the committee. This is an "absolute" weight.
+  uint64 weight = 2;
+  // Whether the finalizer's signature was present on the particular finalization record.
+  bool signed = 3;
+}
+
+// Index of the finalization round. This increases on each successfully
+// completed finalization.
+message FinalizationIndex {
+  uint64 value = 1;
+}
+
+// Details about a finalization record included in a block.
+message FinalizationSummary {
+  // Block that was finalized by the finalization record.
+  BlockHash block = 1;
+  // Index of the finalization round that finalized the block.
+  FinalizationIndex index = 2;
+  // Finalization delay used for the finalization round.
+  BlockHeight delay = 3;
+  // List of all finalizers with information about whether they signed the
+  // finalization record or not.
+  repeated FinalizationSummaryParty finalizers = 4;
+}
+
+// Finalization summary that may or may not be part of the block.
+message BlockFinalizationSummary {
+  oneof summary {
+    // There is no finalization data in the block.
+    Empty none = 1;
+    // There is a single finalization record with the block.
+    FinalizationSummary record = 2;
+  }
+}
