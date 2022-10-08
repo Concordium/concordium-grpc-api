@@ -178,4 +178,7 @@ service Queries {
 
   // Get the values of chain parameters in effect in the given block.
   rpc GetBlockChainParameters(BlockHashInput) returns (ChainParameters);
+
+  // Get the summary of the finalization data in a given block.
+  rpc GetBlockFinalizationSummary(BlockHashInput) returns (BlockFinalizationSummary);
 }
