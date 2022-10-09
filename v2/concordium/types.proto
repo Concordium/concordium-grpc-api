@@ -2821,6 +2821,12 @@ message ChainParametersV0 {
   AccountAddress foundation_account = 9;
   // Minimum threshold for becoming a baker.
   Amount minimum_threshold_for_baking = 10;
+  // Keys allowed to do root updates.
+  HigherLevelKeys root_keys = 11;
+  // Keys allowed to do level1 updates;
+  HigherLevelKeys level1_keys = 12;
+  // Keys allowed to do parameter updates.
+  AuthorizationsV0 level2_keys = 13;
 }
 
 // Updatable chain parameters that apply to protocol versions 1-3.
@@ -2847,6 +2853,12 @@ message ChainParametersV1 {
   AccountAddress foundation_account = 10;
   // Parameters governing baking pools and their commissions.
   PoolParametersCpv1 pool_parameters = 11;
+  // Keys allowed to do root updates.
+  HigherLevelKeys root_keys = 12;
+  // Keys allowed to do level1 updates;
+  HigherLevelKeys level1_keys = 13;
+  // Keys allowed to do parameter updates.
+  AuthorizationsV1 level2_keys = 14;
 }
 
 // Chain parameters.
