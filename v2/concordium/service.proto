@@ -157,6 +157,57 @@ service Queries {
   // Get next available sequence numbers for updating chain parameters after a given block.
   rpc GetNextUpdateSequenceNumbers (BlockHashInput) returns (NextUpdateSequenceNumbers);
 
+  // Shut down the node.
+  // Return a GRPC error if the shutdown failed.
+  rpc Shutdown(Empty) returns (Empty);
+
+  // Suggest to a peer to connect to the submitted peer details.
+  // This, if successful, adds the peer to the list of given addresses.
+  // Otherwise return a GRPC error.
+  // Note. The peer might not be connected to instantly, in that case
+  // the node will try to establish the connection in near future. This
+  // function returns a GRPC status 'Ok' in this case.
+  rpc PeerConnect (IpSocketAddress) returns (Empty);
+
+  // Disconnect from the peer and remove them from the given addresses list
+  // if they are on it. Return if the request was processed successfully.
+  // Otherwise return a GRPC error.
+  rpc PeerDisconnect (IpSocketAddress) returns (Empty);
+
+  // Get a list of banned peers.
+  rpc GetBannedPeers(Empty) returns (BannedPeers);
+
+  // Ban the given peer.
+  // Returns a GRPC error if the action failed.
+  rpc BanPeer(PeerToBan) returns (Empty);
+
+  // Unban the banned peer.
+  // Returns a GRPC error if the action failed.
+  rpc UnbanPeer(BannedPeer) returns (Empty);
+
+  // Start dumping packages into the specified file.
+  // Only enabled if the node was built with the `network_dump` feature.
+  // Returns a GRPC error if the network dump failed to start.
+  rpc DumpStart(DumpRequest) returns (Empty);
+
+  // Stop dumping packages.
+  // Only enabled if the node was built with the `network_dump` feature.
+  // Returns a GRPC error if the network dump failed to be stopped.
+  rpc DumpStop(Empty) returns (Empty);
+
+  /// Get a list of the peers that the node is connected to
+  /// and assoicated network related information for each peer.
+  rpc GetPeersInfo(Empty) returns (PeersInfo);
+
+  // Get information about the node.
+  // The `NodeInfo` includes information of
+  // * Meta information such as the, version of the node, type of the node, uptime and the local time of the node.
+  // * NetworkInfo which yields data such as the node id, packets sent/received,
+  //   average bytes per second sent/received.
+  // * ConsensusInfo. The `ConsensusInfo` returned depends on if the node supports
+  //   the protocol on chain and whether the node is configured as a baker or not.
+  rpc GetNodeInfo(Empty) returns (NodeInfo);
+
   // Send a block item. A block item is either an `AccountTransaction`, which is
   // a transaction signed and paid for by an account, a `CredentialDeployment`,
   // which creates a new account, or `UpdateInstruction`, which is an
