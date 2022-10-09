@@ -2897,3 +2897,20 @@ message BlockFinalizationSummary {
     FinalizationSummary record = 2;
   }
 }
+
+message BlockItem {
+  // The hash of the block item that identifies it to the chain.
+  TransactionHash hash = 1;
+
+  oneof block_item {
+    // Account transactions are messages which are signed and paid for by an account.
+    AccountTransaction account_transaction = 2;
+    // Credential deployments create new accounts. They are not paid for
+    // directly by the sender. Instead, bakers are rewarded by the protocol for
+    // including them.
+    CredentialDeployment credential_deployment = 3;
+    // Update instructions are messages which can update the chain parameters. Including which keys are allowed
+    // to make future update instructions.
+    UpdateInstruction update_instruction = 4;
+  }
+}
