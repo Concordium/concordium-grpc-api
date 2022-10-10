@@ -232,4 +232,7 @@ service Queries {
 
   // Get the summary of the finalization data in a given block.
   rpc GetBlockFinalizationSummary(BlockHashInput) returns (BlockFinalizationSummary);
+
+  // Get the items of a block.
+  rpc GetBlockItems(BlockHashInput) returns (stream BlockItem);
 }
