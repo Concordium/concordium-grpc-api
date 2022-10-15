@@ -739,6 +739,20 @@ message RejectReason {
     repeated CredentialRegistrationId ids = 1;
   }
 
+  message UpgradeInvalidVersion {
+    ModuleRef module_ref = 1;
+    ContractVersion version = 2;
+  }
+
+  message UpgradeInvalidModuleReference {
+    ModuleRef module_ref = 1;
+  }
+
+  message UpgradeInvalidContractName {
+    ModuleRef module_ref = 1;
+    InitName init_name = 2;
+  }
+
   oneof reason {
     // Raised while validating a Wasm module that is not well formed.
     Empty module_not_wf = 1;
@@ -867,6 +881,12 @@ message RejectReason {
     Empty pool_would_become_over_delegated = 53;
     // The pool is not open to delegators.
     Empty pool_closed = 54;
+    // The contract upgrade failed because of an invalid module reference
+    UpgradeInvalidModuleReference upgradeInvalidModuleReference = 55;
+    // The contract upgrade failed because the new module did not have a corresponding contract name.
+    UpgradeInvalidContractName upgradeInvalidContractName = 56;
+    // The contract upgrade failed because the new module does not support contract upgrades.
+    UpgradeInvalidVersion upgradeInvalidVersion = 57;
   }
 }
 
