@@ -882,11 +882,11 @@ message RejectReason {
     // The pool is not open to delegators.
     Empty pool_closed = 54;
     // The contract upgrade failed because of an invalid module reference
-    UpgradeInvalidModuleReference upgradeInvalidModuleReference = 55;
+    UpgradeInvalidModuleReference upgrade_invalid_module_reference = 55;
     // The contract upgrade failed because the new module did not have a corresponding contract name.
-    UpgradeInvalidContractName upgradeInvalidContractName = 56;
+    UpgradeInvalidContractName upgrade_invalid_contract_name = 56;
     // The contract upgrade failed because the new module does not support contract upgrades.
-    UpgradeInvalidVersion upgradeInvalidVersion = 57;
+    UpgradeInvalidVersion upgrade_invalid_version = 57;
   }
 }
 
