@@ -739,37 +739,37 @@ message RejectReason {
     repeated CredentialRegistrationId ids = 1;
   }
 
-  /// A reject reason indicating that a 
-  /// contract upgrade could not be carried out 
-  /// because the desired module did not exist on chain.
+  // A reject reason indicating that a 
+  // contract upgrade could not be carried out 
+  // because the desired module did not exist on chain.
   message UpgradeInvalidModuleReference {
-    /// The module reference that the contract
-    /// tried to upgrade to.
+    // The module reference that the contract
+    // tried to upgrade to.
     ModuleRef module_ref = 1;
   }
 
-  /// A reject reason that is returned when 
-  /// a contract could not be upgraded because 
-  /// the desired module did not contain a 
-  /// contract with the required name.     
+  // A reject reason that is returned when 
+  // a contract could not be upgraded because 
+  // the desired module did not contain a 
+  // contract with the required name.     
   message UpgradeInvalidContractName {
-    /// The module reference that the contract 
-    /// tried to upgrade to.
+    // The module reference that the contract 
+    // tried to upgrade to.
     ModuleRef module_ref = 1;
-    /// The init name of the contract 
-    /// that was tried to upgrade from.
+    // The init name of the contract 
+    // that was tried to upgrade from.
     InitName init_name = 2;
   }
 
-  /// A reject reason that is returned when 
-  /// a contract could not be upgraded due to 
-  /// an incompatible module version.
+  // A reject reason that is returned when 
+  // a contract could not be upgraded due to 
+  // an incompatible module version.
   message UpgradeInvalidVersion {
-    /// The module reference that the contract 
-    /// tried to upgrade to.
+    // The module reference that the contract 
+    // tried to upgrade to.
     ModuleRef module_ref = 1;
-    /// The contract version of the module 
-    /// that was incompatible.
+    // The contract version of the module 
+    // that was incompatible.
     ContractVersion version = 2;
   }
 
