@@ -739,40 +739,6 @@ message RejectReason {
     repeated CredentialRegistrationId ids = 1;
   }
 
-  // A reject reason indicating that a 
-  // contract upgrade could not be carried out 
-  // because the desired module did not exist on chain.
-  message UpgradeInvalidModuleReference {
-    // The module reference that the contract
-    // tried to upgrade to.
-    ModuleRef module_ref = 1;
-  }
-
-  // A reject reason that is returned when 
-  // a contract could not be upgraded because 
-  // the desired module did not contain a 
-  // contract with the required name.     
-  message UpgradeInvalidContractName {
-    // The module reference that the contract 
-    // tried to upgrade to.
-    ModuleRef module_ref = 1;
-    // The init name of the contract 
-    // that was tried to upgrade from.
-    InitName init_name = 2;
-  }
-
-  // A reject reason that is returned when 
-  // a contract could not be upgraded due to 
-  // an incompatible module version.
-  message UpgradeInvalidVersion {
-    // The module reference that the contract 
-    // tried to upgrade to.
-    ModuleRef module_ref = 1;
-    // The contract version of the module 
-    // that was incompatible.
-    ContractVersion version = 2;
-  }
-
   oneof reason {
     // Raised while validating a Wasm module that is not well formed.
     Empty module_not_wf = 1;
@@ -901,12 +867,6 @@ message RejectReason {
     Empty pool_would_become_over_delegated = 53;
     // The pool is not open to delegators.
     Empty pool_closed = 54;
-    // The contract upgrade failed because the desired module does not exist.
-    UpgradeInvalidModuleReference upgrade_invalid_module_reference = 55;
-    // The contract upgrade failed because the required contract did not exist in the desired smart contract module.
-    UpgradeInvalidContractName upgrade_invalid_contract_name = 56;
-    // The contract upgrade failed because the desired module has an incompatible contract version.
-    UpgradeInvalidVersion upgrade_invalid_version = 57;
   }
 }
 
