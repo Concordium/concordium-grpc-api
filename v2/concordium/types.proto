@@ -947,6 +947,16 @@ message ContractTraceElement {
     bool success = 2;
   }
 
+  // A previously interrupted contract was resumed.
+  message Upgraded {
+    // The that was upgraded.
+    ContractAddress address = 1;
+    // The module from which the contract was upgraded.
+    ModuleRef from = 2;
+    // The module to which it was upgraded.
+    ModuleRef to = 3;
+  }
+
   oneof element {
     // A contract instance was updated.
     InstanceUpdatedEvent updated = 1;
@@ -957,6 +967,8 @@ message ContractTraceElement {
     Interrupted interrupted = 3;
     // A previously interrupted contract was resumed.
     Resumed resumed = 4;
+    // A contract was upgraded.
+    Upgraded upgraded = 5;
   }
 }
 
