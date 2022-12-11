@@ -16,5 +16,5 @@ and an auxiliary file with all the types for requests and responses
 
 - [types.proto](./v2/concordium/types.proto)
 
-The rendered documentation for the V2 APi is available at
+The rendered documentation for the V2 API is available at
 http://developer.concordium.software/concordium-grpc-api/
