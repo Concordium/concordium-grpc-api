@@ -1785,6 +1785,7 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_3 = 2;
   PROTOCOL_VERSION_4 = 3;
   PROTOCOL_VERSION_5 = 4;
+  PROTOCOL_VERSION_6 = 5;
 }
 
 // The number of chain restarts via a protocol update. An effected
