@@ -1600,7 +1600,7 @@ message TransactionFeeDistribution {
 }
 
 // Distribution of gas rewards for chain parameters version 0 and 1.
-message GasRewardsCpv0 {
+message GasRewards {
   // The fraction paid to the baker.
   AmountFraction baker = 1;
   // Fraction paid for including a finalization proof in a block.
@@ -1695,11 +1695,11 @@ message UpdatePayload {
     // The gas rewards were updated (chain parameters version 2).
     GasRewardsCpv2 gas_rewards_cpv_2_update = 18;
     // The consensus timeouts were updated (chain parameters version 2).
-    TimeoutParameters timeout_parameters_update = 22;
+    TimeoutParameters timeout_parameters_update = 19;
     // The minimum time between blocks was updated (chain parameters version 2).
-    Duration min_block_time_update = 23;
+    Duration min_block_time_update = 20;
     // The block energy limit was updated (chain parameters version 2).
-    Energy block_energy_limit_update = 24;
+    Energy block_energy_limit_update = 21;
   }
 }
 
@@ -2405,7 +2405,7 @@ message PendingUpdate {
     // Updates to the transaction fee distribution.
     TransactionFeeDistribution transaction_fee_distribution = 13;
     // Updates to the GAS rewards.
-    GasRewardsCpv0 gas_rewards_cpv_0 = 14;
+    GasRewards gas_rewards = 14;
     // Updates baker stake threshold. Is only relevant prior to protocol version 4.
     BakerStakeThreshold pool_parameters_cpv_0 = 15;
     // Updates pool parameters. Introduced in protocol version 4.
