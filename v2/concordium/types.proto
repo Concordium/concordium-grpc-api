@@ -1673,7 +1673,7 @@ message UpdatePayload {
     // The transaction fee distribtuion was updated.
     TransactionFeeDistribution transaction_fee_distribution_update = 7;
     // The gas rewards were updated.
-    GasRewardsCpv0 gas_rewards_cpv_0_update = 8;
+    GasRewards gas_rewards_update = 8;
     // The minimum amount of CCD needed to be come a baker was updated.
     BakerStakeThreshold baker_stake_threshold_update = 9;
     // The root keys were updated.
@@ -2904,6 +2904,9 @@ message ChainParametersV1 {
   // Extra number of epochs before reduction in stake, or baker
   // deregistration is completed.
   CooldownParametersCpv1 cooldown_parameters = 4;
+  // Current time parameters.
+  // The time parameters indicates the mint rate and the
+  // reward period length, i.e. the time between paydays.
   TimeParametersCpv1 time_parameters = 5;
   // The limit for the number of account creations in a block.
   CredentialsPerBlockLimit account_creation_limit = 6;
@@ -2936,6 +2939,9 @@ message ChainParametersV2 {
   // Extra number of epochs before reduction in stake, or baker
   // deregistration is completed.
   CooldownParametersCpv1 cooldown_parameters = 4;
+  // Current time parameters.
+  // The time parameters indicates the mint rate and the
+  // reward period length, i.e. the time between paydays.
   TimeParametersCpv1 time_parameters = 5;
   // The limit for the number of account creations in a block.
   CredentialsPerBlockLimit account_creation_limit = 6;
