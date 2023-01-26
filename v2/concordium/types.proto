@@ -2880,7 +2880,7 @@ message ChainParametersV0 {
   // Current transaction fee distribution.
   TransactionFeeDistribution transaction_fee_distribution = 7;
   // Current gas reward parameters.
-  GasRewardsCpv0 gas_rewards = 8;
+  GasRewards gas_rewards = 8;
   // The foundation account.
   AccountAddress foundation_account = 9;
   // Minimum threshold for becoming a baker.
@@ -2915,7 +2915,7 @@ message ChainParametersV1 {
   // Current transaction fee distribution.
   TransactionFeeDistribution transaction_fee_distribution = 8;
   // Current gas reward parameters.
-  GasRewardsCpv0 gas_rewards = 9;
+  GasRewards gas_rewards = 9;
   // The foundation account.
   AccountAddress foundation_account = 10;
   // Parameters governing baking pools and their commissions.
