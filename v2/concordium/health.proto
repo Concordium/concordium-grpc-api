@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 package concordium.health;
+option java_package = "com.concordium.grpc.v2";
+option java_multiple_files = true;
 
 // Parameters to the node health query. The default message gives a good
 // default.

@@ -3,6 +3,8 @@ syntax = "proto3";
 import "v2/concordium/types.proto";
 
 package concordium.v2;
+option java_package = "com.concordium.grpc.v2";
+option java_multiple_files = true;
 
 service Queries {
   // Return a stream of blocks that arrive from the time the query is made onward.
