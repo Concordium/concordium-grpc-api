@@ -1333,6 +1333,19 @@ message ConsensusParametersV1 {
   Energy block_energy_limit = 3;
 }
 
+// Finalization committee parameters used from protocol version 6
+message FinalizationCommitteeParameters {
+  // The minimum number of bakers that can take part
+  // of the finalization committee.
+  uint64 minimum_finalizers = 1;
+  // The maximum number of bakers that can take part
+  // of the finalization committee.
+  uint64 maximum_finalizers = 2;
+  // Finalizer threshold.
+  // Minimum required (micro) CCD for joining the finalization committee.
+  Amount finalizer_threshold = 3;
+}
+
 // Represents an exchange rate.
 message ExchangeRate {
   Ratio value = 1;
@@ -1709,6 +1722,8 @@ message UpdatePayload {
     Duration min_block_time_update = 20;
     // The block energy limit was updated (chain parameters version 2).
     Energy block_energy_limit_update = 21;
+    // Finalization committee parameters (chain parameters version 2).
+    FinalizationCommitteeParameters finalization_committee_parameters = 22;
   }
 }
 
@@ -2435,6 +2450,8 @@ message PendingUpdate {
     Duration min_block_time = 23;
     // Updates to the block energy limit for chain parameters version 2.
     Energy block_energy_limit = 24;
+    // Updates to the finalization committee for for chain parameters version 2.
+    FinalizationCommitteeParameters finalization_committee_parameters = 25;
   }
 }
 
@@ -2472,6 +2489,14 @@ message NextUpdateSequenceNumbers {
   SequenceNumber cooldown_parameters = 15;
   // Updates to time parameters for chain parameters version 1 introduced in protocol version 4.
   SequenceNumber time_parameters = 16;
+  // Updates to the timeout parameters
+  SequenceNumber timeout_parameters = 17;
+  // Updates to the the minimum time between blocks for chain parameters version 2.
+  SequenceNumber min_block_time = 18;
+  // Updates to the block energy limit for chain parameters version 2.
+  SequenceNumber block_energy_limit = 19;
+  // Updates to the finalization committee parameters
+  SequenceNumber finalization_committee_parameters = 20;
 }
 
 // A request to send a new block item to the chain.
@@ -2970,6 +2995,8 @@ message ChainParametersV2 {
   HigherLevelKeys level1_keys = 13;
   // Keys allowed to do parameter updates.
   AuthorizationsV1 level2_keys = 14;
+  // Finalization committee parameters
+  FinalizationCommitteeParameters finalizate_committee_parameters = 15;
 }
 
 
