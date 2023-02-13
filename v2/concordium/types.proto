@@ -1438,6 +1438,12 @@ message AuthorizationsV1 {
   AccessStructure parameter_time = 3;
 }
 
+message AuthorizationsV2 {
+  AuthorizationsV0 v0 = 1;
+  AuthorizationsV1 v1 = 2;
+  AccessStructure finalization_committee_parameters = 3;
+}
+
 // Description either of an anonymity revoker or identity provider.
 // Metadata that should be visible on the chain.
 message Description {
@@ -2995,9 +3001,9 @@ message ChainParametersV2 {
   // Keys allowed to do level1 updates;
   HigherLevelKeys level1_keys = 13;
   // Keys allowed to do parameter updates.
-  AuthorizationsV1 level2_keys = 14;
+  AuthorizationsV2 level2_keys = 14;
   // Finalization committee parameters
-  FinalizationCommitteeParameters finalizate_committee_parameters = 15;
+  FinalizationCommitteeParameters finalization_committee_parameters = 15;
 }
 
 
