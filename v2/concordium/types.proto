@@ -1723,7 +1723,7 @@ message UpdatePayload {
     // The block energy limit was updated (chain parameters version 2).
     Energy block_energy_limit_update = 21;
     // Finalization committee parameters (chain parameters version 2).
-    FinalizationCommitteeParameters finalization_committee_parameters = 22;
+    FinalizationCommitteeParameters finalization_committee_parameters_update = 22;
   }
 }
 
