@@ -2996,7 +2996,10 @@ message ChainParametersV2 {
   HigherLevelKeys root_keys = 12;
   // Keys allowed to do level1 updates;
   HigherLevelKeys level1_keys = 13;
+  // Keys allowed to do parameter updates.
+  AuthorizationsV1 level2_keys = 14;
 }
+
 
 // Chain parameters.
 message ChainParameters {
