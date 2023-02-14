@@ -1323,16 +1323,6 @@ message TimeoutParameters {
   Ratio timeout_decrease = 3;
 }
 
-// Parameters for the consensus protocol used from protocol version 6.
-message ConsensusParametersV1 {
-  // Parameters controlling round timeouts.
-  TimeoutParameters timeout_parameters = 1;
-  // Minimum time interval between blocks.
-  Duration min_block_time = 2;
-  // Maximum energy allowed per block.
-  Energy block_energy_limit = 3;
-}
-
 // Finalization committee parameters used from protocol version 6
 message FinalizationCommitteeParameters {
   // The minimum number of bakers that can take part
@@ -1344,6 +1334,18 @@ message FinalizationCommitteeParameters {
   // Finalizer threshold.
   // Minimum required (micro) CCD for joining the finalization committee.
   Amount finalizer_threshold = 3;
+}
+
+// Parameters for the consensus protocol used from protocol version 6.
+message ConsensusParametersV1 {
+  // Parameters controlling round timeouts.
+  TimeoutParameters timeout_parameters = 1;
+  // Minimum time interval between blocks.
+  Duration min_block_time = 2;
+  // Maximum energy allowed per block.
+  Energy block_energy_limit = 3;
+  // Finalization committee parameters
+  FinalizationCommitteeParameters finalization_committee_parameters = 4;
 }
 
 // Represents an exchange rate.
@@ -1436,12 +1438,6 @@ message AuthorizationsV1 {
   AccessStructure parameter_cooldown = 2;
   // Access structure for updating the length of the reward period.
   AccessStructure parameter_time = 3;
-}
-
-message AuthorizationsV2 {
-  AuthorizationsV0 v0 = 1;
-  AuthorizationsV1 v1 = 2;
-  AccessStructure finalization_committee_parameters = 3;
 }
 
 // Description either of an anonymity revoker or identity provider.
@@ -3000,12 +2996,7 @@ message ChainParametersV2 {
   HigherLevelKeys root_keys = 12;
   // Keys allowed to do level1 updates;
   HigherLevelKeys level1_keys = 13;
-  // Keys allowed to do parameter updates.
-  AuthorizationsV2 level2_keys = 14;
-  // Finalization committee parameters
-  FinalizationCommitteeParameters finalization_committee_parameters = 15;
 }
-
 
 // Chain parameters.
 message ChainParameters {
