@@ -1331,9 +1331,9 @@ message FinalizationCommitteeParameters {
   // The maximum number of bakers that can take part
   // of the finalization committee.
   uint64 maximum_finalizers = 2;
-  // Finalizer threshold.
-  // Minimum required (micro) CCD for joining the finalization committee.
-  Amount finalizer_threshold = 3;
+  // Stake threshold.
+  // Minimum required (micro) CCD for being eligible for the finalization committee.
+  Amount stake_threshold = 3;
 }
 
 // Parameters for the consensus protocol used from protocol version 6.
@@ -1344,8 +1344,6 @@ message ConsensusParametersV1 {
   Duration min_block_time = 2;
   // Maximum energy allowed per block.
   Energy block_energy_limit = 3;
-  // Finalization committee parameters
-  FinalizationCommitteeParameters finalization_committee_parameters = 4;
 }
 
 // Represents an exchange rate.
@@ -2998,8 +2996,9 @@ message ChainParametersV2 {
   HigherLevelKeys level1_keys = 13;
   // Keys allowed to do parameter updates.
   AuthorizationsV1 level2_keys = 14;
+  // Finalization committee parameters
+  FinalizationCommitteeParameters finalization_committee_parameters = 15;
 }
-
 
 // Chain parameters.
 message ChainParameters {
