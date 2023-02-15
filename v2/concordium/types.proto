@@ -1323,35 +1323,17 @@ message TimeoutParameters {
   Ratio timeout_decrease = 3;
 }
 
-//Determining the staking threshold required for being eligible the finalization committee.
-// The amount is given by "total staked ccd / finalizer_relative_stake_threshold"
-message FinalizerRelativeStakeThreshold {
-  uint32 value = 1;
-}
-
-// The minimum number of bakers that can take part
-// of the finalization committee.
-message MinimumFinalizers {
-  uint32 value = 1;
-}
-
-// The maximum number of bakers that can take part
-// of the finalization committee.
-message MaximumFinalizers {
-  uint32 value = 1;
-}
-
 // Finalization committee parameters used from protocol version 6
 message FinalizationCommitteeParameters {
   // The minimum number of bakers that can take part
   // of the finalization committee.
-  MinimumFinalizers minimum_finalizers = 1;
+  uint32 minimum_finalizers = 1;
   // The maximum number of bakers that can take part
   // of the finalization committee.
-  MaximumFinalizers maximum_finalizers = 2;
+  uint32 maximum_finalizers = 2;
   // The threshold for determining the stake required for being eligible the finalization committee.
   // The amount is given by "total staked ccd / finalizer_relative_stake_threshold"
-  FinalizerRelativeStakeThreshold finalizer_relative_stake_threshold = 3;
+  uint32 finalizer_relative_stake_threshold = 3;
 }
 
 // Parameters for the consensus protocol used from protocol version 6.
