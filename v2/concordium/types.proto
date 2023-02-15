@@ -1333,7 +1333,7 @@ message FinalizationCommitteeParameters {
   uint32 maximum_finalizers = 2;
   // The threshold for determining the stake required for being eligible the finalization committee.
   // The amount is given by "total staked ccd / finalizer_relative_stake_threshold"
-  uint32 finalizer_relative_stake_threshold = 3;
+  AmountFraction finalizer_relative_stake_threshold = 3;
 }
 
 // Parameters for the consensus protocol used from protocol version 6.
