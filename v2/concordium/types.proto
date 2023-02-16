@@ -1325,13 +1325,12 @@ message TimeoutParameters {
 
 // Finalization committee parameters used from protocol version 6
 message FinalizationCommitteeParameters {
-  // The minimum number of bakers that can take part
-  // of the finalization committee.
+  // The minimum size of a finalization committee.
   uint32 minimum_finalizers = 1;
-  // The maximum size of a finalization committee
+  // The maximum size of a finalization committee.
   uint32 maximum_finalizers = 2;
   // The threshold for determining the stake required for being eligible the finalization committee.
-  // The amount is given by "total staked ccd / finalizer_relative_stake_threshold"
+  // The amount is given by `total stake in pools * finalizer_relative_stake_threshold`
   AmountFraction finalizer_relative_stake_threshold = 3;
 }
 
