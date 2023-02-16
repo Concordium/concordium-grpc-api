@@ -1325,7 +1325,7 @@ message TimeoutParameters {
 
 // Finalization committee parameters used from protocol version 6
 message FinalizationCommitteeParameters {
-  // The minimum size of a finalization committee.
+  // The minimum size of a finalization committee before `finalizer_relative_stake_threshold` takes effect.
   uint32 minimum_finalizers = 1;
   // The maximum size of a finalization committee.
   uint32 maximum_finalizers = 2;
