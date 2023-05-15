@@ -514,6 +514,7 @@ message BlockHashInput {
     BlockHash given = 3;
     // Query for a block at height, if a unique block can be identified at that height.
     AbsoluteBlockHeight absolute_height = 4;
+    // Query for a block at height relative to a genesis index.
     RelativeHeight relative_height = 5;
   }
 }
