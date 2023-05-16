@@ -512,7 +512,7 @@ message BlockHashInput {
     Empty last_final = 2;
     // Query for the block specified by the hash. This hash should always be 32 bytes.
     BlockHash given = 3;
-    // Query for a block at height, if a unique block can be identified at that height.
+    // Query for a block at absolute height, if a unique block can be identified at that height.
     AbsoluteBlockHeight absolute_height = 4;
     // Query for a block at height relative to a genesis index.
     RelativeHeight relative_height = 5;
