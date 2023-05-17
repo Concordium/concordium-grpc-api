@@ -495,6 +495,16 @@ message AccountInfo {
 
 // Input to queries which take a block as a parameter.
 message BlockHashInput {
+  // Request using a relative block height.
+  message RelativeHeight {
+    // Genesis index to start from.
+    GenesisIndex genesis_index = 1;
+    // Height starting from the genesis block at the genesis index.
+    BlockHeight height = 2;
+     // Whether to return results only from the specified genesis index (`true`),
+    // or allow results from more recent genesis indices as well (`false`).
+    bool restrict = 3;
+  }
   oneof block_hash_input {
     // Query for the best block.
     Empty best = 1;
@@ -502,6 +512,10 @@ message BlockHashInput {
     Empty last_final = 2;
     // Query for the block specified by the hash. This hash should always be 32 bytes.
     BlockHash given = 3;
+    // Query for a block at absolute height, if a unique block can be identified at that height.
+    AbsoluteBlockHeight absolute_height = 4;
+    // Query for a block at height relative to a genesis index.
+    RelativeHeight relative_height = 5;
   }
 }
 
@@ -1986,6 +2000,8 @@ message BlockInfo {
   uint32 transactions_size = 15;
   // The hash of the block state after this block.
   StateHash state_hash = 16;
+  // Protocol version to which the block belongs.
+  ProtocolVersion protocol_version = 17;
 }
 
 // Request for GetPoolInfo.
