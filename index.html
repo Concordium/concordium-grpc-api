@@ -459,6 +459,10 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.BlockHashInput.RelativeHeight"><span class="badge">M</span>BlockHashInput.RelativeHeight</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.BlockHeight"><span class="badge">M</span>BlockHeight</a>
                 </li>
               
@@ -579,6 +583,10 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.ChainParametersV2"><span class="badge">M</span>ChainParametersV2</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.CommissionRanges"><span class="badge">M</span>CommissionRanges</a>
                 </li>
               
@@ -592,6 +600,10 @@
               
                 <li>
                   <a href="#concordium.v2.ConsensusInfo"><span class="badge">M</span>ConsensusInfo</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.ConsensusParametersV1"><span class="badge">M</span>ConsensusParametersV1</a>
                 </li>
               
                 <li>
@@ -624,6 +636,10 @@
               
                 <li>
                   <a href="#concordium.v2.ContractTraceElement.Transferred"><span class="badge">M</span>ContractTraceElement.Transferred</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.ContractTraceElement.Upgraded"><span class="badge">M</span>ContractTraceElement.Upgraded</a>
                 </li>
               
                 <li>
@@ -767,6 +783,10 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.FinalizationCommitteeParameters"><span class="badge">M</span>FinalizationCommitteeParameters</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.FinalizationIndex"><span class="badge">M</span>FinalizationIndex</a>
                 </li>
               
@@ -784,6 +804,10 @@
               
                 <li>
                   <a href="#concordium.v2.GasRewards"><span class="badge">M</span>GasRewards</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.GasRewardsCpv2"><span class="badge">M</span>GasRewardsCpv2</a>
                 </li>
               
                 <li>
@@ -1160,6 +1184,10 @@
               
                 <li>
                   <a href="#concordium.v2.TimeParametersCpv1"><span class="badge">M</span>TimeParametersCpv1</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.TimeoutParameters"><span class="badge">M</span>TimeoutParameters</a>
                 </li>
               
                 <li>
@@ -2969,10 +2997,11 @@ The map cannot contain more than 2^8 signatures. </p></td>
                 </tr>
               
                 <tr>
-                  <td>parameter_election_difficulty</td>
+                  <td>parameter_consensus</td>
                   <td><a href="#concordium.v2.AccessStructure">AccessStructure</a></td>
                   <td></td>
-                  <td><p>Access structure for updating the election difficulty. </p></td>
+                  <td><p>Access structure for updating the consensus parameters.
+Previously, this was the election difficulty. </p></td>
                 </tr>
               
                 <tr>
@@ -3899,6 +3928,59 @@ lottery. </p></td>
                   <td><p>Query for the block specified by the hash. This hash should always be 32 bytes. </p></td>
                 </tr>
               
+                <tr>
+                  <td>absolute_height</td>
+                  <td><a href="#concordium.v2.AbsoluteBlockHeight">AbsoluteBlockHeight</a></td>
+                  <td></td>
+                  <td><p>Query for a block at absolute height, if a unique block can be identified at that height. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>relative_height</td>
+                  <td><a href="#concordium.v2.BlockHashInput.RelativeHeight">BlockHashInput.RelativeHeight</a></td>
+                  <td></td>
+                  <td><p>Query for a block at height relative to a genesis index. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.BlockHashInput.RelativeHeight">BlockHashInput.RelativeHeight</h3>
+        <p>Request using a relative block height.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>genesis_index</td>
+                  <td><a href="#concordium.v2.GenesisIndex">GenesisIndex</a></td>
+                  <td></td>
+                  <td><p>Genesis index to start from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#concordium.v2.BlockHeight">BlockHeight</a></td>
+                  <td></td>
+                  <td><p>Height starting from the genesis block at the genesis index. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>restrict</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Whether to return results only from the specified genesis index (`true`),
+or allow results from more recent genesis indices as well (`false`). </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -4052,6 +4134,13 @@ preceded this block, and defines the era of the block. </p></td>
                   <td><a href="#concordium.v2.StateHash">StateHash</a></td>
                   <td></td>
                   <td><p>The hash of the block state after this block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>protocol_version</td>
+                  <td><a href="#concordium.v2.ProtocolVersion">ProtocolVersion</a></td>
+                  <td></td>
+                  <td><p>Protocol version to which the block belongs. </p></td>
                 </tr>
               
             </tbody>
@@ -5018,7 +5107,14 @@ or allow results from more recent genesis indices as well (`false`). </p></td>
                   <td>v1</td>
                   <td><a href="#concordium.v2.ChainParametersV1">ChainParametersV1</a></td>
                   <td></td>
-                  <td><p>Chain parameters that apply when the block is a protocol version 4 or up block. </p></td>
+                  <td><p>Chain parameters that apply when the block is a protocol version 4-5 block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>v2</td>
+                  <td><a href="#concordium.v2.ChainParametersV2">ChainParametersV2</a></td>
+                  <td></td>
+                  <td><p>Chain parameters that apply when the block is a protocol version 6- block. </p></td>
                 </tr>
               
             </tbody>
@@ -5138,7 +5234,7 @@ deregistration is completed. </p></td>
         
       
         <h3 id="concordium.v2.ChainParametersV1">ChainParametersV1</h3>
-        <p>Updatable chain parameters that apply to protocol versions 1-3.</p>
+        <p>Updatable chain parameters that apply to protocol versions 4-5.</p>
 
         
           <table class="field-table">
@@ -5180,7 +5276,9 @@ deregistration is completed. </p></td>
                   <td>time_parameters</td>
                   <td><a href="#concordium.v2.TimeParametersCpv1">TimeParametersCpv1</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Current time parameters.
+The time parameters indicates the mint rate and the
+reward period length, i.e. the time between paydays. </p></td>
                 </tr>
               
                 <tr>
@@ -5244,6 +5342,131 @@ deregistration is completed. </p></td>
                   <td><a href="#concordium.v2.AuthorizationsV1">AuthorizationsV1</a></td>
                   <td></td>
                   <td><p>Keys allowed to do parameter updates. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.ChainParametersV2">ChainParametersV2</h3>
+        <p>Updatable chain parameters that apply to protocol versions 6.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>consensus_parameters</td>
+                  <td><a href="#concordium.v2.ConsensusParametersV1">ConsensusParametersV1</a></td>
+                  <td></td>
+                  <td><p>Consensus parameters. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>euro_per_energy</td>
+                  <td><a href="#concordium.v2.ExchangeRate">ExchangeRate</a></td>
+                  <td></td>
+                  <td><p>Euro per energy exchange rate. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>micro_ccd_per_euro</td>
+                  <td><a href="#concordium.v2.ExchangeRate">ExchangeRate</a></td>
+                  <td></td>
+                  <td><p>Micro CCD per euro exchange rate. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cooldown_parameters</td>
+                  <td><a href="#concordium.v2.CooldownParametersCpv1">CooldownParametersCpv1</a></td>
+                  <td></td>
+                  <td><p>Extra number of epochs before reduction in stake, or baker
+deregistration is completed. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>time_parameters</td>
+                  <td><a href="#concordium.v2.TimeParametersCpv1">TimeParametersCpv1</a></td>
+                  <td></td>
+                  <td><p>Current time parameters.
+The time parameters indicates the mint rate and the
+reward period length, i.e. the time between paydays. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>account_creation_limit</td>
+                  <td><a href="#concordium.v2.CredentialsPerBlockLimit">CredentialsPerBlockLimit</a></td>
+                  <td></td>
+                  <td><p>The limit for the number of account creations in a block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mint_distribution</td>
+                  <td><a href="#concordium.v2.MintDistributionCpv1">MintDistributionCpv1</a></td>
+                  <td></td>
+                  <td><p>Current mint distribution </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transaction_fee_distribution</td>
+                  <td><a href="#concordium.v2.TransactionFeeDistribution">TransactionFeeDistribution</a></td>
+                  <td></td>
+                  <td><p>Current transaction fee distribution. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>gas_rewards</td>
+                  <td><a href="#concordium.v2.GasRewardsCpv2">GasRewardsCpv2</a></td>
+                  <td></td>
+                  <td><p>Current gas reward parameters. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>foundation_account</td>
+                  <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
+                  <td></td>
+                  <td><p>The foundation account. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pool_parameters</td>
+                  <td><a href="#concordium.v2.PoolParametersCpv1">PoolParametersCpv1</a></td>
+                  <td></td>
+                  <td><p>Parameters governing baking pools and their commissions. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>root_keys</td>
+                  <td><a href="#concordium.v2.HigherLevelKeys">HigherLevelKeys</a></td>
+                  <td></td>
+                  <td><p>Keys allowed to do root updates. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>level1_keys</td>
+                  <td><a href="#concordium.v2.HigherLevelKeys">HigherLevelKeys</a></td>
+                  <td></td>
+                  <td><p>Keys allowed to do level1 updates; </p></td>
+                </tr>
+              
+                <tr>
+                  <td>level2_keys</td>
+                  <td><a href="#concordium.v2.AuthorizationsV1">AuthorizationsV1</a></td>
+                  <td></td>
+                  <td><p>Keys allowed to do parameter updates. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>finalization_committee_parameters</td>
+                  <td><a href="#concordium.v2.FinalizationCommitteeParameters">FinalizationCommitteeParameters</a></td>
+                  <td></td>
+                  <td><p>Finalization committee parameters </p></td>
                 </tr>
               
             </tbody>
@@ -5584,6 +5807,44 @@ Initially this is equal to &#39;genesis_block&#39;. </p></td>
 
         
       
+        <h3 id="concordium.v2.ConsensusParametersV1">ConsensusParametersV1</h3>
+        <p>Parameters for the consensus protocol used from protocol version 6.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>timeout_parameters</td>
+                  <td><a href="#concordium.v2.TimeoutParameters">TimeoutParameters</a></td>
+                  <td></td>
+                  <td><p>Parameters controlling round timeouts. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>min_block_time</td>
+                  <td><a href="#concordium.v2.Duration">Duration</a></td>
+                  <td></td>
+                  <td><p>Minimum time interval between blocks. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_energy_limit</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>Maximum energy allowed per block. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.ContractAddress">ContractAddress</h3>
         <p>Address of a smart contract instance.</p>
 
@@ -5762,6 +6023,13 @@ This occurs when a contract invokes another contract or makes a transfer to an a
                   <td><p>A previously interrupted contract was resumed. </p></td>
                 </tr>
               
+                <tr>
+                  <td>upgraded</td>
+                  <td><a href="#concordium.v2.ContractTraceElement.Upgraded">ContractTraceElement.Upgraded</a></td>
+                  <td></td>
+                  <td><p>A contract was upgraded. </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -5860,6 +6128,44 @@ This occurs when a contract invokes another contract or makes a transfer to an a
                   <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
                   <td></td>
                   <td><p>Receiver account. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.ContractTraceElement.Upgraded">ContractTraceElement.Upgraded</h3>
+        <p>A previously interrupted contract was resumed.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#concordium.v2.ContractAddress">ContractAddress</a></td>
+                  <td></td>
+                  <td><p>The that was upgraded. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#concordium.v2.ModuleRef">ModuleRef</a></td>
+                  <td></td>
+                  <td><p>The module from which the contract was upgraded. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#concordium.v2.ModuleRef">ModuleRef</a></td>
+                  <td></td>
+                  <td><p>The module to which it was upgraded. </p></td>
                 </tr>
               
             </tbody>
@@ -6998,6 +7304,45 @@ that aggregation kicks in. </p></td>
 
         
       
+        <h3 id="concordium.v2.FinalizationCommitteeParameters">FinalizationCommitteeParameters</h3>
+        <p>Finalization committee parameters used from protocol version 6</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>minimum_finalizers</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>The minimum size of a finalization committee before `finalizer_relative_stake_threshold` takes effect. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>maximum_finalizers</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>The maximum size of a finalization committee. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>finalizer_relative_stake_threshold</td>
+                  <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
+                  <td></td>
+                  <td><p>The threshold for determining the stake required for being eligible the finalization committee.
+The amount is given by `total stake in pools * finalizer_relative_stake_threshold` </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.FinalizationIndex">FinalizationIndex</h3>
         <p>Index of the finalization round. This increases on each successfully</p><p>completed finalization.</p>
 
@@ -7138,7 +7483,7 @@ finalization record or not. </p></td>
         
       
         <h3 id="concordium.v2.GasRewards">GasRewards</h3>
-        <p>Distribution of gas rewards.</p>
+        <p>Distribution of gas rewards for chain parameters version 0 and 1.</p>
 
         
           <table class="field-table">
@@ -7159,6 +7504,44 @@ finalization record or not. </p></td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
                   <td><p>Fraction paid for including a finalization proof in a block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>account_creation</td>
+                  <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
+                  <td></td>
+                  <td><p>Fraction paid for including each account creation transaction in a block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>chain_update</td>
+                  <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
+                  <td></td>
+                  <td><p>Fraction paid for including an update transaction in a block. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.GasRewardsCpv2">GasRewardsCpv2</h3>
+        <p>Distribution of gas rewards for chain parameters version 2.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>baker</td>
+                  <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
+                  <td></td>
+                  <td><p>The fraction paid to the baker. </p></td>
                 </tr>
               
                 <tr>
@@ -8613,6 +8996,34 @@ value produced by the contract. </p></td>
                   <td><p>Updates to time parameters for chain parameters version 1 introduced in protocol version 4. </p></td>
                 </tr>
               
+                <tr>
+                  <td>timeout_parameters</td>
+                  <td><a href="#concordium.v2.SequenceNumber">SequenceNumber</a></td>
+                  <td></td>
+                  <td><p>Updates to the timeout parameters </p></td>
+                </tr>
+              
+                <tr>
+                  <td>min_block_time</td>
+                  <td><a href="#concordium.v2.SequenceNumber">SequenceNumber</a></td>
+                  <td></td>
+                  <td><p>Updates to the the minimum time between blocks for chain parameters version 2. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_energy_limit</td>
+                  <td><a href="#concordium.v2.SequenceNumber">SequenceNumber</a></td>
+                  <td></td>
+                  <td><p>Updates to the block energy limit for chain parameters version 2. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>finalization_committee_parameters</td>
+                  <td><a href="#concordium.v2.SequenceNumber">SequenceNumber</a></td>
+                  <td></td>
+                  <td><p>Updates to the finalization committee parameters </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -9331,6 +9742,41 @@ and network messages such as pings and peer requests. </p></td>
                   <td><a href="#concordium.v2.TimeParametersCpv1">TimeParametersCpv1</a></td>
                   <td></td>
                   <td><p>Updates to time parameters for chain parameters version 1 introduced in protocol version 4. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>gas_rewards_cpv_2</td>
+                  <td><a href="#concordium.v2.GasRewardsCpv2">GasRewardsCpv2</a></td>
+                  <td></td>
+                  <td><p>Updates to the GAS rewards effective from protocol version 6 (chain parameters version 2). </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timeout_parameters</td>
+                  <td><a href="#concordium.v2.TimeoutParameters">TimeoutParameters</a></td>
+                  <td></td>
+                  <td><p>Updates to the consensus timeouts for chain parameters version 2. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>min_block_time</td>
+                  <td><a href="#concordium.v2.Duration">Duration</a></td>
+                  <td></td>
+                  <td><p>Updates to the the minimum time between blocks for chain parameters version 2. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_energy_limit</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>Updates to the block energy limit for chain parameters version 2. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>finalization_committee_parameters</td>
+                  <td><a href="#concordium.v2.FinalizationCommitteeParameters">FinalizationCommitteeParameters</a></td>
+                  <td></td>
+                  <td><p>Updates to the finalization committee for for chain parameters version 2. </p></td>
                 </tr>
               
             </tbody>
@@ -11019,6 +11465,44 @@ milliseconds. </p></td>
 
         
       
+        <h3 id="concordium.v2.TimeoutParameters">TimeoutParameters</h3>
+        <p>Parameters that determine timeouts in the consensus protocol used from protocol version 6.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>timeout_base</td>
+                  <td><a href="#concordium.v2.Duration">Duration</a></td>
+                  <td></td>
+                  <td><p>The base value for triggering a timeout </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timeout_increase</td>
+                  <td><a href="#concordium.v2.Ratio">Ratio</a></td>
+                  <td></td>
+                  <td><p>Factor for increasing the timeout. Must be greater than 1. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timeout_decrease</td>
+                  <td><a href="#concordium.v2.Ratio">Ratio</a></td>
+                  <td></td>
+                  <td><p>Factor for decreasing the timeout. Must be between 0 and 1. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.Timestamp">Timestamp</h3>
         <p>Unix timestamp in milliseconds.</p>
 
@@ -11778,6 +12262,41 @@ The type `UpdateKeysIndex`is not used directly, as messages cannot be keys in ma
                   <td><p>The mint distribution was updated. </p></td>
                 </tr>
               
+                <tr>
+                  <td>gas_rewards_cpv_2_update</td>
+                  <td><a href="#concordium.v2.GasRewardsCpv2">GasRewardsCpv2</a></td>
+                  <td></td>
+                  <td><p>The gas rewards were updated (chain parameters version 2). </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timeout_parameters_update</td>
+                  <td><a href="#concordium.v2.TimeoutParameters">TimeoutParameters</a></td>
+                  <td></td>
+                  <td><p>The consensus timeouts were updated (chain parameters version 2). </p></td>
+                </tr>
+              
+                <tr>
+                  <td>min_block_time_update</td>
+                  <td><a href="#concordium.v2.Duration">Duration</a></td>
+                  <td></td>
+                  <td><p>The minimum time between blocks was updated (chain parameters version 2). </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_energy_limit_update</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>The block energy limit was updated (chain parameters version 2). </p></td>
+                </tr>
+              
+                <tr>
+                  <td>finalization_committee_parameters_update</td>
+                  <td><a href="#concordium.v2.FinalizationCommitteeParameters">FinalizationCommitteeParameters</a></td>
+                  <td></td>
+                  <td><p>Finalization committee parameters (chain parameters version 2). </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -12128,6 +12647,12 @@ Once the peer has responded to the request, its status will be changed to:
                 <td><p></p></td>
               </tr>
             
+              <tr>
+                <td>PROTOCOL_VERSION_6</td>
+                <td>5</td>
+                <td><p></p></td>
+              </tr>
+            
           </tbody>
         </table>
       
@@ -12369,6 +12894,30 @@ Once the peer has responded to the request, its status will be changed to:
               <tr>
                 <td>UPDATE_TIME_PARAMETERS</td>
                 <td>15</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>UPDATE_TIMEOUT_PARAMETERS</td>
+                <td>16</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>UPDATE_MIN_BLOCK_TIME</td>
+                <td>17</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>UPDATE_BLOCK_ENERGY_LIMIT</td>
+                <td>18</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>UPDATE_FINALIZATION_COMMITTEE_PARAMETERS</td>
+                <td>19</td>
                 <td><p></p></td>
               </tr>
             
