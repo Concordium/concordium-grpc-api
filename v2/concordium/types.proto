@@ -11,6 +11,10 @@ option java_package = "com.concordium.grpc.v2";
 // If not generating Java code, this option has no effect.
 option java_multiple_files = true;
 
+// This specifies the package we want to use for our generated C# classes. 
+// Has no effect on code generated on other languages.
+option csharp_namespace = "Concordium.Grpc.V2";
+
 // A message that contains no information.
 message Empty {
 }
