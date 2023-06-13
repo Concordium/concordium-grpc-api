@@ -1888,7 +1888,7 @@ message ConsensusInfo {
   // Time of the (original) genesis block.
   Timestamp genesis_time = 3;
   // (Current) slot duration in milliseconds.
-  Duration slot_duration = 4;
+  optional Duration slot_duration = 4;
   // (Current) epoch duration in milliseconds.
   Duration epoch_duration = 5;
   // Hash of the last finalized block.
@@ -1945,6 +1945,10 @@ message ConsensusInfo {
   BlockHash current_era_genesis_block = 29;
   // Time when the current era started.
   Timestamp current_era_genesis_time = 30;
+  optional Duration current_timeout_duration = 31;
+  optional uint64 current_round = 32;
+  optional uint64 current_epoch = 33;
+  optional Timestamp trigger_block_time = 34;
 }
 
 // Information about an arrived block that is part of the streaming response.
@@ -1989,7 +1993,7 @@ message BlockInfo {
   // The time the block was verified.
   Timestamp arrive_time = 8;
   // The slot number in which the block was baked.
-  Slot slot_number = 9;
+  optional Slot slot_number = 9;
   // The time of the slot in which the block was baked.
   Timestamp slot_time = 10;
   // The baker id of account baking this block. Not provided for a genesis block.
@@ -2006,6 +2010,10 @@ message BlockInfo {
   StateHash state_hash = 16;
   // Protocol version to which the block belongs.
   ProtocolVersion protocol_version = 17;
+  // Block round
+  optional uint64 round = 18;
+  // Block epoch
+  optional uint64 epoch = 19;
 }
 
 // Request for GetPoolInfo.
@@ -2282,7 +2290,7 @@ message ElectionInfo {
   }
 
   // Baking lottery election difficulty.
-  ElectionDifficulty election_difficulty = 1;
+  optional ElectionDifficulty election_difficulty = 1;
   // Current leadership election nonce for the lottery.
   LeadershipElectionNonce election_nonce = 2;
   // List of the currently eligible bakers.
