@@ -2294,7 +2294,7 @@ message ElectionInfo {
     double lottery_power = 3;
   }
 
-  // Baking lottery election difficulty. Present in protocol versions 1-5.
+  // Baking lottery election difficulty. Present only in protocol versions 1-5.
   optional ElectionDifficulty election_difficulty = 1;
   // Current leadership election nonce for the lottery.
   LeadershipElectionNonce election_nonce = 2;
