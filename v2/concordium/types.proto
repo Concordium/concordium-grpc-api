@@ -1887,7 +1887,7 @@ message ConsensusInfo {
   BlockHash genesis_block = 2;
   // Time of the (original) genesis block.
   Timestamp genesis_time = 3;
-  // (Current) slot duration in milliseconds. Present in protocol versions 1-5.
+  // (Current) slot duration in milliseconds. Present only in protocol versions 1-5.
   optional Duration slot_duration = 4;
   // (Current) epoch duration in milliseconds.
   Duration epoch_duration = 5;
