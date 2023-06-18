@@ -1549,6 +1549,11 @@ message Epoch {
   uint64 value = 1;
 }
 
+// A round.
+message Round {
+  uint64 value = 1;
+}
+
 // Length of a reward period in epochs.
 // Must always be a strictly positive number.
 message RewardPeriodLength {
@@ -1887,8 +1892,8 @@ message ConsensusInfo {
   BlockHash genesis_block = 2;
   // Time of the (original) genesis block.
   Timestamp genesis_time = 3;
-  // (Current) slot duration in milliseconds.
-  Duration slot_duration = 4;
+  // (Current) slot duration in milliseconds. Present only in protocol versions 1-5.
+  optional Duration slot_duration = 4;
   // (Current) epoch duration in milliseconds.
   Duration epoch_duration = 5;
   // Hash of the last finalized block.
@@ -1945,6 +1950,15 @@ message ConsensusInfo {
   BlockHash current_era_genesis_block = 29;
   // Time when the current era started.
   Timestamp current_era_genesis_time = 30;
+  // The current duration to wait before a round times out. Present from protocol version 6.
+  optional Duration current_timeout_duration = 31;
+  // The current round. Present from protocol version 6.
+  optional Round current_round = 32;
+  // The current epoch. Present from protocol version 6.
+  optional Epoch current_epoch = 33;
+  // The first block in the epoch with timestamp at least this is considered to be the trigger block
+  // for the epoch transition. Present from protocol version 6.
+  optional Timestamp trigger_block_time = 34;
 }
 
 // Information about an arrived block that is part of the streaming response.
@@ -1988,8 +2002,8 @@ message BlockInfo {
   Timestamp receive_time = 7;
   // The time the block was verified.
   Timestamp arrive_time = 8;
-  // The slot number in which the block was baked.
-  Slot slot_number = 9;
+  // The slot number in which the block was baked. Present in protocol versions 1-5.
+  optional Slot slot_number = 9;
   // The time of the slot in which the block was baked.
   Timestamp slot_time = 10;
   // The baker id of account baking this block. Not provided for a genesis block.
@@ -2006,6 +2020,10 @@ message BlockInfo {
   StateHash state_hash = 16;
   // Protocol version to which the block belongs.
   ProtocolVersion protocol_version = 17;
+  // Block round. Present from protocol version 6.
+  optional Round round = 18;
+  // Block epoch. Present from protocol version 6.
+  optional Epoch epoch = 19;
 }
 
 // Request for GetPoolInfo.
@@ -2281,8 +2299,8 @@ message ElectionInfo {
     double lottery_power = 3;
   }
 
-  // Baking lottery election difficulty.
-  ElectionDifficulty election_difficulty = 1;
+  // Baking lottery election difficulty. Present only in protocol versions 1-5.
+  optional ElectionDifficulty election_difficulty = 1;
   // Current leadership election nonce for the lottery.
   LeadershipElectionNonce election_nonce = 2;
   // List of the currently eligible bakers.
