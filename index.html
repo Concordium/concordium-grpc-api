@@ -1139,6 +1139,10 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.Round"><span class="badge">M</span>Round</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.SendBlockItemRequest"><span class="badge">M</span>SendBlockItemRequest</a>
                 </li>
               
@@ -4083,8 +4087,8 @@ preceded this block, and defines the era of the block. </p></td>
                 <tr>
                   <td>slot_number</td>
                   <td><a href="#concordium.v2.Slot">Slot</a></td>
-                  <td></td>
-                  <td><p>The slot number in which the block was baked. </p></td>
+                  <td>optional</td>
+                  <td><p>The slot number in which the block was baked. Present in protocol versions 1-5. </p></td>
                 </tr>
               
                 <tr>
@@ -4141,6 +4145,20 @@ preceded this block, and defines the era of the block. </p></td>
                   <td><a href="#concordium.v2.ProtocolVersion">ProtocolVersion</a></td>
                   <td></td>
                   <td><p>Protocol version to which the block belongs. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>round</td>
+                  <td><a href="#concordium.v2.Round">Round</a></td>
+                  <td>optional</td>
+                  <td><p>Block round. Present from protocol version 6. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>epoch</td>
+                  <td><a href="#concordium.v2.Epoch">Epoch</a></td>
+                  <td>optional</td>
+                  <td><p>Block epoch. Present from protocol version 6. </p></td>
                 </tr>
               
             </tbody>
@@ -5610,8 +5628,8 @@ reward period length, i.e. the time between paydays. </p></td>
                 <tr>
                   <td>slot_duration</td>
                   <td><a href="#concordium.v2.Duration">Duration</a></td>
-                  <td></td>
-                  <td><p>(Current) slot duration in milliseconds. </p></td>
+                  <td>optional</td>
+                  <td><p>(Current) slot duration in milliseconds. Present only in protocol versions 1-5. </p></td>
                 </tr>
               
                 <tr>
@@ -5798,6 +5816,35 @@ Initially this is equal to &#39;genesis_block&#39;. </p></td>
                   <td><a href="#concordium.v2.Timestamp">Timestamp</a></td>
                   <td></td>
                   <td><p>Time when the current era started. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>current_timeout_duration</td>
+                  <td><a href="#concordium.v2.Duration">Duration</a></td>
+                  <td>optional</td>
+                  <td><p>The current duration to wait before a round times out. Present from protocol version 6. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>current_round</td>
+                  <td><a href="#concordium.v2.Round">Round</a></td>
+                  <td>optional</td>
+                  <td><p>The current round. Present from protocol version 6. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>current_epoch</td>
+                  <td><a href="#concordium.v2.Epoch">Epoch</a></td>
+                  <td>optional</td>
+                  <td><p>The current epoch. Present from protocol version 6. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>trigger_block_time</td>
+                  <td><a href="#concordium.v2.Timestamp">Timestamp</a></td>
+                  <td>optional</td>
+                  <td><p>The first block in the epoch with timestamp at least this is considered to be the trigger block
+for the epoch transition. Present from protocol version 6. </p></td>
                 </tr>
               
             </tbody>
@@ -6963,8 +7010,8 @@ Requires a valid path. </p></td>
                 <tr>
                   <td>election_difficulty</td>
                   <td><a href="#concordium.v2.ElectionDifficulty">ElectionDifficulty</a></td>
-                  <td></td>
-                  <td><p>Baking lottery election difficulty. </p></td>
+                  <td>optional</td>
+                  <td><p>Baking lottery election difficulty. Present only in protocol versions 1-5. </p></td>
                 </tr>
               
                 <tr>
@@ -11122,6 +11169,30 @@ capital. </p></td>
                   <td><a href="#concordium.v2.AuthorizationsV1">AuthorizationsV1</a></td>
                   <td></td>
                   <td><p>The level 2 keys were updated. This is similar to `level_2_keys_update_v0` except that a few more keys can be updated. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.Round">Round</h3>
+        <p>A round.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
