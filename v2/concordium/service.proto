@@ -248,4 +248,7 @@ service Queries {
 
   // Get the items of a block.
   rpc GetBlockItems(BlockHashInput) returns (stream BlockItem);
+
+  // Get all bakers in the reward period of a block.
+  rpc GetBakersRewardPeriod(BlockHashInput) returns (stream BakerRewardPeriodInfo);
 }
