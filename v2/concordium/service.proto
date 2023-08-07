@@ -170,6 +170,9 @@ service Queries {
   // Get next available sequence numbers for updating chain parameters after a given block.
   rpc GetNextUpdateSequenceNumbers (BlockHashInput) returns (NextUpdateSequenceNumbers);
 
+  // Get the projected earliest time at which a particular baker will be required to bake a block.
+  rpc GetBakerEarliestWinTime(BakerId) returns (Timestamp);
+
   // Shut down the node.
   // Return a GRPC error if the shutdown failed.
   rpc Shutdown(Empty) returns (Empty);
