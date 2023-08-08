@@ -248,4 +248,11 @@ service Queries {
 
   // Get the items of a block.
   rpc GetBlockItems(BlockHashInput) returns (stream BlockItem);
+
+  // For a non-genesis block, this returns the quorum certificate, a timeout
+  // certificate (if present) and epoch finalization entry (if present).
+  // If the node does not support ConcordiumBFT (protocol versions < 6), then
+  // the response will be a grpc error (invalid argument) as the 'BlockHashInput'
+  // does not point to a block produced via ConcordiumBFT.
+  rpc GetBlockCertificates(BlockHashInput) returns (BlockCertificates);
 }
