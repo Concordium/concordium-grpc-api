@@ -3159,10 +3159,10 @@ message TimeoutCertificate {
   Epoch min_epoch = 2;
   // The rounds of which finalizers have their best
   // QCs in the 'min_epoch'.
-  FinalizerRound qc_rounds_first_epoch = 3;
+  repeated FinalizerRound qc_rounds_first_epoch = 3;
   // The rounds of which finalizers have their best
   // QCs in the epoch 'min_epoch' + 1.
-  FinalizerRound qc_rounds_second_epoch = 4;
+  repeated FinalizerRound qc_rounds_second_epoch = 4;
   // The aggregated signature by the finalization committee that witnessed
   // the 'round' timed out.
   TimeoutSignature aggregate_signature = 5;
