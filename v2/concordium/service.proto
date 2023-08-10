@@ -248,4 +248,9 @@ service Queries {
 
   // Get the items of a block.
   rpc GetBlockItems(BlockHashInput) returns (stream BlockItem);
+
+  // Get all bakers in the reward period of a block.
+  // This endpoint is only supported for protocol version 6 and onwards.
+  // If the protocol does not support the endpoint then an  'IllegalArgument' error is returned.
+  rpc GetBakersRewardPeriod(BlockHashInput) returns (stream BakerRewardPeriodInfo);
 }
