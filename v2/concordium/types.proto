@@ -3104,6 +3104,24 @@ message BlockItem {
   }
 }
 
+// Information about a particular baker with respect to
+// the current reward period.
+message BakerRewardPeriodInfo {
+  // The baker id and public keys for the baker.
+  BakerInfo baker = 1;
+  // The effective stake of the baker for the consensus protocol.
+  // The returned amount accounts for delegation, capital bounds and leverage bounds.
+  Amount effective_stake = 2;
+  // The effective commission rate for the baker that applies for the reward period.
+  CommissionRates commission_rates = 3;
+  // The amount staked by the baker itself.
+  Amount equity_capital = 4;
+  // The total amount of capital delegated to this baker pool.
+  Amount delegated_capital = 5;
+  // Whether the baker is a finalizer or not.
+  bool is_finalizer = 6;
+}
+
 // The signature of a 'QuorumCertificate'.
 message QuorumSignature {
   // The bytes representing the raw aggregate signature.

@@ -249,6 +249,11 @@ service Queries {
   // Get the items of a block.
   rpc GetBlockItems(BlockHashInput) returns (stream BlockItem);
 
+  // Get all bakers in the reward period of a block.
+  // This endpoint is only supported for protocol version 6 and onwards.
+  // If the protocol does not support the endpoint then an  'IllegalArgument' error is returned.
+  rpc GetBakersRewardPeriod(BlockHashInput) returns (stream BakerRewardPeriodInfo);
+
   // For a non-genesis block, this returns the quorum certificate, a timeout
   // certificate (if present) and epoch finalization entry (if present).
   // If the node does not support ConcordiumBFT (protocol versions < 6), then
