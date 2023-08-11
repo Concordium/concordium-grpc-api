@@ -2072,6 +2072,8 @@ message PoolCurrentPaydayInfo {
   Amount baker_equity_capital = 6;
   // The effective delegated capital to the pool for the current reward period.
   Amount delegated_capital = 7;
+  // The commission rates that apply for the current reward period.
+  CommissionRates commission_rates = 8;
 }
 
 // Type for the response of GetPoolInfo.
