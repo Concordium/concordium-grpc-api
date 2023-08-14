@@ -4,6 +4,7 @@
 
 - Add `GetBakersRewardPeriod` endpoint.
 - Add `GetBlockCertificates` endpoint.
+- Add a `CommissionRates` field for `PoolCurrentPaydayInfo`.
 
 ## Node 6.0 API
 
