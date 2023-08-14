@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Add `GetBakersRewardPeriod` endpoint.
+- Add a `CommissionRates` field for `PoolCurrentPaydayInfo`.
 
 ## Node 6.0 API
 
