@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Add `GetBakersRewardPeriod` endpoint.
+- Add `GetBlockCertificates` endpoint.
 
 ## Node 6.0 API
 

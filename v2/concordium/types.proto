@@ -3125,6 +3125,7 @@ message BakerRewardPeriodInfo {
 // The signature of a 'QuorumCertificate'.
 message QuorumSignature {
   // The bytes representing the raw aggregate signature.
+  // The bytes have a fixed length of 48 bytes.
   bytes value = 1;
 }
 
@@ -3162,6 +3163,7 @@ message FinalizerRound {
 // The signature of a 'TimeoutCertificate'.
 message TimeoutSignature {
   // The bytes representing the raw aggregate signature.
+  // The bytes have a fixed length of 48 bytes.
   bytes value = 1;
 }
 
@@ -3195,9 +3197,9 @@ message SuccessorProof {
 }
 
 // The epoch finalization entry is the proof that
-// makes to protocol able to advance to a new epoch.
-// I.e. the 'EpochFinalizationEntry' is present only
-// if the block is the first block of a new 'Epoch'.
+// makes the protocol able to advance to a new epoch.
+// I.e. the 'EpochFinalizationEntry' is present if and only if
+// the block is the first block of a new 'Epoch'.
 message EpochFinalizationEntry {
   // The quorum certificate for the finalized block.
   QuorumCertificate finalized_qc = 1;
@@ -3213,7 +3215,7 @@ message EpochFinalizationEntry {
 // Certificates for a block for protocols supporting
 // ConcordiumBFT.
 message BlockCertificates {
-  // The quorum certificate. Is present only if the block is
+  // The quorum certificate. Is present if and only if the block is
   // not a genesis block.
   optional QuorumCertificate quorum_certificate = 1;
   // The timeout certificate. Is present only if the round prior to the

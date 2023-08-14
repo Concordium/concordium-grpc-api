@@ -256,8 +256,9 @@ service Queries {
 
   // For a non-genesis block, this returns the quorum certificate, a timeout
   // certificate (if present) and epoch finalization entry (if present).
-  // If the node does not support ConcordiumBFT (protocol versions < 6), then
-  // the response will be a grpc error (invalid argument) as the 'BlockHashInput'
-  // does not point to a block produced via ConcordiumBFT.
+  // Note that, if the block being pointed to is not a product of ConcordiumBFT,
+  // then the response will be a grpc error (invalid argument).
+  // If the endpoint is not enabled by the node, then an 'unimplemented' error
+  // will be returned.
   rpc GetBlockCertificates(BlockHashInput) returns (BlockCertificates);
 }
