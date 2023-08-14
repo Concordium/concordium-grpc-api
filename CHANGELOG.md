@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased changes
+## Unreleased
+
+- Add `GetBakersRewardPeriod` endpoint.
+
+## Node 6.0 API
 
 - Expand `BlockHashInput` to support querying by block height.
 - Add `protocol_version` to the return of BlockInfo.
