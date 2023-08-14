@@ -3193,6 +3193,7 @@ message TimeoutCertificate {
 // the finalized block.
 message SuccessorProof {
   // The proof represented as raw bytes.
+  // The bytes have a fixed length of 32 bytes.
   bytes value = 1;
 }
 
