@@ -3106,6 +3106,8 @@ message BlockItem {
   }
 }
 
+// Information about a particular baker with respect to
+// the current reward period.
 message BakerRewardPeriodInfo {
   // The baker id and public keys for the baker.
   BakerInfo baker = 1;
@@ -3120,4 +3122,109 @@ message BakerRewardPeriodInfo {
   Amount delegated_capital = 5;
   // Whether the baker is a finalizer or not.
   bool is_finalizer = 6;
+}
+
+// The signature of a 'QuorumCertificate'.
+message QuorumSignature {
+  // The bytes representing the raw aggregate signature.
+  // The bytes have a fixed length of 48 bytes.
+  bytes value = 1;
+}
+
+// A quorum certificate is the certificate that the
+// finalization comittee issues in order to certify a block.
+// A block must be certified before it will be part of the
+// authorative part of the chain.
+message QuorumCertificate {
+  // The hash of the block that the quorum certificate refers to.
+  BlockHash block_hash = 1;
+  // The round of the block.
+  Round round = 2;
+  // The epoch of the block.
+  Epoch epoch = 3;
+  // The aggregated signature by the finalization committee on the block.
+  QuorumSignature aggregate_signature = 4;
+  // A list of the finalizers that formed the quorum certificate
+  // i.e., the ones who have contributed to the 'aggregate_siganture'.
+  // The finalizers are identified by their baker id as this is stable
+  // across protocols and epochs.
+  repeated BakerId signatories = 5;
+}
+
+// The finalizer round is a map from a 'Round'
+// to the list of finalizers (identified by their 'BakerId') that signed
+// off the round.
+message FinalizerRound {
+  // The round that was signed off.
+  Round round = 1;
+  // The finalizers (identified by their 'BakerId' that
+  // signed off the in 'round'.
+  repeated BakerId finalizers = 2;
+}
+
+// The signature of a 'TimeoutCertificate'.
+message TimeoutSignature {
+  // The bytes representing the raw aggregate signature.
+  // The bytes have a fixed length of 48 bytes.
+  bytes value = 1;
+}
+
+// A timeout certificate is the certificate that the
+// finalization committee issues when a round times out,
+// thus making it possible for the protocol to proceed to the
+// next round.
+message TimeoutCertificate {
+  // The round that timed out.
+  Round round = 1;
+  // The minimum epoch of which signatures are included
+  // in the 'aggregate_signature'.
+  Epoch min_epoch = 2;
+  // The rounds of which finalizers have their best
+  // QCs in the 'min_epoch'.
+  repeated FinalizerRound qc_rounds_first_epoch = 3;
+  // The rounds of which finalizers have their best
+  // QCs in the epoch 'min_epoch' + 1.
+  repeated FinalizerRound qc_rounds_second_epoch = 4;
+  // The aggregated signature by the finalization committee that witnessed
+  // the 'round' timed out.
+  TimeoutSignature aggregate_signature = 5;
+}
+
+// A proof that establishes that the successor block of
+// a 'EpochFinalizationEntry' is the immediate successor of
+// the finalized block.
+message SuccessorProof {
+  // The proof represented as raw bytes.
+  // The bytes have a fixed length of 32 bytes.
+  bytes value = 1;
+}
+
+// The epoch finalization entry is the proof that
+// makes the protocol able to advance to a new epoch.
+// I.e. the 'EpochFinalizationEntry' is present if and only if
+// the block is the first block of a new 'Epoch'.
+message EpochFinalizationEntry {
+  // The quorum certificate for the finalized block.
+  QuorumCertificate finalized_qc = 1;
+  // The quorum certificate for the block that finalizes
+  // the block that 'finalized_qc' points to.
+  QuorumCertificate successor_qc = 2;
+  // A proof that the successor block is an immediate
+  // successor of the finalized block.
+  SuccessorProof successor_proof = 3;
+}
+
+
+// Certificates for a block for protocols supporting
+// ConcordiumBFT.
+message BlockCertificates {
+  // The quorum certificate. Is present if and only if the block is
+  // not a genesis block.
+  optional QuorumCertificate quorum_certificate = 1;
+  // The timeout certificate. Is present only if the round prior to the
+  // round of the block timed out.
+  optional TimeoutCertificate timeout_certificate = 2;
+  // The epoch finalization entry. Is present only if the block initiates
+  // a new epoch.
+  optional EpochFinalizationEntry epoch_finalization_entry = 3;
 }
