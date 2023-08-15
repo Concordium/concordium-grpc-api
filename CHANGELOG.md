@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased changes
+## Unreleased
+
+- Add `GetBakersRewardPeriod` endpoint.
+- Add `GetBlockCertificates` endpoint.
+- Add a `CommissionRates` field for `PoolCurrentPaydayInfo`.
+
+## Node 6.0 API
 
 - Expand `BlockHashInput` to support querying by block height.
 - Add `protocol_version` to the return of BlockInfo.
