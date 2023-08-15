@@ -170,6 +170,22 @@ service Queries {
   // Get next available sequence numbers for updating chain parameters after a given block.
   rpc GetNextUpdateSequenceNumbers (BlockHashInput) returns (NextUpdateSequenceNumbers);
 
+  // Get the projected earliest time at which a particular baker will be required to bake a block.
+  // If the current consensus version is 0, this returns the status 'Unavailable', as the endpoint
+  // is only supported by consensus version 1.
+  //
+  // If the baker is not a baker for the current reward period, this returns a timestamp at the
+  // start of the next reward period. If the baker is a baker for the current reward period, the
+  // earliest win time is projected from the current round forward, assuming that each round after
+  // the last finalized round will take the minimum block time. (If blocks take longer, or timeouts
+  // occur, the actual time may be later, and the reported time in subsequent queries may reflect
+  // this.) At the end of an epoch (or if the baker is not projected to bake before the end of the
+  // epoch) the earliest win time for a (current) baker will be projected as the start of the next
+  // epoch. This is because the seed for the leader election is updated at the epoch boundary, and
+  // so the winners cannot be predicted beyond that. Note that in some circumstances the returned
+  // timestamp can be in the past, especially at the end of an epoch.
+  rpc GetBakerEarliestWinTime(BakerId) returns (Timestamp);
+
   // Shut down the node.
   // Return a GRPC error if the shutdown failed.
   rpc Shutdown(Empty) returns (Empty);
@@ -248,6 +264,19 @@ service Queries {
 
   // Get the items of a block.
   rpc GetBlockItems(BlockHashInput) returns (stream BlockItem);
+
+  // Get all bakers in the reward period of a block.
+  // This endpoint is only supported for protocol version 6 and onwards.
+  // If the protocol does not support the endpoint then an  'IllegalArgument' error is returned.
+  rpc GetBakersRewardPeriod(BlockHashInput) returns (stream BakerRewardPeriodInfo);
+
+  // For a non-genesis block, this returns the quorum certificate, a timeout
+  // certificate (if present) and epoch finalization entry (if present).
+  // Note that, if the block being pointed to is not a product of ConcordiumBFT,
+  // then the response will be a grpc error (invalid argument).
+  // If the endpoint is not enabled by the node, then an 'unimplemented' error
+  // will be returned.
+  rpc GetBlockCertificates(BlockHashInput) returns (BlockCertificates);
 
   // Get the list of bakers that won the lottery in a particular historical epoch (i.e. the
   // last finalized block is in a later epoch). This lists the winners for each round in the
