@@ -291,6 +291,8 @@ service Queries {
   //  * `INVALID_ARGUMENT` if the query is for an epoch that is not finalized for a past genesis
   //    index.
   //  * `INVALID_ARGUMENT` if the query is for a genesis index at consensus version 0.
+  //  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
+  //  * `UNAVAILABLE` if the endpoint is disabled on the node.
   rpc GetWinningBakersEpoch (EpochRequest) returns (stream WinningBaker);
 
   // Get the block hash of the first finalized block in a specified epoch.
@@ -301,5 +303,7 @@ service Queries {
   //    index, or is for a future genesis index.
   //  * `INVALID_ARGUMENT` if the query is for an epoch with no finalized blocks for a past genesis
   //    index.
+  //  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
+  //  * `UNAVAILABLE` if the endpoint is disabled on the node.
   rpc GetFirstBlockEpoch (EpochRequest) returns (BlockHash);
 }
