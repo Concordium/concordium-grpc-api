@@ -5,6 +5,8 @@
 - Add `GetBakersRewardPeriod` endpoint.
 - Add `GetBlockCertificates` endpoint.
 - Add `GetBakerEarliestWinTime` endpoint.
+- Add `GetWinningBakersEpoch` endpoint.
+- Add `GetFirstBlockEpoch` endpoint.
 - Add a `CommissionRates` field for `PoolCurrentPaydayInfo`.
 
 ## Node 6.0 API
