@@ -3256,3 +3256,203 @@ message WinningBaker {
     // True if the baker produced a block in this round on the finalized chain, and False otherwise.
     bool present = 3;
 }
+
+// An operation to dry run.
+message DryRunRequest {
+    oneof request {
+        // Load the state of the specified block to use for subsequent requests.
+        // The state is taken at the end of execution of the block, and the block’s
+        // timestamp is used as the current timestamp.
+        BlockHashInput load_block_state = 1;
+        // Run a query on the state.
+        DryRunStateQuery state_query = 2;
+        // Run a (non-transaction) operation to modify the state.
+        DryRunStateOperation state_operation = 3;
+        // Dry run a transaction, updating the state if it succeeds.
+        // The transaction signatures are not checked.
+        AccountTransaction run_transaction = 4;
+    }
+}
+
+// Run a query as part of a dry run.
+message DryRunStateQuery {
+    oneof query {
+        // Look up information on a particular account.
+        AccountIdentifierInput get_account_info = 1;
+        // Look up information about a particular smart contract.
+        ContractAddress get_instance_info = 2;
+        // Look up (part of) a smart contract's state.
+        DryRunInstanceStateQuery get_instance_state = 3;
+    }
+}
+
+// Query the state of a smart contract instance.
+message DryRunInstanceStateQuery {
+    // The address of a smart contract instance.
+    ContractAddress address = 1;
+    // Key to look up. If the instsance is a V0 instance then this is not used.
+    bytes key = 2;
+}
+
+// An operation that can update the state as part of a dry run.
+message DryRunStateOperation {
+    oneof operation {
+        // Sets the current block time to the given timestamp for the purposes of future
+        // transactions.
+        Timestamp set_timestamp = 1;
+        // Add a specified amount of newly-minted CCDs to a specified account.
+        // The amount cannot cause the total circulating supply to overflow.
+        DryRunMintToAccount mint_to_account = 2;
+    }
+}
+
+// Mint a specified amount and credit it to the specified account as part of a dry run.
+message DryRunMintToAccount {
+    // The account to mint to.
+    AccountIdentifierInput account = 1;
+    // The amount to mint and credit to the account.
+    Amount amount = 2;
+}
+
+// A response to a `DryRunRequest`.
+message DryRunResponse {
+    oneof response {
+        // The request produced an error. The request otherwise has no effect on the state.
+        DryRunErrorResponse error = 1;
+        // The request was successful.
+        DryRunSuccessResponse success = 2;
+    }
+}
+
+message DryRunErrorResponse {
+    oneof error {
+        // The current block state is undefined. It should be initialized with
+        // a 'load_block_state' request before any other operations.
+        DryRunErrorNoState no_state = 1;
+        // The specified account was not found.
+        // Response to 'get_account_info', 'mint_to_account' and 'run_transaction'.
+        DryRunErrorAccountNotFound account_not_found = 2;
+        // The specified instance was not found.
+        // Response to 'get_instance_info' and 'get_instance_state'.
+        DryRunErrorInstanceNotFound instance_not_found = 3;
+        // The amount to mint would oveflow the total CCD supply.
+        // Response to 'mint_to_account'.
+        DryRunErrorAmountOverLimit amount_over_limit = 4;
+        // The balance of the sender account is not sufficient to pay for the operation.
+        // Response to 'run_transaction'.
+        DryRunErrorBalanceInsufficient balance_insufficient = 5;
+        // The supplied transaction sequence number was not the next sequence number for the
+        // account.
+        // Response to 'run_transaction'.
+        DryRunErrorSequenceNumberInvalid sequence_number_invalid = 6;
+        // The energy supplied for the transaction was not sufficient to perform the basic checks.
+        // Response to 'run_transaction'.
+        DryRunErrorEnergyInsufficient energy_insufficient = 7;
+        // The transaction had already expired.
+        // Response to 'run_transaction'.
+        DryRunErrorExpired expired = 8;
+    }
+}
+
+// The current block state is undefined. It should be initialized with
+// a 'load_block_state' request before any other operations.
+message DryRunErrorNoState {
+}
+
+// The specified account was not found.
+message DryRunErrorAccountNotFound {   
+}
+
+// The specified instance was not found.
+message DryRunErrorInstanceNotFound {   
+}
+
+// The amount that was requested to be minted would overflow the total supply.
+message DryRunErrorAmountOverLimit {
+    // The maximum amount that can be minted without overflowing the supply.
+    Amount amount_limit = 1;
+}
+
+// The sender account for the transaction has insufficient balance to pay the preliminary fees
+// for the transaction to be included in a block.
+message DryRunErrorBalanceInsufficient {
+    // The minimum balance required to perform the operation.
+    Amount required_amount = 1;
+    // The currently-available balance on the account to pay for the operation.
+    Amount available_amount = 2;
+}
+
+// The sequence number of the specified transaction does not match the current next sequence
+// number for the account.
+message DryRunErrorSequenceNumberInvalid {
+    // The next sequence number for the account.
+    SequenceNumber next_sequence_number = 1;
+}
+
+// The energy made available for the transaction is insufficient to cover the basic processing
+// required to include a transaction in a block.
+message DryRunErrorEnergyInsufficient {
+    // The minimum energy required for the transaction to be included in the chain.
+    // Note that this does not guarantee that 
+    Energy energy_required = 1;
+}
+
+// The transaction is already expired, with respect to the current dry-run timestamp.
+// Note that the current timestamp is determined from the block loaded by 'load_block_state', or
+// is set by 'set_timestamp'.
+message DryRunErrorExpired {
+    // The current timestamp. Transactions with expiry times earlier than this will
+    // raise the error.
+    Timestamp current_timestamp = 1;
+}
+
+message DryRunSuccessResponse {
+    oneof response {
+        // The state from the specified block was successfully loaded.
+        // Response to 'load_block_state'.
+        DryRunBlockStateLoaded block_state_loaded = 1;
+        // Details of the requested account.
+        // Response to 'get_account_info'.
+        AccountInfo account_info = 2;
+        // Details of the requested smart contract instance.
+        // Response to 'get_instance_info'.
+        InstanceInfo instance_info = 3;
+        // The state of the contract instance at the specified key.
+        // Response to 'get_instance_state'.
+        InstanceStateValueAtKey instance_partial_state = 4;
+        // The current timestamp was set successfully.
+        // Response to 'set_timestamp'.
+        DryRunTimestampSet timestamp_set = 5;
+        // The specified amount was minted and credited to the account.
+        // Response to 'mint_to_account'.
+        DryRunMintedToAccount minted_to_account = 6;
+        // The specified transaction was executed. Note that the transaction could still have
+        // been rejected.
+        // Response to 'run_transaction'.
+        DryRunTransactionExecuted transaction_executed = 7;
+    }
+}
+
+message DryRunBlockStateLoaded {
+    // The timestamp of the block, taken to be the current timestamp.
+    Timestamp current_timestamp = 1;
+    // The hash of the block that was loaded.
+    BlockHash block_hash = 2;
+    // The protocol version at the specified block. The behavior of operations can vary across
+    // protocol versions.
+    ProtocolVersion protocol_version = 3;
+}
+
+message DryRunTimestampSet {
+
+}
+message DryRunMintedToAccount {
+
+}
+
+message DryRunTransactionExecuted {
+    // The amount of energy actually expended in executing the transaction.
+    Energy energy_cost = 1;
+    // The details of the outcome of the transaction.
+    AccountTransactionDetails details = 2;
+}

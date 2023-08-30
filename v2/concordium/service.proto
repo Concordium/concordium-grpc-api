@@ -292,7 +292,7 @@ service Queries {
   //    index.
   //  * `INVALID_ARGUMENT` if the query is for a genesis index at consensus version 0.
   //  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
-  //  * `UNAVAILABLE` if the endpoint is disabled on the node.
+  //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
   rpc GetWinningBakersEpoch (EpochRequest) returns (stream WinningBaker);
 
   // Get the block hash of the first finalized block in a specified epoch.
@@ -304,6 +304,15 @@ service Queries {
   //  * `INVALID_ARGUMENT` if the query is for an epoch with no finalized blocks for a past genesis
   //    index.
   //  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
-  //  * `UNAVAILABLE` if the endpoint is disabled on the node.
+  //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
   rpc GetFirstBlockEpoch (EpochRequest) returns (BlockHash);
+
+  // Dry run a series of transactions and operations on a state derived from a specified block.
+  // The server should send a single `DryRunResponse` for each `DryRunRequest` received, unless
+  // the call fails with an error status code. If a request produces a `DryRunErrorResponse`, then
+  // the server will still process subsequent requests, just as if the request causing the error
+  // did not happen.
+  //
+  // The first request should be `load_block_at_state`
+  rpc DryRun (stream DryRunRequest) returns (stream DryRunResponse);
 }
