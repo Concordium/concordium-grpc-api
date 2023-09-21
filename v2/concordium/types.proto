@@ -2833,7 +2833,7 @@ message AccountTransactionHeader {
   AccountAddress sender = 1;
   // Sequence number of the transaction.
   SequenceNumber sequence_number = 2;
-  // Maximum amount of nergy the transaction can take to execute.
+  // Maximum amount of energy the transaction can take to execute.
   Energy energy_amount = 3;
   // Latest time the transaction can included in a block.
   TransactionTime expiry = 5;
@@ -3268,9 +3268,6 @@ message DryRunRequest {
         DryRunStateQuery state_query = 2;
         // Run a (non-transaction) operation to modify the state.
         DryRunStateOperation state_operation = 3;
-        // Dry run a transaction, updating the state if it succeeds.
-        // The transaction signatures are not checked.
-        AccountTransaction run_transaction = 4;
     }
 }
 
@@ -3281,8 +3278,8 @@ message DryRunStateQuery {
         AccountIdentifierInput get_account_info = 1;
         // Look up information about a particular smart contract.
         ContractAddress get_instance_info = 2;
-        // Look up (part of) a smart contract's state.
-        DryRunInstanceStateQuery get_instance_state = 3;
+        // Invoke an entrypoint on a smart contract instance.
+        DryRunInvokeInstance invoke_instance = 3;
     }
 }
 
@@ -3303,15 +3300,34 @@ message DryRunStateOperation {
         // Add a specified amount of newly-minted CCDs to a specified account.
         // The amount cannot cause the total circulating supply to overflow.
         DryRunMintToAccount mint_to_account = 2;
+        // Dry run a transaction, updating the state if it succeeds.
+        DryRunTransaction run_transaction = 3;
     }
 }
 
 // Mint a specified amount and credit it to the specified account as part of a dry run.
 message DryRunMintToAccount {
     // The account to mint to.
-    AccountIdentifierInput account = 1;
+    AccountAddress account = 1;
     // The amount to mint and credit to the account.
     Amount amount = 2;
+}
+
+// Invoke an entrypoint on a smart contract instance.
+message DryRunInvokeInstance {
+    optional Address invoker = 1;
+    ContractAddress instance = 2;
+    Amount amount = 3;
+    ReceiveName entrypoint = 4;
+    Parameter parameter = 5;
+    Energy energy = 6;
+}
+
+// Dry run an account transaction
+message DryRunTransaction {
+    AccountAddress sender = 1;
+    Energy energy_amount = 2;
+    AccountTransactionPayload payload = 3;
 }
 
 // A response to a `DryRunRequest`.
@@ -3329,34 +3345,42 @@ message DryRunErrorResponse {
         // The current block state is undefined. It should be initialized with
         // a 'load_block_state' request before any other operations.
         DryRunErrorNoState no_state = 1;
+        // The requested block was not found, so its state could not be loaded.
+        // Response to 'load_block_state'.
+        DryRunErrorBlockNotFound block_not_found = 2;
         // The specified account was not found.
         // Response to 'get_account_info', 'mint_to_account' and 'run_transaction'.
-        DryRunErrorAccountNotFound account_not_found = 2;
+        DryRunErrorAccountNotFound account_not_found = 3;
         // The specified instance was not found.
         // Response to 'get_instance_info' and 'get_instance_state'.
-        DryRunErrorInstanceNotFound instance_not_found = 3;
+        DryRunErrorInstanceNotFound instance_not_found = 4;
         // The amount to mint would oveflow the total CCD supply.
         // Response to 'mint_to_account'.
-        DryRunErrorAmountOverLimit amount_over_limit = 4;
+        DryRunErrorAmountOverLimit amount_over_limit = 5;
         // The balance of the sender account is not sufficient to pay for the operation.
         // Response to 'run_transaction'.
-        DryRunErrorBalanceInsufficient balance_insufficient = 5;
+        DryRunErrorBalanceInsufficient balance_insufficient = 6;
         // The supplied transaction sequence number was not the next sequence number for the
         // account.
         // Response to 'run_transaction'.
-        DryRunErrorSequenceNumberInvalid sequence_number_invalid = 6;
+        DryRunErrorSequenceNumberInvalid sequence_number_invalid = 7;
         // The energy supplied for the transaction was not sufficient to perform the basic checks.
         // Response to 'run_transaction'.
-        DryRunErrorEnergyInsufficient energy_insufficient = 7;
+        DryRunErrorEnergyInsufficient energy_insufficient = 8;
         // The transaction had already expired.
         // Response to 'run_transaction'.
-        DryRunErrorExpired expired = 8;
+        DryRunErrorExpired expired = 9;
+        DryRunErrorInvokeFailure invoke_failed = 10;
     }
 }
 
 // The current block state is undefined. It should be initialized with
 // a 'load_block_state' request before any other operations.
 message DryRunErrorNoState {
+}
+
+// The requested block was not found, so its state could not be loaded.
+message DryRunErrorBlockNotFound {
 }
 
 // The specified account was not found.
@@ -3406,6 +3430,18 @@ message DryRunErrorExpired {
     Timestamp current_timestamp = 1;
 }
 
+message DryRunErrorInvokeFailure {
+    // If invoking a V0 contract this is not provided, otherwise it is
+    // potentially return value produced by the call unless the call failed with
+    // out of energy or runtime error. If the V1 contract terminated with a
+    // logic error then the return value is present.
+    optional bytes return_value = 1;
+    // Energy used by the execution.
+    Energy used_energy = 2;
+    // Contract execution failed for the given reason.
+    RejectReason reason = 3;
+}
+
 message DryRunSuccessResponse {
     oneof response {
         // The state from the specified block was successfully loaded.
@@ -3430,6 +3466,7 @@ message DryRunSuccessResponse {
         // been rejected.
         // Response to 'run_transaction'.
         DryRunTransactionExecuted transaction_executed = 7;
+        DryRunInvokeSuccess invoke_succeeded = 8;
     }
 }
 
@@ -3455,4 +3492,14 @@ message DryRunTransactionExecuted {
     Energy energy_cost = 1;
     // The details of the outcome of the transaction.
     AccountTransactionDetails details = 2;
+}
+
+message DryRunInvokeSuccess {
+    // If invoking a V0 contract this is absent. Otherwise it is the return
+    // value produced by the contract.
+    optional bytes return_value = 1;
+    // Energy used by the execution.
+    Energy used_energy = 2;
+    // Effects produced by contract execution.
+    repeated ContractTraceElement effects = 3;
 }
