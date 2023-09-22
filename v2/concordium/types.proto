@@ -3492,6 +3492,9 @@ message DryRunTransactionExecuted {
     Energy energy_cost = 1;
     // The details of the outcome of the transaction.
     AccountTransactionDetails details = 2;
+    // If this is an invocation of a V1 contract that produced a return value, this is that
+    // value. Otherwise it is absent.
+    optional bytes return_value = 3;
 }
 
 message DryRunInvokeSuccess {
