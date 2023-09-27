@@ -1826,7 +1826,7 @@ message BlockItemSummary {
   TransactionHash hash = 3;
   // Details that are specific to different transaction types.
   oneof details {
-    // Detailsa about an account transaction.
+    // Details about an account transaction.
     AccountTransactionDetails account_transaction = 4;
     // Details about an account creation.
     AccountCreationDetails account_creation = 5;
@@ -3271,7 +3271,7 @@ message DryRunRequest {
     }
 }
 
-// Run a query as part of a dry run.
+// Run a query as part of a dry run. Queries do not update the block state.
 message DryRunStateQuery {
     oneof query {
         // Look up information on a particular account.
@@ -3279,16 +3279,29 @@ message DryRunStateQuery {
         // Look up information about a particular smart contract.
         ContractAddress get_instance_info = 2;
         // Invoke an entrypoint on a smart contract instance.
+        // No changes made to the state are retained at the completion of the operation.
         DryRunInvokeInstance invoke_instance = 3;
     }
 }
 
-// Query the state of a smart contract instance.
-message DryRunInstanceStateQuery {
-    // The address of a smart contract instance.
-    ContractAddress address = 1;
-    // Key to look up. If the instsance is a V0 instance then this is not used.
-    bytes key = 2;
+// Invoke an entrypoint on a smart contract instance.
+message DryRunInvokeInstance {
+    // Invoker of the contract. If this is not supplied then the contract will be
+    // invoked by an account with address 0, no credentials and sufficient amount
+    // of CCD to cover the transfer amount. If given, the relevant address (either
+    // account or contract) must exist in the blockstate.
+    optional Address invoker = 1;
+    // Address of the contract instance to invoke.
+    ContractAddress instance = 2;
+    // Amount to invoke the smart contract instance with.
+    Amount amount = 3;
+    // The entrypoint of the smart contract instance to invoke.
+    ReceiveName entrypoint = 4;
+    // The parameter bytes to include in the invocation of the entrypoint.
+    Parameter parameter = 5;
+    // The maximum energy to allow for the invocation. Note that the node imposes an energy
+    // quota that is enforced in addition to this limit.
+    Energy energy = 6;
 }
 
 // An operation that can update the state as part of a dry run.
@@ -3313,21 +3326,37 @@ message DryRunMintToAccount {
     Amount amount = 2;
 }
 
-// Invoke an entrypoint on a smart contract instance.
-message DryRunInvokeInstance {
-    optional Address invoker = 1;
-    ContractAddress instance = 2;
-    Amount amount = 3;
-    ReceiveName entrypoint = 4;
-    Parameter parameter = 5;
-    Energy energy = 6;
-}
-
 // Dry run an account transaction
 message DryRunTransaction {
+    // The account to use as the sender of the transaction.
     AccountAddress sender = 1;
+    // The energy limit set for executing the transaction.
     Energy energy_amount = 2;
+    // The payload of the transaction.
     AccountTransactionPayload payload = 3;
+    // Which credentials and keys should be treated as having signed the transaction.
+    // If none is given, then the transaction is treated as having one signature for credential 0,
+    // key 0. Therefore, this is only required when the transaction is from a multi-signature
+    // account. There two reason why you might want to specify signatures:
+    //   * The cost of the transaction depends on the number of signatures, so if you want to
+    //     get the correct cost for a multi-signature transaction, then specifying the signatures
+    //     supports this.
+    //   * When changing account keys on a multi-credential account, the transaction must be signed
+    //     by the credential whose keys are being changed.
+    //
+    // Note that the signature thresholds are not checked as part of the dry run. Duplicated
+    // signatures are only counted once.
+    repeated DryRunSignature signatures = 4;
+}
+
+// A dry run signature is a pair of a credential index and key index, identifying the credential
+// and key that is presumed to have signed the transaction. No actual cryptographic signature is
+// included.
+message DryRunSignature {
+    // Credential index. Must not exceed 255.
+    uint32 credential = 1;
+    // Key index. Must not exceed 255.
+    uint32 key = 2;
 }
 
 // A response to a `DryRunRequest`.
@@ -3338,6 +3367,8 @@ message DryRunResponse {
         // The request was successful.
         DryRunSuccessResponse success = 2;
     }
+    // The remaining available energy quota after the dry run operation.
+    Energy quota_remaining = 3;
 }
 
 message DryRunErrorResponse {
@@ -3352,24 +3383,19 @@ message DryRunErrorResponse {
         // Response to 'get_account_info', 'mint_to_account' and 'run_transaction'.
         DryRunErrorAccountNotFound account_not_found = 3;
         // The specified instance was not found.
-        // Response to 'get_instance_info' and 'get_instance_state'.
+        // Response to 'get_instance_info'.
         DryRunErrorInstanceNotFound instance_not_found = 4;
-        // The amount to mint would oveflow the total CCD supply.
+        // The amount to mint would overflow the total CCD supply.
         // Response to 'mint_to_account'.
         DryRunErrorAmountOverLimit amount_over_limit = 5;
         // The balance of the sender account is not sufficient to pay for the operation.
         // Response to 'run_transaction'.
         DryRunErrorBalanceInsufficient balance_insufficient = 6;
-        // The supplied transaction sequence number was not the next sequence number for the
-        // account.
-        // Response to 'run_transaction'.
-        DryRunErrorSequenceNumberInvalid sequence_number_invalid = 7;
         // The energy supplied for the transaction was not sufficient to perform the basic checks.
         // Response to 'run_transaction'.
         DryRunErrorEnergyInsufficient energy_insufficient = 8;
-        // The transaction had already expired.
-        // Response to 'run_transaction'.
-        DryRunErrorExpired expired = 9;
+        // The contract invocation failed.
+        // Response to 'invoke_instance'.
         DryRunErrorInvokeFailure invoke_failed = 10;
     }
 }
@@ -3406,13 +3432,6 @@ message DryRunErrorBalanceInsufficient {
     Amount available_amount = 2;
 }
 
-// The sequence number of the specified transaction does not match the current next sequence
-// number for the account.
-message DryRunErrorSequenceNumberInvalid {
-    // The next sequence number for the account.
-    SequenceNumber next_sequence_number = 1;
-}
-
 // The energy made available for the transaction is insufficient to cover the basic processing
 // required to include a transaction in a block.
 message DryRunErrorEnergyInsufficient {
@@ -3421,15 +3440,7 @@ message DryRunErrorEnergyInsufficient {
     Energy energy_required = 1;
 }
 
-// The transaction is already expired, with respect to the current dry-run timestamp.
-// Note that the current timestamp is determined from the block loaded by 'load_block_state', or
-// is set by 'set_timestamp'.
-message DryRunErrorExpired {
-    // The current timestamp. Transactions with expiry times earlier than this will
-    // raise the error.
-    Timestamp current_timestamp = 1;
-}
-
+// Invoking the smart contract instance failed.
 message DryRunErrorInvokeFailure {
     // If invoking a V0 contract this is not provided, otherwise it is
     // potentially return value produced by the call unless the call failed with
@@ -3442,6 +3453,7 @@ message DryRunErrorInvokeFailure {
     RejectReason reason = 3;
 }
 
+// The dry run operation completed successfully.
 message DryRunSuccessResponse {
     oneof response {
         // The state from the specified block was successfully loaded.
@@ -3466,10 +3478,12 @@ message DryRunSuccessResponse {
         // been rejected.
         // Response to 'run_transaction'.
         DryRunTransactionExecuted transaction_executed = 7;
+        // The smart contract instance was invoked successfully.
         DryRunInvokeSuccess invoke_succeeded = 8;
     }
 }
 
+// The block state at the specified block was successfully loaded.
 message DryRunBlockStateLoaded {
     // The timestamp of the block, taken to be the current timestamp.
     Timestamp current_timestamp = 1;
@@ -3480,13 +3494,17 @@ message DryRunBlockStateLoaded {
     ProtocolVersion protocol_version = 3;
 }
 
+// The current apparent timestamp was updated to the specified value.
 message DryRunTimestampSet {
 
 }
+
+// The specified amount was minted to the specified account.
 message DryRunMintedToAccount {
 
 }
 
+// The transaction was executed.
 message DryRunTransactionExecuted {
     // The amount of energy actually expended in executing the transaction.
     Energy energy_cost = 1;
@@ -3497,6 +3515,7 @@ message DryRunTransactionExecuted {
     optional bytes return_value = 3;
 }
 
+// The smart contract instance was invoked successfully.
 message DryRunInvokeSuccess {
     // If invoking a V0 contract this is absent. Otherwise it is the return
     // value produced by the contract.
