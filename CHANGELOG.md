@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add `DryRun` endpoint.
+
+## Node 6.1 API
+
 - Add `GetBakersRewardPeriod` endpoint.
 - Add `GetBlockCertificates` endpoint.
 - Add `GetBakerEarliestWinTime` endpoint.
