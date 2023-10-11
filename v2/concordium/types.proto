@@ -3263,6 +3263,8 @@ message DryRunRequest {
         // Load the state of the specified block to use for subsequent requests.
         // The state is taken at the end of execution of the block, and the block’s
         // timestamp is used as the current timestamp.
+        //
+        // The energy cost for this operation is 2000.
         BlockHashInput load_block_state = 1;
         // Run a query on the state.
         DryRunStateQuery state_query = 2;
@@ -3275,11 +3277,18 @@ message DryRunRequest {
 message DryRunStateQuery {
     oneof query {
         // Look up information on a particular account.
+        //
+        // The energy cost for this query is 200.
         AccountIdentifierInput get_account_info = 1;
         // Look up information about a particular smart contract.
+        //
+        // The energy cost for this query is 200.
         ContractAddress get_instance_info = 2;
         // Invoke an entrypoint on a smart contract instance.
         // No changes made to the state are retained at the completion of the operation.
+        //
+        // The energy cost for this query is 200 plus the energy used by the smart contract
+        // execution.
         DryRunInvokeInstance invoke_instance = 3;
     }
 }
@@ -3309,11 +3318,18 @@ message DryRunStateOperation {
     oneof operation {
         // Sets the current block time to the given timestamp for the purposes of future
         // transactions.
+        //
+        // The energy cost of this operation is 50.
         Timestamp set_timestamp = 1;
         // Add a specified amount of newly-minted CCDs to a specified account.
         // The amount cannot cause the total circulating supply to overflow.
+        //
+        // The energy cost of this operation is 400.
         DryRunMintToAccount mint_to_account = 2;
         // Dry run a transaction, updating the state if it succeeds.
+        //
+        // The energy cost of this operation is 400 plus the energy used by executing the
+        // transaction.
         DryRunTransaction run_transaction = 3;
     }
 }
@@ -3465,9 +3481,8 @@ message DryRunSuccessResponse {
         // Details of the requested smart contract instance.
         // Response to 'get_instance_info'.
         InstanceInfo instance_info = 3;
-        // The state of the contract instance at the specified key.
-        // Response to 'get_instance_state'.
-        InstanceStateValueAtKey instance_partial_state = 4;
+        // The smart contract instance was invoked successfully.
+        DryRunInvokeSuccess invoke_succeeded = 4;
         // The current timestamp was set successfully.
         // Response to 'set_timestamp'.
         DryRunTimestampSet timestamp_set = 5;
@@ -3478,8 +3493,6 @@ message DryRunSuccessResponse {
         // been rejected.
         // Response to 'run_transaction'.
         DryRunTransactionExecuted transaction_executed = 7;
-        // The smart contract instance was invoked successfully.
-        DryRunInvokeSuccess invoke_succeeded = 8;
     }
 }
 
