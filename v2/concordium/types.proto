@@ -3257,7 +3257,9 @@ message WinningBaker {
     bool present = 3;
 }
 
-// An operation to dry run.
+// An operation to dry run.  The first operation in a dry-run sequence should be
+// `load_block_state`: any other operation will be met with `DryRunErrorNoState` until a
+// state is successfully loaded.
 message DryRunRequest {
     oneof request {
         // Load the state of the specified block to use for subsequent requests.
@@ -3452,7 +3454,10 @@ message DryRunErrorBalanceInsufficient {
 // required to include a transaction in a block.
 message DryRunErrorEnergyInsufficient {
     // The minimum energy required for the transaction to be included in the chain.
-    // Note that this does not guarantee that 
+    // Note that, even if the energy supplied for the transaction is enough to prevent a
+    // `DryRunErrorEnergyInsufficient`, the transaction can still be rejected for having
+    // insufficient energy. In that case, a `DryRunTransactionExecuted` response will be
+    // produced, but indicate the transaction was rejected.
     Energy energy_required = 1;
 }
 
