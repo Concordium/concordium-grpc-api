@@ -427,6 +427,10 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.BakerRewardPeriodInfo"><span class="badge">M</span>BakerRewardPeriodInfo</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.BakerSignatureVerifyKey"><span class="badge">M</span>BakerSignatureVerifyKey</a>
                 </li>
               
@@ -444,6 +448,10 @@
               
                 <li>
                   <a href="#concordium.v2.BannedPeers"><span class="badge">M</span>BannedPeers</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.BlockCertificates"><span class="badge">M</span>BlockCertificates</a>
                 </li>
               
                 <li>
@@ -779,6 +787,18 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.EpochFinalizationEntry"><span class="badge">M</span>EpochFinalizationEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.EpochRequest"><span class="badge">M</span>EpochRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.EpochRequest.RelativeEpoch"><span class="badge">M</span>EpochRequest.RelativeEpoch</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.ExchangeRate"><span class="badge">M</span>ExchangeRate</a>
                 </li>
               
@@ -800,6 +820,10 @@
               
                 <li>
                   <a href="#concordium.v2.FinalizedBlockInfo"><span class="badge">M</span>FinalizedBlockInfo</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.FinalizerRound"><span class="badge">M</span>FinalizerRound</a>
                 </li>
               
                 <li>
@@ -1079,6 +1103,14 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.QuorumCertificate"><span class="badge">M</span>QuorumCertificate</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.QuorumSignature"><span class="badge">M</span>QuorumSignature</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.Ratio"><span class="badge">M</span>Ratio</a>
                 </li>
               
@@ -1187,11 +1219,23 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.SuccessorProof"><span class="badge">M</span>SuccessorProof</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.TimeParametersCpv1"><span class="badge">M</span>TimeParametersCpv1</a>
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.TimeoutCertificate"><span class="badge">M</span>TimeoutCertificate</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.TimeoutParameters"><span class="badge">M</span>TimeoutParameters</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.TimeoutSignature"><span class="badge">M</span>TimeoutSignature</a>
                 </li>
               
                 <li>
@@ -1288,6 +1332,10 @@
               
                 <li>
                   <a href="#concordium.v2.VersionedModuleSource.ModuleSourceV1"><span class="badge">M</span>VersionedModuleSource.ModuleSourceV1</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.WinningBaker"><span class="badge">M</span>WinningBaker</a>
                 </li>
               
                 <li>
@@ -3711,6 +3759,66 @@ lottery. </p></td>
 
         
       
+        <h3 id="concordium.v2.BakerRewardPeriodInfo">BakerRewardPeriodInfo</h3>
+        <p>Information about a particular baker with respect to</p><p>the current reward period.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>baker</td>
+                  <td><a href="#concordium.v2.BakerInfo">BakerInfo</a></td>
+                  <td></td>
+                  <td><p>The baker id and public keys for the baker. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>effective_stake</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The effective stake of the baker for the consensus protocol.
+The returned amount accounts for delegation, capital bounds and leverage bounds. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>commission_rates</td>
+                  <td><a href="#concordium.v2.CommissionRates">CommissionRates</a></td>
+                  <td></td>
+                  <td><p>The effective commission rate for the baker that applies for the reward period. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>equity_capital</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The amount staked by the baker itself. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>delegated_capital</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The total amount of capital delegated to this baker pool. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>is_finalizer</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Whether the baker is a finalizer or not. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.BakerSignatureVerifyKey">BakerSignatureVerifyKey</h3>
         <p>Baker's public key used to check that they are indeed the ones who</p><p>produced the block.</p>
 
@@ -3837,6 +3945,47 @@ lottery. </p></td>
                   <td><a href="#concordium.v2.BannedPeer">BannedPeer</a></td>
                   <td>repeated</td>
                   <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.BlockCertificates">BlockCertificates</h3>
+        <p>Certificates for a block for protocols supporting</p><p>ConcordiumBFT.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>quorum_certificate</td>
+                  <td><a href="#concordium.v2.QuorumCertificate">QuorumCertificate</a></td>
+                  <td>optional</td>
+                  <td><p>The quorum certificate. Is present if and only if the block is
+not a genesis block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timeout_certificate</td>
+                  <td><a href="#concordium.v2.TimeoutCertificate">TimeoutCertificate</a></td>
+                  <td>optional</td>
+                  <td><p>The timeout certificate. Is present only if the round prior to the
+round of the block timed out. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>epoch_finalization_entry</td>
+                  <td><a href="#concordium.v2.EpochFinalizationEntry">EpochFinalizationEntry</a></td>
+                  <td>optional</td>
+                  <td><p>The epoch finalization entry. Is present only if the block initiates
+a new epoch. </p></td>
                 </tr>
               
             </tbody>
@@ -7327,6 +7476,109 @@ that aggregation kicks in. </p></td>
 
         
       
+        <h3 id="concordium.v2.EpochFinalizationEntry">EpochFinalizationEntry</h3>
+        <p>The epoch finalization entry is the proof that</p><p>makes the protocol able to advance to a new epoch.</p><p>I.e. the 'EpochFinalizationEntry' is present if and only if</p><p>the block is the first block of a new 'Epoch'.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>finalized_qc</td>
+                  <td><a href="#concordium.v2.QuorumCertificate">QuorumCertificate</a></td>
+                  <td></td>
+                  <td><p>The quorum certificate for the finalized block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>successor_qc</td>
+                  <td><a href="#concordium.v2.QuorumCertificate">QuorumCertificate</a></td>
+                  <td></td>
+                  <td><p>The quorum certificate for the block that finalizes
+the block that &#39;finalized_qc&#39; points to. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>successor_proof</td>
+                  <td><a href="#concordium.v2.SuccessorProof">SuccessorProof</a></td>
+                  <td></td>
+                  <td><p>A proof that the successor block is an immediate
+successor of the finalized block. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.EpochRequest">EpochRequest</h3>
+        <p>Input to queries which take an epoch as a parameter.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>relative_epoch</td>
+                  <td><a href="#concordium.v2.EpochRequest.RelativeEpoch">EpochRequest.RelativeEpoch</a></td>
+                  <td></td>
+                  <td><p>Query by genesis index and epoch number. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_hash</td>
+                  <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
+                  <td></td>
+                  <td><p>Query for the epoch of a specified block. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.EpochRequest.RelativeEpoch">EpochRequest.RelativeEpoch</h3>
+        <p>Request an epoch by number at a given genesis index.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>genesis_index</td>
+                  <td><a href="#concordium.v2.GenesisIndex">GenesisIndex</a></td>
+                  <td></td>
+                  <td><p>The genesis index to query at. The query is restricted to this genesis index, and
+will not return results for other indices even if the epoch number is out of bounds. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>epoch</td>
+                  <td><a href="#concordium.v2.Epoch">Epoch</a></td>
+                  <td></td>
+                  <td><p>The epoch number to query at. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.ExchangeRate">ExchangeRate</h3>
         <p>Represents an exchange rate.</p>
 
@@ -7520,6 +7772,38 @@ finalization record or not. </p></td>
                   <td><a href="#concordium.v2.AbsoluteBlockHeight">AbsoluteBlockHeight</a></td>
                   <td></td>
                   <td><p>Absolute height of the block, height 0 is the genesis block. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.FinalizerRound">FinalizerRound</h3>
+        <p>The finalizer round is a map from a 'Round'</p><p>to the list of finalizers (identified by their 'BakerId') that signed</p><p>off the round.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>round</td>
+                  <td><a href="#concordium.v2.Round">Round</a></td>
+                  <td></td>
+                  <td><p>The round that was signed off. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>finalizers</td>
+                  <td><a href="#concordium.v2.BakerId">BakerId</a></td>
+                  <td>repeated</td>
+                  <td><p>The finalizers (identified by their &#39;BakerId&#39; that
+signed off the in &#39;round&#39;. </p></td>
                 </tr>
               
             </tbody>
@@ -9965,6 +10249,13 @@ bytes in length. </p></td>
                   <td><p>The effective delegated capital to the pool for the current reward period. </p></td>
                 </tr>
               
+                <tr>
+                  <td>commission_rates</td>
+                  <td><a href="#concordium.v2.CommissionRates">CommissionRates</a></td>
+                  <td></td>
+                  <td><p>The commission rates that apply for the current reward period. </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -10328,6 +10619,86 @@ to equity capital. </p></td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
                   <td><p>Auxiliary data whose interpretation is defined by the new specification. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.QuorumCertificate">QuorumCertificate</h3>
+        <p>A quorum certificate is the certificate that the</p><p>finalization comittee issues in order to certify a block.</p><p>A block must be certified before it will be part of the</p><p>authorative part of the chain.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block_hash</td>
+                  <td><a href="#concordium.v2.BlockHash">BlockHash</a></td>
+                  <td></td>
+                  <td><p>The hash of the block that the quorum certificate refers to. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>round</td>
+                  <td><a href="#concordium.v2.Round">Round</a></td>
+                  <td></td>
+                  <td><p>The round of the block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>epoch</td>
+                  <td><a href="#concordium.v2.Epoch">Epoch</a></td>
+                  <td></td>
+                  <td><p>The epoch of the block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>aggregate_signature</td>
+                  <td><a href="#concordium.v2.QuorumSignature">QuorumSignature</a></td>
+                  <td></td>
+                  <td><p>The aggregated signature by the finalization committee on the block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signatories</td>
+                  <td><a href="#concordium.v2.BakerId">BakerId</a></td>
+                  <td>repeated</td>
+                  <td><p>A list of the finalizers that formed the quorum certificate
+i.e., the ones who have contributed to the &#39;aggregate_siganture&#39;.
+The finalizers are identified by their baker id as this is stable
+across protocols and epochs. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.QuorumSignature">QuorumSignature</h3>
+        <p>The signature of a 'QuorumCertificate'.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>The bytes representing the raw aggregate signature.
+The bytes have a fixed length of 48 bytes. </p></td>
                 </tr>
               
             </tbody>
@@ -11505,6 +11876,31 @@ milliseconds. </p></td>
 
         
       
+        <h3 id="concordium.v2.SuccessorProof">SuccessorProof</h3>
+        <p>A proof that establishes that the successor block of</p><p>a 'EpochFinalizationEntry' is the immediate successor of</p><p>the finalized block.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>The proof represented as raw bytes.
+The bytes have a fixed length of 32 bytes. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.TimeParametersCpv1">TimeParametersCpv1</h3>
         <p>The time parameters are introduced as of protocol version 4, and consist of</p><p>the reward period length and the mint rate per payday. These are coupled as</p><p>a change to either affects the overall rate of minting.</p>
 
@@ -11527,6 +11923,62 @@ milliseconds. </p></td>
                   <td><a href="#concordium.v2.MintRate">MintRate</a></td>
                   <td></td>
                   <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.TimeoutCertificate">TimeoutCertificate</h3>
+        <p>A timeout certificate is the certificate that the</p><p>finalization committee issues when a round times out,</p><p>thus making it possible for the protocol to proceed to the</p><p>next round.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>round</td>
+                  <td><a href="#concordium.v2.Round">Round</a></td>
+                  <td></td>
+                  <td><p>The round that timed out. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>min_epoch</td>
+                  <td><a href="#concordium.v2.Epoch">Epoch</a></td>
+                  <td></td>
+                  <td><p>The minimum epoch of which signatures are included
+in the &#39;aggregate_signature&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qc_rounds_first_epoch</td>
+                  <td><a href="#concordium.v2.FinalizerRound">FinalizerRound</a></td>
+                  <td>repeated</td>
+                  <td><p>The rounds of which finalizers have their best
+QCs in the &#39;min_epoch&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qc_rounds_second_epoch</td>
+                  <td><a href="#concordium.v2.FinalizerRound">FinalizerRound</a></td>
+                  <td>repeated</td>
+                  <td><p>The rounds of which finalizers have their best
+QCs in the epoch &#39;min_epoch&#39; &#43; 1. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>aggregate_signature</td>
+                  <td><a href="#concordium.v2.TimeoutSignature">TimeoutSignature</a></td>
+                  <td></td>
+                  <td><p>The aggregated signature by the finalization committee that witnessed
+the &#39;round&#39; timed out. </p></td>
                 </tr>
               
             </tbody>
@@ -11565,6 +12017,31 @@ milliseconds. </p></td>
                   <td><a href="#concordium.v2.Ratio">Ratio</a></td>
                   <td></td>
                   <td><p>Factor for decreasing the timeout. Must be between 0 and 1. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.TimeoutSignature">TimeoutSignature</h3>
+        <p>The signature of a 'TimeoutCertificate'.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>The bytes representing the raw aggregate signature.
+The bytes have a fixed length of 48 bytes. </p></td>
                 </tr>
               
             </tbody>
@@ -12502,6 +12979,44 @@ The type `UpdateKeysIndex`is not used directly, as messages cannot be keys in ma
 
         
       
+        <h3 id="concordium.v2.WinningBaker">WinningBaker</h3>
+        <p>Details of which baker won the lottery in a given round in consensus version 1.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>round</td>
+                  <td><a href="#concordium.v2.Round">Round</a></td>
+                  <td></td>
+                  <td><p>The round number. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>winner</td>
+                  <td><a href="#concordium.v2.BakerId">BakerId</a></td>
+                  <td></td>
+                  <td><p>The baker that won the round. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>present</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>True if the baker produced a block in this round on the finalized chain, and False otherwise. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.YearMonth">YearMonth</h3>
         <p>Representation of the pair of a year and month.</p>
 
@@ -13314,6 +13829,26 @@ The stream will end when all the pending updates for a given block have been ret
               </tr>
             
               <tr>
+                <td>GetBakerEarliestWinTime</td>
+                <td><a href="#concordium.v2.BakerId">BakerId</a></td>
+                <td><a href="#concordium.v2.Timestamp">Timestamp</a></td>
+                <td><p>Get the projected earliest time at which a particular baker will be required to bake a block.
+If the current consensus version is 0, this returns the status &#39;Unavailable&#39;, as the endpoint
+is only supported by consensus version 1.
+
+If the baker is not a baker for the current reward period, this returns a timestamp at the
+start of the next reward period. If the baker is a baker for the current reward period, the
+earliest win time is projected from the current round forward, assuming that each round after
+the last finalized round will take the minimum block time. (If blocks take longer, or timeouts
+occur, the actual time may be later, and the reported time in subsequent queries may reflect
+this.) At the end of an epoch (or if the baker is not projected to bake before the end of the
+epoch) the earliest win time for a (current) baker will be projected as the start of the next
+epoch. This is because the seed for the leader election is updated at the epoch boundary, and
+so the winners cannot be predicted beyond that. Note that in some circumstances the returned
+timestamp can be in the past, especially at the end of an epoch.</p></td>
+              </tr>
+            
+              <tr>
                 <td>Shutdown</td>
                 <td><a href="#concordium.v2.Empty">Empty</a></td>
                 <td><a href="#concordium.v2.Empty">Empty</a></td>
@@ -13450,6 +13985,64 @@ in the node, removes networking failure modes, and will perform better.</p></td>
                 <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
                 <td><a href="#concordium.v2.BlockItem">BlockItem</a> stream</td>
                 <td><p>Get the items of a block.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetBakersRewardPeriod</td>
+                <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
+                <td><a href="#concordium.v2.BakerRewardPeriodInfo">BakerRewardPeriodInfo</a> stream</td>
+                <td><p>Get all bakers in the reward period of a block.
+This endpoint is only supported for protocol version 6 and onwards.
+If the protocol does not support the endpoint then an  &#39;IllegalArgument&#39; error is returned.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetBlockCertificates</td>
+                <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
+                <td><a href="#concordium.v2.BlockCertificates">BlockCertificates</a></td>
+                <td><p>For a non-genesis block, this returns the quorum certificate, a timeout
+certificate (if present) and epoch finalization entry (if present).
+Note that, if the block being pointed to is not a product of ConcordiumBFT,
+then the response will be a grpc error (invalid argument).
+If the endpoint is not enabled by the node, then an &#39;unimplemented&#39; error
+will be returned.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetWinningBakersEpoch</td>
+                <td><a href="#concordium.v2.EpochRequest">EpochRequest</a></td>
+                <td><a href="#concordium.v2.WinningBaker">WinningBaker</a> stream</td>
+                <td><p>Get the list of bakers that won the lottery in a particular historical epoch (i.e. the
+last finalized block is in a later epoch). This lists the winners for each round in the
+epoch, starting from the round after the last block in the previous epoch, running to
+the round before the first block in the next epoch. It also indicates if a block in each
+round was included in the finalized chain.
+
+The following error cases are possible:
+ * `NOT_FOUND` if the query specifies an unknown block.
+ * `UNAVAILABLE` if the query is for an epoch that is not finalized in the current genesis
+/    index, or is for a future genesis index.
+ * `INVALID_ARGUMENT` if the query is for an epoch that is not finalized for a past genesis
+   index.
+ * `INVALID_ARGUMENT` if the query is for a genesis index at consensus version 0.
+ * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
+ * `UNAVAILABLE` if the endpoint is disabled on the node.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetFirstBlockEpoch</td>
+                <td><a href="#concordium.v2.EpochRequest">EpochRequest</a></td>
+                <td><a href="#concordium.v2.BlockHash">BlockHash</a></td>
+                <td><p>Get the block hash of the first finalized block in a specified epoch.
+
+The following error cases are possible:
+ * `NOT_FOUND` if the query specifies an unknown block.
+ * `UNAVAILABLE` if the query is for an epoch that is not finalized in the current genesis
+   index, or is for a future genesis index.
+ * `INVALID_ARGUMENT` if the query is for an epoch with no finalized blocks for a past genesis
+   index.
+ * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
+ * `UNAVAILABLE` if the endpoint is disabled on the node.</p></td>
               </tr>
             
           </tbody>
