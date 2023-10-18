@@ -3258,7 +3258,7 @@ message WinningBaker {
 }
 
 // An operation to dry run.  The first operation in a dry-run sequence should be
-// `load_block_state`: any other operation will be met with `DryRunErrorNoState` until a
+// `load_block_state`: any other operation will be met with `NoState` until a
 // state is successfully loaded.
 message DryRunRequest {
     oneof request {
@@ -3355,7 +3355,7 @@ message DryRunTransaction {
     // Which credentials and keys should be treated as having signed the transaction.
     // If none is given, then the transaction is treated as having one signature for credential 0,
     // key 0. Therefore, this is only required when the transaction is from a multi-signature
-    // account. There two reason why you might want to specify signatures:
+    // account. There are two reasons why you might want to specify signatures:
     //   * The cost of the transaction depends on the number of signatures, so if you want to
     //     get the correct cost for a multi-signature transaction, then specifying the signatures
     //     supports this.
@@ -3390,96 +3390,140 @@ message DryRunResponse {
 }
 
 message DryRunErrorResponse {
+    // The current block state is undefined. It should be initialized with
+    // a 'load_block_state' request before any other operations.
+    message NoState {
+    }
+
+    // The requested block was not found, so its state could not be loaded.
+    message BlockNotFound {
+    }
+
+    // The specified account was not found.
+    message AccountNotFound {   
+    }
+
+    // The specified instance was not found.
+    message InstanceNotFound {   
+    }
+
+    // The amount that was requested to be minted would overflow the total supply.
+    message AmountOverLimit {
+        // The maximum amount that can be minted without overflowing the supply.
+        Amount amount_limit = 1;
+    }
+
+    // The sender account for the transaction has insufficient balance to pay the preliminary fees
+    // for the transaction to be included in a block.
+    message BalanceInsufficient {
+        // The minimum balance required to perform the operation.
+        Amount required_amount = 1;
+        // The currently-available balance on the account to pay for the operation.
+        Amount available_amount = 2;
+    }
+
+    // The energy made available for the transaction is insufficient to cover the basic processing
+    // required to include a transaction in a block.
+    message EnergyInsufficient {
+        // The minimum energy required for the transaction to be included in the chain.
+        // Note that, even if the energy supplied for the transaction is enough to prevent a
+        // `EnergyInsufficient`, the transaction can still be rejected for having
+        // insufficient energy. In that case, a `TransactionExecuted` response will be
+        // produced, but indicate the transaction was rejected.
+        Energy energy_required = 1;
+    }
+
+    // Invoking the smart contract instance failed.
+    message InvokeFailure {
+        // If invoking a V0 contract this is not provided, otherwise it is
+        // potentially return value produced by the call unless the call failed with
+        // out of energy or runtime error. If the V1 contract terminated with a
+        // logic error then the return value is present.
+        optional bytes return_value = 1;
+        // Energy used by the execution.
+        Energy used_energy = 2;
+        // Contract execution failed for the given reason.
+        RejectReason reason = 3;
+    }
+
     oneof error {
         // The current block state is undefined. It should be initialized with
         // a 'load_block_state' request before any other operations.
-        DryRunErrorNoState no_state = 1;
+        NoState no_state = 1;
         // The requested block was not found, so its state could not be loaded.
         // Response to 'load_block_state'.
-        DryRunErrorBlockNotFound block_not_found = 2;
+        BlockNotFound block_not_found = 2;
         // The specified account was not found.
         // Response to 'get_account_info', 'mint_to_account' and 'run_transaction'.
-        DryRunErrorAccountNotFound account_not_found = 3;
+        AccountNotFound account_not_found = 3;
         // The specified instance was not found.
         // Response to 'get_instance_info'.
-        DryRunErrorInstanceNotFound instance_not_found = 4;
+        InstanceNotFound instance_not_found = 4;
         // The amount to mint would overflow the total CCD supply.
         // Response to 'mint_to_account'.
-        DryRunErrorAmountOverLimit amount_over_limit = 5;
+        AmountOverLimit amount_over_limit = 5;
         // The balance of the sender account is not sufficient to pay for the operation.
         // Response to 'run_transaction'.
-        DryRunErrorBalanceInsufficient balance_insufficient = 6;
+        BalanceInsufficient balance_insufficient = 6;
         // The energy supplied for the transaction was not sufficient to perform the basic checks.
         // Response to 'run_transaction'.
-        DryRunErrorEnergyInsufficient energy_insufficient = 8;
+        EnergyInsufficient energy_insufficient = 8;
         // The contract invocation failed.
         // Response to 'invoke_instance'.
-        DryRunErrorInvokeFailure invoke_failed = 10;
+        InvokeFailure invoke_failed = 9;
     }
 }
 
-// The current block state is undefined. It should be initialized with
-// a 'load_block_state' request before any other operations.
-message DryRunErrorNoState {
-}
-
-// The requested block was not found, so its state could not be loaded.
-message DryRunErrorBlockNotFound {
-}
-
-// The specified account was not found.
-message DryRunErrorAccountNotFound {   
-}
-
-// The specified instance was not found.
-message DryRunErrorInstanceNotFound {   
-}
-
-// The amount that was requested to be minted would overflow the total supply.
-message DryRunErrorAmountOverLimit {
-    // The maximum amount that can be minted without overflowing the supply.
-    Amount amount_limit = 1;
-}
-
-// The sender account for the transaction has insufficient balance to pay the preliminary fees
-// for the transaction to be included in a block.
-message DryRunErrorBalanceInsufficient {
-    // The minimum balance required to perform the operation.
-    Amount required_amount = 1;
-    // The currently-available balance on the account to pay for the operation.
-    Amount available_amount = 2;
-}
-
-// The energy made available for the transaction is insufficient to cover the basic processing
-// required to include a transaction in a block.
-message DryRunErrorEnergyInsufficient {
-    // The minimum energy required for the transaction to be included in the chain.
-    // Note that, even if the energy supplied for the transaction is enough to prevent a
-    // `DryRunErrorEnergyInsufficient`, the transaction can still be rejected for having
-    // insufficient energy. In that case, a `DryRunTransactionExecuted` response will be
-    // produced, but indicate the transaction was rejected.
-    Energy energy_required = 1;
-}
-
-// Invoking the smart contract instance failed.
-message DryRunErrorInvokeFailure {
-    // If invoking a V0 contract this is not provided, otherwise it is
-    // potentially return value produced by the call unless the call failed with
-    // out of energy or runtime error. If the V1 contract terminated with a
-    // logic error then the return value is present.
-    optional bytes return_value = 1;
-    // Energy used by the execution.
-    Energy used_energy = 2;
-    // Contract execution failed for the given reason.
-    RejectReason reason = 3;
-}
 
 // The dry run operation completed successfully.
 message DryRunSuccessResponse {
+    // The block state at the specified block was successfully loaded.
+    message BlockStateLoaded {
+        // The timestamp of the block, taken to be the current timestamp.
+        Timestamp current_timestamp = 1;
+        // The hash of the block that was loaded.
+        BlockHash block_hash = 2;
+        // The protocol version at the specified block. The behavior of operations can vary across
+        // protocol versions.
+        ProtocolVersion protocol_version = 3;
+    }
+
+    // The current apparent timestamp was updated to the specified value.
+    message TimestampSet {
+
+    }
+
+    // The specified amount was minted to the specified account.
+    message MintedToAccount {
+
+    }
+
+    // The transaction was executed.
+    message TransactionExecuted {
+        // The amount of energy actually expended in executing the transaction.
+        Energy energy_cost = 1;
+        // The details of the outcome of the transaction.
+        AccountTransactionDetails details = 2;
+        // If this is an invocation of a V1 contract that produced a return value, this is that
+        // value. Otherwise it is absent.
+        optional bytes return_value = 3;
+    }
+
+    // The smart contract instance was invoked successfully.
+    message InvokeSuccess {
+        // If invoking a V0 contract this is absent. Otherwise it is the return
+        // value produced by the contract.
+        optional bytes return_value = 1;
+        // Energy used by the execution.
+        Energy used_energy = 2;
+        // Effects produced by contract execution.
+        repeated ContractTraceElement effects = 3;
+    }
+
     oneof response {
         // The state from the specified block was successfully loaded.
         // Response to 'load_block_state'.
-        DryRunBlockStateLoaded block_state_loaded = 1;
+        BlockStateLoaded block_state_loaded = 1;
         // Details of the requested account.
         // Response to 'get_account_info'.
         AccountInfo account_info = 2;
@@ -3487,59 +3531,17 @@ message DryRunSuccessResponse {
         // Response to 'get_instance_info'.
         InstanceInfo instance_info = 3;
         // The smart contract instance was invoked successfully.
-        DryRunInvokeSuccess invoke_succeeded = 4;
+        InvokeSuccess invoke_succeeded = 4;
         // The current timestamp was set successfully.
         // Response to 'set_timestamp'.
-        DryRunTimestampSet timestamp_set = 5;
+        TimestampSet timestamp_set = 5;
         // The specified amount was minted and credited to the account.
         // Response to 'mint_to_account'.
-        DryRunMintedToAccount minted_to_account = 6;
+        MintedToAccount minted_to_account = 6;
         // The specified transaction was executed. Note that the transaction could still have
         // been rejected.
         // Response to 'run_transaction'.
-        DryRunTransactionExecuted transaction_executed = 7;
+        TransactionExecuted transaction_executed = 7;
     }
 }
 
-// The block state at the specified block was successfully loaded.
-message DryRunBlockStateLoaded {
-    // The timestamp of the block, taken to be the current timestamp.
-    Timestamp current_timestamp = 1;
-    // The hash of the block that was loaded.
-    BlockHash block_hash = 2;
-    // The protocol version at the specified block. The behavior of operations can vary across
-    // protocol versions.
-    ProtocolVersion protocol_version = 3;
-}
-
-// The current apparent timestamp was updated to the specified value.
-message DryRunTimestampSet {
-
-}
-
-// The specified amount was minted to the specified account.
-message DryRunMintedToAccount {
-
-}
-
-// The transaction was executed.
-message DryRunTransactionExecuted {
-    // The amount of energy actually expended in executing the transaction.
-    Energy energy_cost = 1;
-    // The details of the outcome of the transaction.
-    AccountTransactionDetails details = 2;
-    // If this is an invocation of a V1 contract that produced a return value, this is that
-    // value. Otherwise it is absent.
-    optional bytes return_value = 3;
-}
-
-// The smart contract instance was invoked successfully.
-message DryRunInvokeSuccess {
-    // If invoking a V0 contract this is absent. Otherwise it is the return
-    // value produced by the contract.
-    optional bytes return_value = 1;
-    // Energy used by the execution.
-    Energy used_energy = 2;
-    // Effects produced by contract execution.
-    repeated ContractTraceElement effects = 3;
-}
