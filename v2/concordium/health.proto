@@ -4,7 +4,7 @@ package concordium.health;
 
 // This specifies the package we want to use for our generated Java classes. 
 // Has no effect on code generated on other languages.
-option java_package = "com.concordium.grpc.v2";
+option java_package = "concordium.health";
 
 // This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations, 
 // and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc. 
@@ -13,7 +13,7 @@ option java_multiple_files = true;
 
 // This specifies the package we want to use for our generated C# classes. 
 // Has no effect on code generated on other languages.
-option csharp_namespace = "Concordium.Grpc.V2";
+option csharp_namespace = "Concordium.Health";
 
 // Parameters to the node health query. The default message gives a good
 // default.
