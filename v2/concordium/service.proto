@@ -330,8 +330,8 @@ service Queries {
   //  * `INVALID_ARGUMENT` if any `DryRunRequest` is malformed.
   //  * `RESOURCE_EXHAUSTED` if the energy quota is exceeded.
   //  * `DEADLINE_EXCEEDED` if the session does not complete before the server-imposed timeout.
-  //  * `UNAVAILABLE` if the server is not currently accepting new `DryRun` sessions. (The server
-  //    may impose a limit on the number of concurrent sessions.)
+  //  * `RESOURCE_EXHAUSTED` if the server is not currently accepting new `DryRun` sessions.
+  //    (The server may impose a limit on the number of concurrent sessions.)
   //  * `INTERNAL` if an interal server error occurs. This should not happen, and likely indicates
   //    a bug.
   //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
