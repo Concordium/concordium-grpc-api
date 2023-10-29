@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Remove `UpdateInstructionSignature`
 - Add `GetBakersRewardPeriod` endpoint.
 - Add `GetBlockCertificates` endpoint.
 - Add `GetBakerEarliestWinTime` endpoint.
