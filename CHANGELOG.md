@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Remove `UpdateInstructionSignature`
+
+## Node 6.1 API
+
 - Add `GetBakersRewardPeriod` endpoint.
 - Add `GetBlockCertificates` endpoint.
 - Add `GetBakerEarliestWinTime` endpoint.
