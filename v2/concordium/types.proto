@@ -2806,7 +2806,7 @@ message Signature {
   bytes value = 1;
 }
 
-// A map from `UpdateKeysIndex` to `Signature`.
+// A signature on an update instruction.
 // The type `UpdateKeysIndex` is not used directly, as messages cannot be keys in maps.
 message SignatureMap {
   map<uint32, Signature> signatures = 1;
