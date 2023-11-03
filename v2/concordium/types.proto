@@ -2806,8 +2806,8 @@ message Signature {
   bytes value = 1;
 }
 
-// Wrapper for a map from indexes to signatures.
-// Needed because protobuf doesn't allow nested maps directly.
+// A signature on an update instruction.
+// The type `UpdateKeysIndex` is not used directly, as messages cannot be keys in maps.
 message SignatureMap {
   map<uint32, Signature> signatures = 1;
 }
@@ -2912,12 +2912,6 @@ message AccountTransaction {
   AccountTransactionSignature signature = 1;
   AccountTransactionHeader header = 2;
   AccountTransactionPayload payload = 3;
-}
-
-message UpdateInstructionSignature {
-  // A map from `UpdateKeysIndex` to `Signature`.
-  // The type `UpdateKeysIndex`is not used directly, as messages cannot be keys in maps.
-  map<uint32, Signature> signatures = 1;
 }
 
 message UpdateInstructionHeader {
