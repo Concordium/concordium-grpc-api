@@ -292,7 +292,7 @@ service Queries {
   //    index.
   //  * `INVALID_ARGUMENT` if the query is for a genesis index at consensus version 0.
   //  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
-  //  * `UNAVAILABLE` if the endpoint is disabled on the node.
+  //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
   rpc GetWinningBakersEpoch (EpochRequest) returns (stream WinningBaker);
 
   // Get the block hash of the first finalized block in a specified epoch.
@@ -304,6 +304,36 @@ service Queries {
   //  * `INVALID_ARGUMENT` if the query is for an epoch with no finalized blocks for a past genesis
   //    index.
   //  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
-  //  * `UNAVAILABLE` if the endpoint is disabled on the node.
+  //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
   rpc GetFirstBlockEpoch (EpochRequest) returns (BlockHash);
+
+  // Dry run a series of transactions and operations on a state derived from a specified block.
+  // The server should send a single `DryRunResponse` for each `DryRunRequest` received, unless
+  // the call fails with an error status code. If a request produces a `DryRunErrorResponse`, then
+  // the server will still process subsequent requests, just as if the request causing the error
+  // did not happen.
+  //
+  // The first request should be `load_block_at_state` to determine the block state that will be
+  // used for the dry run.
+  //
+  // The server associates each request with an energy cost, and limits the total energy that may
+  // be expended in a single invocation of `DryRun`. This limit is reported as `quota` in the
+  // initial metadata returned by the server. If executing an operation exceeds the limit,
+  // the server terminates the session with `RESOURCE_EXHAUSTED`.
+  //
+  // The server also imposes a timeout for a dry-run session to complete. The server reports
+  // the timeout duration in milliseconds in the initial metadata field `timeout`. If the session
+  // is not completed before the timeout elapses, the server terminates the session with
+  // `DEADLINE_EXCEEDED`.
+  //
+  // The following error cases are possible:
+  //  * `INVALID_ARGUMENT` if any `DryRunRequest` is malformed.
+  //  * `RESOURCE_EXHAUSTED` if the energy quota is exceeded.
+  //  * `DEADLINE_EXCEEDED` if the session does not complete before the server-imposed timeout.
+  //  * `RESOURCE_EXHAUSTED` if the server is not currently accepting new `DryRun` sessions.
+  //    (The server may impose a limit on the number of concurrent sessions.)
+  //  * `INTERNAL` if an interal server error occurs. This should not happen, and likely indicates
+  //    a bug.
+  //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
+  rpc DryRun (stream DryRunRequest) returns (stream DryRunResponse);
 }

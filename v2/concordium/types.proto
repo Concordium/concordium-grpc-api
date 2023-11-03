@@ -1826,7 +1826,7 @@ message BlockItemSummary {
   TransactionHash hash = 3;
   // Details that are specific to different transaction types.
   oneof details {
-    // Detailsa about an account transaction.
+    // Details about an account transaction.
     AccountTransactionDetails account_transaction = 4;
     // Details about an account creation.
     AccountCreationDetails account_creation = 5;
@@ -2833,7 +2833,7 @@ message AccountTransactionHeader {
   AccountAddress sender = 1;
   // Sequence number of the transaction.
   SequenceNumber sequence_number = 2;
-  // Maximum amount of nergy the transaction can take to execute.
+  // Maximum amount of energy the transaction can take to execute.
   Energy energy_amount = 3;
   // Latest time the transaction can included in a block.
   TransactionTime expiry = 5;
@@ -3250,3 +3250,292 @@ message WinningBaker {
     // True if the baker produced a block in this round on the finalized chain, and False otherwise.
     bool present = 3;
 }
+
+// An operation to dry run.  The first operation in a dry-run sequence should be
+// `load_block_state`: any other operation will be met with `NoState` until a
+// state is successfully loaded.
+message DryRunRequest {
+    oneof request {
+        // Load the state of the specified block to use for subsequent requests.
+        // The state is taken at the end of execution of the block, and the block’s
+        // timestamp is used as the current timestamp.
+        //
+        // The energy cost for this operation is 2000.
+        BlockHashInput load_block_state = 1;
+        // Run a query on the state.
+        DryRunStateQuery state_query = 2;
+        // Run a (non-transaction) operation to modify the state.
+        DryRunStateOperation state_operation = 3;
+    }
+}
+
+// Run a query as part of a dry run. Queries do not update the block state.
+message DryRunStateQuery {
+    oneof query {
+        // Look up information on a particular account.
+        //
+        // The energy cost for this query is 200.
+        AccountIdentifierInput get_account_info = 1;
+        // Look up information about a particular smart contract.
+        //
+        // The energy cost for this query is 200.
+        ContractAddress get_instance_info = 2;
+        // Invoke an entrypoint on a smart contract instance.
+        // No changes made to the state are retained at the completion of the operation.
+        //
+        // The energy cost for this query is 200 plus the energy used by the smart contract
+        // execution.
+        DryRunInvokeInstance invoke_instance = 3;
+    }
+}
+
+// Invoke an entrypoint on a smart contract instance.
+message DryRunInvokeInstance {
+    // Invoker of the contract. If this is not supplied then the contract will be
+    // invoked by an account with address 0, no credentials and sufficient amount
+    // of CCD to cover the transfer amount. If given, the relevant address (either
+    // account or contract) must exist in the blockstate.
+    optional Address invoker = 1;
+    // Address of the contract instance to invoke.
+    ContractAddress instance = 2;
+    // Amount to invoke the smart contract instance with.
+    Amount amount = 3;
+    // The entrypoint of the smart contract instance to invoke.
+    ReceiveName entrypoint = 4;
+    // The parameter bytes to include in the invocation of the entrypoint.
+    Parameter parameter = 5;
+    // The maximum energy to allow for the invocation. Note that the node imposes an energy
+    // quota that is enforced in addition to this limit.
+    Energy energy = 6;
+}
+
+// An operation that can update the state as part of a dry run.
+message DryRunStateOperation {
+    oneof operation {
+        // Sets the current block time to the given timestamp for the purposes of future
+        // transactions.
+        //
+        // The energy cost of this operation is 50.
+        Timestamp set_timestamp = 1;
+        // Add a specified amount of newly-minted CCDs to a specified account.
+        // The amount cannot cause the total circulating supply to overflow.
+        //
+        // The energy cost of this operation is 400.
+        DryRunMintToAccount mint_to_account = 2;
+        // Dry run a transaction, updating the state if it succeeds.
+        //
+        // The energy cost of this operation is 400 plus the energy used by executing the
+        // transaction.
+        DryRunTransaction run_transaction = 3;
+    }
+}
+
+// Mint a specified amount and credit it to the specified account as part of a dry run.
+message DryRunMintToAccount {
+    // The account to mint to.
+    AccountAddress account = 1;
+    // The amount to mint and credit to the account.
+    Amount amount = 2;
+}
+
+// Dry run an account transaction
+message DryRunTransaction {
+    // The account to use as the sender of the transaction.
+    AccountAddress sender = 1;
+    // The energy limit set for executing the transaction.
+    Energy energy_amount = 2;
+    // The payload of the transaction.
+    AccountTransactionPayload payload = 3;
+    // Which credentials and keys should be treated as having signed the transaction.
+    // If none is given, then the transaction is treated as having one signature for credential 0,
+    // key 0. Therefore, this is only required when the transaction is from a multi-signature
+    // account. There are two reasons why you might want to specify signatures:
+    //   * The cost of the transaction depends on the number of signatures, so if you want to
+    //     get the correct cost for a multi-signature transaction, then specifying the signatures
+    //     supports this.
+    //   * When changing account keys on a multi-credential account, the transaction must be signed
+    //     by the credential whose keys are being changed.
+    //
+    // Note that the signature thresholds are not checked as part of the dry run. Duplicated
+    // signatures are only counted once.
+    repeated DryRunSignature signatures = 4;
+}
+
+// A dry run signature is a pair of a credential index and key index, identifying the credential
+// and key that is presumed to have signed the transaction. No actual cryptographic signature is
+// included.
+message DryRunSignature {
+    // Credential index. Must not exceed 255.
+    uint32 credential = 1;
+    // Key index. Must not exceed 255.
+    uint32 key = 2;
+}
+
+// A response to a `DryRunRequest`.
+message DryRunResponse {
+    oneof response {
+        // The request produced an error. The request otherwise has no effect on the state.
+        DryRunErrorResponse error = 1;
+        // The request was successful.
+        DryRunSuccessResponse success = 2;
+    }
+    // The remaining available energy quota after the dry run operation.
+    Energy quota_remaining = 3;
+}
+
+message DryRunErrorResponse {
+    // The current block state is undefined. It should be initialized with
+    // a 'load_block_state' request before any other operations.
+    message NoState {
+    }
+
+    // The requested block was not found, so its state could not be loaded.
+    message BlockNotFound {
+    }
+
+    // The specified account was not found.
+    message AccountNotFound {   
+    }
+
+    // The specified instance was not found.
+    message InstanceNotFound {   
+    }
+
+    // The amount that was requested to be minted would overflow the total supply.
+    message AmountOverLimit {
+        // The maximum amount that can be minted without overflowing the supply.
+        Amount amount_limit = 1;
+    }
+
+    // The sender account for the transaction has insufficient balance to pay the preliminary fees
+    // for the transaction to be included in a block.
+    message BalanceInsufficient {
+        // The minimum balance required to perform the operation.
+        Amount required_amount = 1;
+        // The currently-available balance on the account to pay for the operation.
+        Amount available_amount = 2;
+    }
+
+    // The energy made available for the transaction is insufficient to cover the basic processing
+    // required to include a transaction in a block.
+    message EnergyInsufficient {
+        // The minimum energy required for the transaction to be included in the chain.
+        // Note that, even if the energy supplied for the transaction is enough to prevent a
+        // `EnergyInsufficient`, the transaction can still be rejected for having
+        // insufficient energy. In that case, a `TransactionExecuted` response will be
+        // produced, but indicate the transaction was rejected.
+        Energy energy_required = 1;
+    }
+
+    // Invoking the smart contract instance failed.
+    message InvokeFailure {
+        // If invoking a V0 contract this is not provided, otherwise it is
+        // potentially return value produced by the call unless the call failed with
+        // out of energy or runtime error. If the V1 contract terminated with a
+        // logic error then the return value is present.
+        optional bytes return_value = 1;
+        // Energy used by the execution.
+        Energy used_energy = 2;
+        // Contract execution failed for the given reason.
+        RejectReason reason = 3;
+    }
+
+    oneof error {
+        // The current block state is undefined. It should be initialized with
+        // a 'load_block_state' request before any other operations.
+        NoState no_state = 1;
+        // The requested block was not found, so its state could not be loaded.
+        // Response to 'load_block_state'.
+        BlockNotFound block_not_found = 2;
+        // The specified account was not found.
+        // Response to 'get_account_info', 'mint_to_account' and 'run_transaction'.
+        AccountNotFound account_not_found = 3;
+        // The specified instance was not found.
+        // Response to 'get_instance_info'.
+        InstanceNotFound instance_not_found = 4;
+        // The amount to mint would overflow the total CCD supply.
+        // Response to 'mint_to_account'.
+        AmountOverLimit amount_over_limit = 5;
+        // The balance of the sender account is not sufficient to pay for the operation.
+        // Response to 'run_transaction'.
+        BalanceInsufficient balance_insufficient = 6;
+        // The energy supplied for the transaction was not sufficient to perform the basic checks.
+        // Response to 'run_transaction'.
+        EnergyInsufficient energy_insufficient = 8;
+        // The contract invocation failed.
+        // Response to 'invoke_instance'.
+        InvokeFailure invoke_failed = 9;
+    }
+}
+
+
+// The dry run operation completed successfully.
+message DryRunSuccessResponse {
+    // The block state at the specified block was successfully loaded.
+    message BlockStateLoaded {
+        // The timestamp of the block, taken to be the current timestamp.
+        Timestamp current_timestamp = 1;
+        // The hash of the block that was loaded.
+        BlockHash block_hash = 2;
+        // The protocol version at the specified block. The behavior of operations can vary across
+        // protocol versions.
+        ProtocolVersion protocol_version = 3;
+    }
+
+    // The current apparent timestamp was updated to the specified value.
+    message TimestampSet {
+
+    }
+
+    // The specified amount was minted to the specified account.
+    message MintedToAccount {
+
+    }
+
+    // The transaction was executed.
+    message TransactionExecuted {
+        // The amount of energy actually expended in executing the transaction.
+        Energy energy_cost = 1;
+        // The details of the outcome of the transaction.
+        AccountTransactionDetails details = 2;
+        // If this is an invocation of a V1 contract that produced a return value, this is that
+        // value. Otherwise it is absent.
+        optional bytes return_value = 3;
+    }
+
+    // The smart contract instance was invoked successfully.
+    message InvokeSuccess {
+        // If invoking a V0 contract this is absent. Otherwise it is the return
+        // value produced by the contract.
+        optional bytes return_value = 1;
+        // Energy used by the execution.
+        Energy used_energy = 2;
+        // Effects produced by contract execution.
+        repeated ContractTraceElement effects = 3;
+    }
+
+    oneof response {
+        // The state from the specified block was successfully loaded.
+        // Response to 'load_block_state'.
+        BlockStateLoaded block_state_loaded = 1;
+        // Details of the requested account.
+        // Response to 'get_account_info'.
+        AccountInfo account_info = 2;
+        // Details of the requested smart contract instance.
+        // Response to 'get_instance_info'.
+        InstanceInfo instance_info = 3;
+        // The smart contract instance was invoked successfully.
+        InvokeSuccess invoke_succeeded = 4;
+        // The current timestamp was set successfully.
+        // Response to 'set_timestamp'.
+        TimestampSet timestamp_set = 5;
+        // The specified amount was minted and credited to the account.
+        // Response to 'mint_to_account'.
+        MintedToAccount minted_to_account = 6;
+        // The specified transaction was executed. Note that the transaction could still have
+        // been rejected.
+        // Response to 'run_transaction'.
+        TransactionExecuted transaction_executed = 7;
+    }
+}
+

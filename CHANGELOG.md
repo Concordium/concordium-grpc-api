@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add `DryRun` endpoint.
 - Remove `UpdateInstructionSignature`
 
 ## Node 6.1 API
