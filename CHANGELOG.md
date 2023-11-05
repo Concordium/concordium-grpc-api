@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased
+## Unreleased changes
 
+- Add a new health service that conforms to the API expected
+  by Google https://github.com/grpc/grpc-proto/blob/master/grpc/health/v1/health.proto
 - Add `DryRun` endpoint.
-- Remove `UpdateInstructionSignature`
+- Remove `UpdateInstructionSignature`. It was not used in any endpoints.
 
 ## Node 6.1 API
 
