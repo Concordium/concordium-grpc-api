@@ -5,7 +5,7 @@
 This repository keeps the gRPC protocol definition file and related
 documentation on the gRPC interface exposed by concordium-node.
 
-The V2 API that consists of three services
+The V2 API consists of three services
 
 - [health.proto](./v2/concordium/health.proto)
 - [grpc-health.proto](./grpc/health/v1/health.proto)
