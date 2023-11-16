@@ -7,6 +7,7 @@
 - Add `DryRun` endpoint.
 - Remove `UpdateInstructionSignature`. It was not used in any endpoints.
 - Remove V1 API.
+- Extend enum `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
 
 ## Node 6.1 API
 
