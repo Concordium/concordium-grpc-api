@@ -2,12 +2,15 @@
 
 ## Unreleased changes
 
+- Extend enum `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
+
+## Node 6.2 API
+
 - Add a new health service that conforms to the API expected
   by Google https://github.com/grpc/grpc-proto/blob/master/grpc/health/v1/health.proto
 - Add `DryRun` endpoint.
 - Remove `UpdateInstructionSignature`. It was not used in any endpoints.
 - Remove V1 API.
-- Extend enum `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
 
 ## Node 6.1 API
 
