@@ -731,6 +731,98 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.DryRunErrorResponse"><span class="badge">M</span>DryRunErrorResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.AccountNotFound"><span class="badge">M</span>DryRunErrorResponse.AccountNotFound</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.AmountOverLimit"><span class="badge">M</span>DryRunErrorResponse.AmountOverLimit</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.BalanceInsufficient"><span class="badge">M</span>DryRunErrorResponse.BalanceInsufficient</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.BlockNotFound"><span class="badge">M</span>DryRunErrorResponse.BlockNotFound</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.EnergyInsufficient"><span class="badge">M</span>DryRunErrorResponse.EnergyInsufficient</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.InstanceNotFound"><span class="badge">M</span>DryRunErrorResponse.InstanceNotFound</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.InvokeFailure"><span class="badge">M</span>DryRunErrorResponse.InvokeFailure</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunErrorResponse.NoState"><span class="badge">M</span>DryRunErrorResponse.NoState</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunInvokeInstance"><span class="badge">M</span>DryRunInvokeInstance</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunMintToAccount"><span class="badge">M</span>DryRunMintToAccount</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunRequest"><span class="badge">M</span>DryRunRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunResponse"><span class="badge">M</span>DryRunResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunSignature"><span class="badge">M</span>DryRunSignature</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunStateOperation"><span class="badge">M</span>DryRunStateOperation</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunStateQuery"><span class="badge">M</span>DryRunStateQuery</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunSuccessResponse"><span class="badge">M</span>DryRunSuccessResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunSuccessResponse.BlockStateLoaded"><span class="badge">M</span>DryRunSuccessResponse.BlockStateLoaded</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunSuccessResponse.InvokeSuccess"><span class="badge">M</span>DryRunSuccessResponse.InvokeSuccess</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunSuccessResponse.MintedToAccount"><span class="badge">M</span>DryRunSuccessResponse.MintedToAccount</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunSuccessResponse.TimestampSet"><span class="badge">M</span>DryRunSuccessResponse.TimestampSet</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunSuccessResponse.TransactionExecuted"><span class="badge">M</span>DryRunSuccessResponse.TransactionExecuted</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.DryRunTransaction"><span class="badge">M</span>DryRunTransaction</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.DumpRequest"><span class="badge">M</span>DumpRequest</a>
                 </li>
               
@@ -1292,14 +1384,6 @@
               
                 <li>
                   <a href="#concordium.v2.UpdateInstructionPayload"><span class="badge">M</span>UpdateInstructionPayload</a>
-                </li>
-              
-                <li>
-                  <a href="#concordium.v2.UpdateInstructionSignature"><span class="badge">M</span>UpdateInstructionSignature</a>
-                </li>
-              
-                <li>
-                  <a href="#concordium.v2.UpdateInstructionSignature.SignaturesEntry"><span class="badge">M</span>UpdateInstructionSignature.SignaturesEntry</a>
                 </li>
               
                 <li>
@@ -2577,7 +2661,7 @@ In case of serialization failure this will not be set. </p></td>
                   <td>energy_amount</td>
                   <td><a href="#concordium.v2.Energy">Energy</a></td>
                   <td></td>
-                  <td><p>Maximum amount of nergy the transaction can take to execute. </p></td>
+                  <td><p>Maximum amount of energy the transaction can take to execute. </p></td>
                 </tr>
               
                 <tr>
@@ -4489,7 +4573,7 @@ can in principle happen. </p></td>
                   <td>account_transaction</td>
                   <td><a href="#concordium.v2.AccountTransactionDetails">AccountTransactionDetails</a></td>
                   <td></td>
-                  <td><p>Detailsa about an account transaction. </p></td>
+                  <td><p>Details about an account transaction. </p></td>
                 </tr>
               
                 <tr>
@@ -7033,6 +7117,797 @@ It is a serialized pair of group elements  in the G1 group of the BLS12-381 curv
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>A free form description of the revoker or provider. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse">DryRunErrorResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>no_state</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.NoState">DryRunErrorResponse.NoState</a></td>
+                  <td></td>
+                  <td><p>The current block state is undefined. It should be initialized with
+a &#39;load_block_state&#39; request before any other operations. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_not_found</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.BlockNotFound">DryRunErrorResponse.BlockNotFound</a></td>
+                  <td></td>
+                  <td><p>The requested block was not found, so its state could not be loaded.
+Response to &#39;load_block_state&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>account_not_found</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.AccountNotFound">DryRunErrorResponse.AccountNotFound</a></td>
+                  <td></td>
+                  <td><p>The specified account was not found.
+Response to &#39;get_account_info&#39;, &#39;mint_to_account&#39; and &#39;run_transaction&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>instance_not_found</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.InstanceNotFound">DryRunErrorResponse.InstanceNotFound</a></td>
+                  <td></td>
+                  <td><p>The specified instance was not found.
+Response to &#39;get_instance_info&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amount_over_limit</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.AmountOverLimit">DryRunErrorResponse.AmountOverLimit</a></td>
+                  <td></td>
+                  <td><p>The amount to mint would overflow the total CCD supply.
+Response to &#39;mint_to_account&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>balance_insufficient</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.BalanceInsufficient">DryRunErrorResponse.BalanceInsufficient</a></td>
+                  <td></td>
+                  <td><p>The balance of the sender account is not sufficient to pay for the operation.
+Response to &#39;run_transaction&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>energy_insufficient</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.EnergyInsufficient">DryRunErrorResponse.EnergyInsufficient</a></td>
+                  <td></td>
+                  <td><p>The energy supplied for the transaction was not sufficient to perform the basic checks.
+Response to &#39;run_transaction&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>invoke_failed</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse.InvokeFailure">DryRunErrorResponse.InvokeFailure</a></td>
+                  <td></td>
+                  <td><p>The contract invocation failed.
+Response to &#39;invoke_instance&#39;. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.AccountNotFound">DryRunErrorResponse.AccountNotFound</h3>
+        <p>The specified account was not found.</p>
+
+        
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.AmountOverLimit">DryRunErrorResponse.AmountOverLimit</h3>
+        <p>The amount that was requested to be minted would overflow the total supply.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>amount_limit</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The maximum amount that can be minted without overflowing the supply. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.BalanceInsufficient">DryRunErrorResponse.BalanceInsufficient</h3>
+        <p>The sender account for the transaction has insufficient balance to pay the preliminary fees</p><p>for the transaction to be included in a block.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>required_amount</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The minimum balance required to perform the operation. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>available_amount</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The currently-available balance on the account to pay for the operation. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.BlockNotFound">DryRunErrorResponse.BlockNotFound</h3>
+        <p>The requested block was not found, so its state could not be loaded.</p>
+
+        
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.EnergyInsufficient">DryRunErrorResponse.EnergyInsufficient</h3>
+        <p>The energy made available for the transaction is insufficient to cover the basic processing</p><p>required to include a transaction in a block.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>energy_required</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>The minimum energy required for the transaction to be included in the chain.
+Note that, even if the energy supplied for the transaction is enough to prevent a
+`EnergyInsufficient`, the transaction can still be rejected for having
+insufficient energy. In that case, a `TransactionExecuted` response will be
+produced, but indicate the transaction was rejected. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.InstanceNotFound">DryRunErrorResponse.InstanceNotFound</h3>
+        <p>The specified instance was not found.</p>
+
+        
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.InvokeFailure">DryRunErrorResponse.InvokeFailure</h3>
+        <p>Invoking the smart contract instance failed.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>return_value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>optional</td>
+                  <td><p>If invoking a V0 contract this is not provided, otherwise it is
+potentially return value produced by the call unless the call failed with
+out of energy or runtime error. If the V1 contract terminated with a
+logic error then the return value is present. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>used_energy</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>Energy used by the execution. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>reason</td>
+                  <td><a href="#concordium.v2.RejectReason">RejectReason</a></td>
+                  <td></td>
+                  <td><p>Contract execution failed for the given reason. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunErrorResponse.NoState">DryRunErrorResponse.NoState</h3>
+        <p>The current block state is undefined. It should be initialized with</p><p>a 'load_block_state' request before any other operations.</p>
+
+        
+
+        
+      
+        <h3 id="concordium.v2.DryRunInvokeInstance">DryRunInvokeInstance</h3>
+        <p>Invoke an entrypoint on a smart contract instance.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>invoker</td>
+                  <td><a href="#concordium.v2.Address">Address</a></td>
+                  <td>optional</td>
+                  <td><p>Invoker of the contract. If this is not supplied then the contract will be
+invoked by an account with address 0, no credentials and sufficient amount
+of CCD to cover the transfer amount. If given, the relevant address (either
+account or contract) must exist in the blockstate. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>instance</td>
+                  <td><a href="#concordium.v2.ContractAddress">ContractAddress</a></td>
+                  <td></td>
+                  <td><p>Address of the contract instance to invoke. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amount</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>Amount to invoke the smart contract instance with. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>entrypoint</td>
+                  <td><a href="#concordium.v2.ReceiveName">ReceiveName</a></td>
+                  <td></td>
+                  <td><p>The entrypoint of the smart contract instance to invoke. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>parameter</td>
+                  <td><a href="#concordium.v2.Parameter">Parameter</a></td>
+                  <td></td>
+                  <td><p>The parameter bytes to include in the invocation of the entrypoint. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>energy</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>The maximum energy to allow for the invocation. Note that the node imposes an energy
+quota that is enforced in addition to this limit. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunMintToAccount">DryRunMintToAccount</h3>
+        <p>Mint a specified amount and credit it to the specified account as part of a dry run.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>account</td>
+                  <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
+                  <td></td>
+                  <td><p>The account to mint to. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amount</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The amount to mint and credit to the account. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunRequest">DryRunRequest</h3>
+        <p>An operation to dry run.  The first operation in a dry-run sequence should be</p><p>`load_block_state`: any other operation will be met with `NoState` until a</p><p>state is successfully loaded.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>load_block_state</td>
+                  <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
+                  <td></td>
+                  <td><p>Load the state of the specified block to use for subsequent requests.
+The state is taken at the end of execution of the block, and the block’s
+timestamp is used as the current timestamp.
+
+The energy cost for this operation is 2000. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>state_query</td>
+                  <td><a href="#concordium.v2.DryRunStateQuery">DryRunStateQuery</a></td>
+                  <td></td>
+                  <td><p>Run a query on the state. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>state_operation</td>
+                  <td><a href="#concordium.v2.DryRunStateOperation">DryRunStateOperation</a></td>
+                  <td></td>
+                  <td><p>Run a (non-transaction) operation to modify the state. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunResponse">DryRunResponse</h3>
+        <p>A response to a `DryRunRequest`.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#concordium.v2.DryRunErrorResponse">DryRunErrorResponse</a></td>
+                  <td></td>
+                  <td><p>The request produced an error. The request otherwise has no effect on the state. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#concordium.v2.DryRunSuccessResponse">DryRunSuccessResponse</a></td>
+                  <td></td>
+                  <td><p>The request was successful. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>quota_remaining</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>The remaining available energy quota after the dry run operation. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunSignature">DryRunSignature</h3>
+        <p>A dry run signature is a pair of a credential index and key index, identifying the credential</p><p>and key that is presumed to have signed the transaction. No actual cryptographic signature is</p><p>included.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>credential</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>Credential index. Must not exceed 255. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>Key index. Must not exceed 255. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunStateOperation">DryRunStateOperation</h3>
+        <p>An operation that can update the state as part of a dry run.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>set_timestamp</td>
+                  <td><a href="#concordium.v2.Timestamp">Timestamp</a></td>
+                  <td></td>
+                  <td><p>Sets the current block time to the given timestamp for the purposes of future
+transactions.
+
+The energy cost of this operation is 50. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mint_to_account</td>
+                  <td><a href="#concordium.v2.DryRunMintToAccount">DryRunMintToAccount</a></td>
+                  <td></td>
+                  <td><p>Add a specified amount of newly-minted CCDs to a specified account.
+The amount cannot cause the total circulating supply to overflow.
+
+The energy cost of this operation is 400. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>run_transaction</td>
+                  <td><a href="#concordium.v2.DryRunTransaction">DryRunTransaction</a></td>
+                  <td></td>
+                  <td><p>Dry run a transaction, updating the state if it succeeds.
+
+The energy cost of this operation is 400 plus the energy used by executing the
+transaction. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunStateQuery">DryRunStateQuery</h3>
+        <p>Run a query as part of a dry run. Queries do not update the block state.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>get_account_info</td>
+                  <td><a href="#concordium.v2.AccountIdentifierInput">AccountIdentifierInput</a></td>
+                  <td></td>
+                  <td><p>Look up information on a particular account.
+
+The energy cost for this query is 200. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>get_instance_info</td>
+                  <td><a href="#concordium.v2.ContractAddress">ContractAddress</a></td>
+                  <td></td>
+                  <td><p>Look up information about a particular smart contract.
+
+The energy cost for this query is 200. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>invoke_instance</td>
+                  <td><a href="#concordium.v2.DryRunInvokeInstance">DryRunInvokeInstance</a></td>
+                  <td></td>
+                  <td><p>Invoke an entrypoint on a smart contract instance.
+No changes made to the state are retained at the completion of the operation.
+
+The energy cost for this query is 200 plus the energy used by the smart contract
+execution. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunSuccessResponse">DryRunSuccessResponse</h3>
+        <p>The dry run operation completed successfully.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block_state_loaded</td>
+                  <td><a href="#concordium.v2.DryRunSuccessResponse.BlockStateLoaded">DryRunSuccessResponse.BlockStateLoaded</a></td>
+                  <td></td>
+                  <td><p>The state from the specified block was successfully loaded.
+Response to &#39;load_block_state&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>account_info</td>
+                  <td><a href="#concordium.v2.AccountInfo">AccountInfo</a></td>
+                  <td></td>
+                  <td><p>Details of the requested account.
+Response to &#39;get_account_info&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>instance_info</td>
+                  <td><a href="#concordium.v2.InstanceInfo">InstanceInfo</a></td>
+                  <td></td>
+                  <td><p>Details of the requested smart contract instance.
+Response to &#39;get_instance_info&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>invoke_succeeded</td>
+                  <td><a href="#concordium.v2.DryRunSuccessResponse.InvokeSuccess">DryRunSuccessResponse.InvokeSuccess</a></td>
+                  <td></td>
+                  <td><p>The smart contract instance was invoked successfully. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timestamp_set</td>
+                  <td><a href="#concordium.v2.DryRunSuccessResponse.TimestampSet">DryRunSuccessResponse.TimestampSet</a></td>
+                  <td></td>
+                  <td><p>The current timestamp was set successfully.
+Response to &#39;set_timestamp&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>minted_to_account</td>
+                  <td><a href="#concordium.v2.DryRunSuccessResponse.MintedToAccount">DryRunSuccessResponse.MintedToAccount</a></td>
+                  <td></td>
+                  <td><p>The specified amount was minted and credited to the account.
+Response to &#39;mint_to_account&#39;. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transaction_executed</td>
+                  <td><a href="#concordium.v2.DryRunSuccessResponse.TransactionExecuted">DryRunSuccessResponse.TransactionExecuted</a></td>
+                  <td></td>
+                  <td><p>The specified transaction was executed. Note that the transaction could still have
+been rejected.
+Response to &#39;run_transaction&#39;. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunSuccessResponse.BlockStateLoaded">DryRunSuccessResponse.BlockStateLoaded</h3>
+        <p>The block state at the specified block was successfully loaded.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>current_timestamp</td>
+                  <td><a href="#concordium.v2.Timestamp">Timestamp</a></td>
+                  <td></td>
+                  <td><p>The timestamp of the block, taken to be the current timestamp. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_hash</td>
+                  <td><a href="#concordium.v2.BlockHash">BlockHash</a></td>
+                  <td></td>
+                  <td><p>The hash of the block that was loaded. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>protocol_version</td>
+                  <td><a href="#concordium.v2.ProtocolVersion">ProtocolVersion</a></td>
+                  <td></td>
+                  <td><p>The protocol version at the specified block. The behavior of operations can vary across
+protocol versions. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunSuccessResponse.InvokeSuccess">DryRunSuccessResponse.InvokeSuccess</h3>
+        <p>The smart contract instance was invoked successfully.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>return_value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>optional</td>
+                  <td><p>If invoking a V0 contract this is absent. Otherwise it is the return
+value produced by the contract. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>used_energy</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>Energy used by the execution. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>effects</td>
+                  <td><a href="#concordium.v2.ContractTraceElement">ContractTraceElement</a></td>
+                  <td>repeated</td>
+                  <td><p>Effects produced by contract execution. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunSuccessResponse.MintedToAccount">DryRunSuccessResponse.MintedToAccount</h3>
+        <p>The specified amount was minted to the specified account.</p>
+
+        
+
+        
+      
+        <h3 id="concordium.v2.DryRunSuccessResponse.TimestampSet">DryRunSuccessResponse.TimestampSet</h3>
+        <p>The current apparent timestamp was updated to the specified value.</p>
+
+        
+
+        
+      
+        <h3 id="concordium.v2.DryRunSuccessResponse.TransactionExecuted">DryRunSuccessResponse.TransactionExecuted</h3>
+        <p>The transaction was executed.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>energy_cost</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>The amount of energy actually expended in executing the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>details</td>
+                  <td><a href="#concordium.v2.AccountTransactionDetails">AccountTransactionDetails</a></td>
+                  <td></td>
+                  <td><p>The details of the outcome of the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>return_value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>optional</td>
+                  <td><p>If this is an invocation of a V1 contract that produced a return value, this is that
+value. Otherwise it is absent. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.DryRunTransaction">DryRunTransaction</h3>
+        <p>Dry run an account transaction</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sender</td>
+                  <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
+                  <td></td>
+                  <td><p>The account to use as the sender of the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>energy_amount</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>The energy limit set for executing the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>payload</td>
+                  <td><a href="#concordium.v2.AccountTransactionPayload">AccountTransactionPayload</a></td>
+                  <td></td>
+                  <td><p>The payload of the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signatures</td>
+                  <td><a href="#concordium.v2.DryRunSignature">DryRunSignature</a></td>
+                  <td>repeated</td>
+                  <td><p>Which credentials and keys should be treated as having signed the transaction.
+If none is given, then the transaction is treated as having one signature for credential 0,
+key 0. Therefore, this is only required when the transaction is from a multi-signature
+account. There are two reasons why you might want to specify signatures:
+  * The cost of the transaction depends on the number of signatures, so if you want to
+    get the correct cost for a multi-signature transaction, then specifying the signatures
+    supports this.
+  * When changing account keys on a multi-credential account, the transaction must be signed
+    by the credential whose keys are being changed.
+
+Note that the signature thresholds are not checked as part of the dry run. Duplicated
+signatures are only counted once. </p></td>
                 </tr>
               
             </tbody>
@@ -11687,7 +12562,7 @@ to make future update instructions. </p></td>
         
       
         <h3 id="concordium.v2.SignatureMap">SignatureMap</h3>
-        <p>Wrapper for a map from indexes to signatures.</p><p>Needed because protobuf doesn't allow nested maps directly.</p>
+        <p>A signature on an update instruction.</p><p>The type `UpdateKeysIndex` is not used directly, as messages cannot be keys in maps.</p>
 
         
           <table class="field-table">
@@ -12568,62 +13443,6 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
                   <td><p>A raw payload encoded according to the format defined by the protocol. </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="concordium.v2.UpdateInstructionSignature">UpdateInstructionSignature</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>signatures</td>
-                  <td><a href="#concordium.v2.UpdateInstructionSignature.SignaturesEntry">UpdateInstructionSignature.SignaturesEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>A map from `UpdateKeysIndex` to `Signature`.
-The type `UpdateKeysIndex`is not used directly, as messages cannot be keys in maps. </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="concordium.v2.UpdateInstructionSignature.SignaturesEntry">UpdateInstructionSignature.SignaturesEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#uint32">uint32</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#concordium.v2.Signature">Signature</a></td>
-                  <td></td>
-                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -14026,7 +14845,7 @@ The following error cases are possible:
    index.
  * `INVALID_ARGUMENT` if the query is for a genesis index at consensus version 0.
  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
- * `UNAVAILABLE` if the endpoint is disabled on the node.</p></td>
+ * `UNIMPLEMENTED` if the endpoint is disabled on the node.</p></td>
               </tr>
             
               <tr>
@@ -14042,7 +14861,41 @@ The following error cases are possible:
  * `INVALID_ARGUMENT` if the query is for an epoch with no finalized blocks for a past genesis
    index.
  * `INVALID_ARGUMENT` if the input `EpochRequest` is malformed.
- * `UNAVAILABLE` if the endpoint is disabled on the node.</p></td>
+ * `UNIMPLEMENTED` if the endpoint is disabled on the node.</p></td>
+              </tr>
+            
+              <tr>
+                <td>DryRun</td>
+                <td><a href="#concordium.v2.DryRunRequest">DryRunRequest</a> stream</td>
+                <td><a href="#concordium.v2.DryRunResponse">DryRunResponse</a> stream</td>
+                <td><p>Dry run a series of transactions and operations on a state derived from a specified block.
+The server should send a single `DryRunResponse` for each `DryRunRequest` received, unless
+the call fails with an error status code. If a request produces a `DryRunErrorResponse`, then
+the server will still process subsequent requests, just as if the request causing the error
+did not happen.
+
+The first request should be `load_block_at_state` to determine the block state that will be
+used for the dry run.
+
+The server associates each request with an energy cost, and limits the total energy that may
+be expended in a single invocation of `DryRun`. This limit is reported as `quota` in the
+initial metadata returned by the server. If executing an operation exceeds the limit,
+the server terminates the session with `RESOURCE_EXHAUSTED`.
+
+The server also imposes a timeout for a dry-run session to complete. The server reports
+the timeout duration in milliseconds in the initial metadata field `timeout`. If the session
+is not completed before the timeout elapses, the server terminates the session with
+`DEADLINE_EXCEEDED`.
+
+The following error cases are possible:
+ * `INVALID_ARGUMENT` if any `DryRunRequest` is malformed.
+ * `RESOURCE_EXHAUSTED` if the energy quota is exceeded.
+ * `DEADLINE_EXCEEDED` if the session does not complete before the server-imposed timeout.
+ * `RESOURCE_EXHAUSTED` if the server is not currently accepting new `DryRun` sessions.
+   (The server may impose a limit on the number of concurrent sessions.)
+ * `INTERNAL` if an interal server error occurs. This should not happen, and likely indicates
+   a bug.
+ * `UNIMPLEMENTED` if the endpoint is disabled on the node.</p></td>
               </tr>
             
           </tbody>
