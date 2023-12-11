@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package concordium.health;
 
+// This specifies the package we want to use for our generated Go code.
+// Has no effect on code generated on other languages.
+option go_package = "./pb";
+
 // This specifies the package we want to use for our generated Java classes. 
 // Has no effect on code generated on other languages.
 option java_package = "com.concordium.health";
