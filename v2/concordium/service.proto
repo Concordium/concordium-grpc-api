@@ -336,4 +336,9 @@ service Queries {
   //    a bug.
   //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
   rpc DryRun (stream DryRunRequest) returns (stream DryRunResponse);
+
+  // Get a sequence of finalization proofs and Merkle finalization committee proofs that will
+  // allow a light client to update its current last finalized block from a trusted start block
+  // to a specified target block.
+  rpc GetLightBlocks (LightBlocksRequest) returns (stream LightBlocksItem);
 }

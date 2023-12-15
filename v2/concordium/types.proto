@@ -3540,3 +3540,53 @@ message DryRunSuccessResponse {
     }
 }
 
+// A request from a light client to catch up from a trusted block to a subsequent finalized
+// block.
+message LightBlocksRequest {
+    // The highest finalized block currently trusted by the light client.
+    BlockHashInput from = 1;
+    // The target finalized block to catch the light client up to.
+    // The request will fail if this is not descended from the 'from' block.
+    BlockHashInput to = 2;
+    // If true, indicates that the light client is not aware of the current epoch finalization
+    // committee for it's highest finalized block.
+    bool current_committee_unknown = 3;
+    // If true, indicates that the light client is not aware of the next epoch finalization
+    // committee for it's highest finalized block.
+    bool next_committee_unknown = 4;
+    // If true, the response should include a proof of the next epoch finalization committee for
+    // the 'to' block.
+    bool next_committee_required = 5;
+}
+
+// Representation of a generic Merkle proof.
+// A Merkle proof can be canonically converted to a root hash by converting each of its
+// branches to bytes, concatenating them, and then taking the SHA256 hash of the result.
+message MerkleProof {
+    // The branches of the Merkle proof.
+    repeated MerkleBranch branches = 1;
+}
+
+// Branches of a Merkle proof.
+// A Merkle branch is either raw data bytes or a sub-Merkle proof.
+message MerkleBranch {
+    oneof branch {
+        // Raw data bytes. For this case, 'raw_data' is the representation of the branch
+        // as bytes.
+        bytes raw_data = 1;
+        // A sub-proof. For this case, the root hash of 'sub_proof' is the representation
+        // of the branch as bytes.
+        MerkleProof sub_proof = 2;
+    }
+}
+
+// An item produced in response to a `LightBlocksRequest`.
+message LightBlocksItem {
+    oneof item {
+        // A finalization entry proving that a block is finalized, and checkable knowing
+        // the finalization committee for the epoch of the block.
+        EpochFinalizationEntry finalization_entry = 1;
+        // A Merkle proof of what the next or current epoch finalization committee is for a block.
+        MerkleProof committee_proof = 2;
+    }
+}
