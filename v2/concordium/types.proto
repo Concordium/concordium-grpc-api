@@ -462,6 +462,37 @@ message AccountCredential {
   }
 }
 
+message Cooldown {
+  // The status of a cooldown. When stake is removed from a baker or delegator
+  // (from protocol version 7) it first enters the pre-pre-cooldown state.
+  // The next time the stake snaphot is taken (at the epoch transition before
+  // a payday) it enters the pre-cooldown state. At the subsequent payday, it
+  // enters the cooldown state. At the payday after the end of the cooldown
+  // period, the stake is finally released.
+  enum CooldownStatus {
+      // The amount is in cooldown and will expire at the specified time, becoming available
+      // at the subsequent pay day.
+      COOLDOWN = 0;
+      // The amount will enter cooldown at the next pay day. The specified end time is
+      // projected to be the end of the cooldown period, but the actual end time will be
+      // determined at the payday, and may be different if the global cooldown period
+      // changes.
+      PRE_COOLDOWN = 1;
+      // The amount will enter pre-cooldown at the next snapshot epoch (i.e. the epoch
+      // transition before a pay day transition). As with pre-cooldown, the specified
+      // end time is projected, but the actual end time will be determined later.
+      PRE_PRE_COOLDOWN = 2;
+  }
+  // The time in milliseconds since the Unix epoch when the cooldown period
+  // ends.
+  Timestamp end_time = 1;
+  // The amount that is in cooldown and set to be released at the end of the
+  // cooldown period.
+  Amount amount = 2;
+  // The status of the cooldown.
+  CooldownStatus status = 3;
+}
+
 // Information about the account at a particular point in time.
 message AccountInfo {
   // Next sequence number to be used for transactions signed from this account.
@@ -495,6 +526,14 @@ message AccountInfo {
   // Canonical address of the account. This is derived from the first credential
   // that created the account.
   AccountAddress address = 10;
+  // The stake on the account that is in cooldown.
+  // There can be multiple amounts in cooldown that expire at different times.
+  repeated Cooldown cooldowns = 11;
+  // The available (unencrypted) balance of the account (i.e. that can be transferred
+  // or used to pay for transactions). This is the balance minus the locked amount.
+  // The locked amount is the maximum of the amount in the release schedule and
+  // the total amount that is actively staked or in cooldown (inactive stake).
+  Amount available_balance = 12;
 }
 
 // Input to queries which take a block as a parameter.
@@ -2097,20 +2136,27 @@ message PoolCurrentPaydayInfo {
 
 // Type for the response of GetPoolInfo.
 // Contains information about a given pool at the end of a given block.
+// From protocol version 7, pool removal has immediate effect, however, the
+// pool may still be present for the current (and possibly next) reward period.
+// In this case, the `current_payday_infor` field will be set, but the
+// `equity_capital`, `delegated_capital`, `delegated_capital_cap` and,
+// `pool_info` fields will all be absent. The `equity_pending_change` field
+// will also be absent, as stake changes are immediate.
 message PoolInfoResponse {
   // The 'BakerId' of the pool owner.
   BakerId baker = 1;
   // The account address of the pool owner.
   AccountAddress address = 2;
   // The equity capital provided by the pool owner.
-  Amount equity_capital = 3;
+  optional Amount equity_capital = 3;
   // The capital delegated to the pool by other accounts.
-  Amount delegated_capital = 4;
+  optional Amount delegated_capital = 4;
   // The maximum amount that may be delegated to the pool, accounting for leverage and stake limits.
-  Amount delegated_capital_cap = 5;
+  optional Amount delegated_capital_cap = 5;
   // The pool info associated with the pool: open status, metadata URL and commission rates.
-  BakerPoolInfo pool_info = 6;
-  // Any pending change to the equity carpital.
+  optional BakerPoolInfo pool_info = 6;
+  // Any pending change to the equity capital.
+  // This is not used from protocol version 7 onwards, as stake changes are immediate.
   optional PoolPendingChange equity_pending_change = 7;
   // Information of the pool in the current reward period.
   optional PoolCurrentPaydayInfo current_payday_info = 8;
