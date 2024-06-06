@@ -2,6 +2,7 @@
 
 ## Unreleased changes
 
+- Extend enum `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
 - Support for changes to cooldown behavior in protocol version 7:
   - `AccountInfo` has a new repeated `cooldowns` field. Each `Cooldown` records
     the amount, (expected) release time and whether it's a regular cooldown,
@@ -22,7 +23,6 @@
 - Add `DryRun` endpoint.
 - Remove `UpdateInstructionSignature`. It was not used in any endpoints.
 - Remove V1 API.
-- Extend enum `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
 
 ## Node 6.1 API
 
