@@ -3,6 +3,18 @@
 ## Unreleased changes
 
 - Extend enum `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
+- Support for changes to cooldown behavior in protocol version 7:
+  - `AccountInfo` has a new repeated `cooldowns` field. Each `Cooldown` records
+    the amount, (expected) release time and whether it's a regular cooldown,
+    pre-cooldown or pre-pre-cooldown.
+  - `AccountInfo` now includes `available_balance`. This is included since the
+    method for calculating it has changed (it now must account for the
+    cooldowns), so this is provided as a convenience.
+  - `PoolInfoResponse` is revised to make the fields `equity_capital`,
+    `delegated_capital`, `delegated_capital_cap` and `pool_info` optional. This
+    is since in protocol 7 a validator can be unregistered, but still part of the
+    current epoch validators.
+
 
 ## Node 6.2 API
 
