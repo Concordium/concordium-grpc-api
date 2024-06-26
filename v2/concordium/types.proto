@@ -532,11 +532,14 @@ message AccountInfo {
   AccountAddress address = 10;
   // The stake on the account that is in cooldown.
   // There can be multiple amounts in cooldown that expire at different times.
+  // This was introduced in protocol version 7, and so is not present in
+  // earlier protocol versions.
   repeated Cooldown cooldowns = 11;
   // The available (unencrypted) balance of the account (i.e. that can be transferred
   // or used to pay for transactions). This is the balance minus the locked amount.
   // The locked amount is the maximum of the amount in the release schedule and
   // the total amount that is actively staked or in cooldown (inactive stake).
+  // This was introduced in node version 7.0.
   Amount available_balance = 12;
 }
 
@@ -2142,7 +2145,7 @@ message PoolCurrentPaydayInfo {
 // Contains information about a given pool at the end of a given block.
 // From protocol version 7, pool removal has immediate effect, however, the
 // pool may still be present for the current (and possibly next) reward period.
-// In this case, the `current_payday_infor` field will be set, but the
+// In this case, the `current_payday_info` field will be set, but the
 // `equity_capital`, `delegated_capital`, `delegated_capital_cap` and,
 // `pool_info` fields will all be absent. The `equity_pending_change` field
 // will also be absent, as stake changes are immediate.
@@ -2151,13 +2154,15 @@ message PoolInfoResponse {
   BakerId baker = 1;
   // The account address of the pool owner.
   AccountAddress address = 2;
-  // The equity capital provided by the pool owner.
+  // The equity capital provided by the pool owner. Absent if the pool is removed.
   optional Amount equity_capital = 3;
-  // The capital delegated to the pool by other accounts.
+  // The capital delegated to the pool by other accounts. Absent if the pool is removed.
   optional Amount delegated_capital = 4;
   // The maximum amount that may be delegated to the pool, accounting for leverage and stake limits.
+  // Absent if the pool is removed.
   optional Amount delegated_capital_cap = 5;
   // The pool info associated with the pool: open status, metadata URL and commission rates.
+  // Absent if the pool is removed.
   optional BakerPoolInfo pool_info = 6;
   // Any pending change to the equity capital.
   // This is not used from protocol version 7 onwards, as stake changes are immediate.
