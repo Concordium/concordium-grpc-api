@@ -541,6 +541,9 @@ message AccountInfo {
   // the total amount that is actively staked or in cooldown (inactive stake).
   // This was introduced in node version 7.0.
   Amount available_balance = 12;
+  // A flag indicating whether the account is currently suspended or not. This
+  // was introduced in protocol version 8.
+  bool is_suspended = 13;
 }
 
 // Input to queries which take a block as a parameter.
