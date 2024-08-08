@@ -545,7 +545,7 @@ message AccountInfo {
   // flag has a meaning from protocol version 8 onwards. In protocol version 8
   // it signals whether an account has been suspended and is not participating
   // in the consensus algorithm. For protocol version < 8 the flag will always
-  // be set to true.
+  // be set to false.
   bool is_suspended = 13;
 }
 
