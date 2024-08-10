@@ -1225,6 +1225,10 @@ message BakerEvent {
     BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
     // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
+    // The baker's account has been suspended.
+    BakerSuspended baker_suspended = 12;
+    // The baker's account has been suspended.
+    BakerResumed baker_resumed = 13;
   }
 }
 
