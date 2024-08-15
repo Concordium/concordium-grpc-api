@@ -14,7 +14,10 @@
     `delegated_capital`, `delegated_capital_cap` and `pool_info` optional. This
     is since in protocol 7 a validator can be unregistered, but still part of the
     current epoch validators.
-
+  - `BakerEvent` now has an additional case `delegation_removed`, as configuring a baker can
+    result in a delegator being removed (from protocol 7).
+  - `DelegationEvent` now has an additional case `baker_removed`, as configuring a delegator
+    can result in a baker being removed (from protocol 7).
 
 ## Node 6.2 API
 
