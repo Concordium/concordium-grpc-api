@@ -1202,6 +1202,19 @@ message BakerEvent {
     // The finalization reward commission
     AmountFraction finalization_reward_commission = 2;
   }
+
+  // A baker has been suspended.
+  message BakerSuspended {
+    // Suspended baker's id
+    BakerId baker_id = 1;
+  }
+
+  // A baker has been resumed.
+  message BakerResumed {
+    // The resumed baker's id
+    BakerId baker_id = 1;
+  }
+
   oneof event {
     // A baker was added.
     BakerAdded baker_added = 1;
@@ -1225,6 +1238,10 @@ message BakerEvent {
     BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
     // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
+    // The baker's account has been suspended.
+    BakerSuspended baker_suspended = 12;
+    // The baker's account has been suspended.
+    BakerResumed baker_resumed = 13;
   }
 }
 
