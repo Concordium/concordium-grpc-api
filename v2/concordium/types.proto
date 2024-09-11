@@ -541,6 +541,12 @@ message AccountInfo {
   // the total amount that is actively staked or in cooldown (inactive stake).
   // This was introduced in node version 7.0.
   Amount available_balance = 12;
+  // A flag indicating whether the account is currently suspended or not. The
+  // flag has a meaning from protocol version 8 onwards. In protocol version 8
+  // it signals whether an account has been suspended and is not participating
+  // in the consensus algorithm. For protocol version < 8 the flag will always
+  // be set to false.
+  bool is_suspended = 13;
 }
 
 // Input to queries which take a block as a parameter.
@@ -1201,6 +1207,19 @@ message BakerEvent {
     // Delegator's id.
     DelegatorId delegator_id = 1;
   }
+
+  // A baker has been suspended.
+  message BakerSuspended {
+    // Suspended baker's id
+    BakerId baker_id = 1;
+  }
+
+  // A baker has been resumed.
+  message BakerResumed {
+    // The resumed baker's id
+    BakerId baker_id = 1;
+  }
+
   oneof event {
     // A baker was added.
     BakerAdded baker_added = 1;
@@ -1226,6 +1245,10 @@ message BakerEvent {
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
     // An existing delegator was removed.
     DelegationRemoved delegation_removed = 12;
+    // The baker's account has been suspended.
+    BakerSuspended baker_suspended = 13;
+    // The baker's account has been suspended.
+    BakerResumed baker_resumed = 14;
   }
 }
 
@@ -1952,6 +1975,7 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_5 = 4;
   PROTOCOL_VERSION_6 = 5;
   PROTOCOL_VERSION_7 = 6;
+  PROTOCOL_VERSION_8 = 7;
 }
 
 // The number of chain restarts via a protocol update. An effected
