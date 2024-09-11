@@ -6,16 +6,16 @@ package concordium.v2;
 // Has no effect on code generated on other languages.
 option go_package = "./pb";
 
-// This specifies the package we want to use for our generated Java classes. 
+// This specifies the package we want to use for our generated Java classes.
 // Has no effect on code generated on other languages.
 option java_package = "com.concordium.grpc.v2";
 
-// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations, 
-// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc. 
+// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations,
+// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc.
 // If not generating Java code, this option has no effect.
 option java_multiple_files = true;
 
-// This specifies the package we want to use for our generated C# classes. 
+// This specifies the package we want to use for our generated C# classes.
 // Has no effect on code generated on other languages.
 option csharp_namespace = "Concordium.Grpc.V2";
 
@@ -3463,11 +3463,11 @@ message DryRunErrorResponse {
     }
 
     // The specified account was not found.
-    message AccountNotFound {   
+    message AccountNotFound {
     }
 
     // The specified instance was not found.
-    message InstanceNotFound {   
+    message InstanceNotFound {
     }
 
     // The amount that was requested to be minted would overflow the total supply.
