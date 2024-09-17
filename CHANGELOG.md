@@ -2,7 +2,14 @@
 
 ## Unreleased changes
 
-- Extend enum `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
+- Extend `ProtocolVersion` enum with a protocol version 8 variant `PROTOCOL_VERSION_8`.
+- Support for changes related to validator suspension in protocol version 8:
+  - Added `BakerSuspended`, `BakerResumed` message types and corresponding
+    events to `BakerEvent`.
+
+## Node 7.0 API
+
+- Extend `ProtocolVersion` enum with a protocol version 7 variant `PROTOCOL_VERSION_7`.
 - Support for changes to cooldown behavior in protocol version 7:
   - `AccountInfo` has a new repeated `cooldowns` field. Each `Cooldown` records
     the amount, (expected) release time and whether it's a regular cooldown,
@@ -14,11 +21,10 @@
     `delegated_capital`, `delegated_capital_cap` and `pool_info` optional. This
     is since in protocol 7 a validator can be unregistered, but still part of the
     current epoch validators.
-- Extend `ProtocolVersion` enum with a protocol version 8 variant `PROTOCOL_VERSION_8`.
-- Support for changes related to validator suspension in protocol version 8:
-  - Added `BakerSuspended`, `BakerResumed` message types and corresponding
-    events to `BakerEvent`.
-
+  - `BakerEvent` now has an additional case `delegation_removed`, as configuring a baker can
+    result in a delegator being removed (from protocol 7).
+  - `DelegationEvent` now has an additional case `baker_removed`, as configuring a delegator
+    can result in a baker being removed (from protocol 7).
 
 
 ## Node 6.2 API

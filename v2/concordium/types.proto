@@ -6,16 +6,16 @@ package concordium.v2;
 // Has no effect on code generated on other languages.
 option go_package = "./pb";
 
-// This specifies the package we want to use for our generated Java classes. 
+// This specifies the package we want to use for our generated Java classes.
 // Has no effect on code generated on other languages.
 option java_package = "com.concordium.grpc.v2";
 
-// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations, 
-// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc. 
+// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations,
+// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc.
 // If not generating Java code, this option has no effect.
 option java_multiple_files = true;
 
-// This specifies the package we want to use for our generated C# classes. 
+// This specifies the package we want to use for our generated C# classes.
 // Has no effect on code generated on other languages.
 option csharp_namespace = "Concordium.Grpc.V2";
 
@@ -1202,6 +1202,11 @@ message BakerEvent {
     // The finalization reward commission
     AmountFraction finalization_reward_commission = 2;
   }
+  // Removed an existing delegator.
+  message DelegationRemoved {
+    // Delegator's id.
+    DelegatorId delegator_id = 1;
+  }
 
   // A baker has been suspended.
   message BakerSuspended {
@@ -1238,10 +1243,12 @@ message BakerEvent {
     BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
     // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
+    // An existing delegator was removed.
+    DelegationRemoved delegation_removed = 12;
     // The baker's account has been suspended.
-    BakerSuspended baker_suspended = 12;
+    BakerSuspended baker_suspended = 13;
     // The baker's account has been suspended.
-    BakerResumed baker_resumed = 13;
+    BakerResumed baker_resumed = 14;
   }
 }
 
@@ -1275,6 +1282,10 @@ message DelegationEvent {
     // New delegation target
     DelegationTarget delegation_target = 2;
   }
+  message BakerRemoved {
+    // Baker's id
+    BakerId baker_id = 1;
+  }
   oneof event {
     // The delegator's stake increased.
     DelegationStakeIncreased delegation_stake_increased = 1;
@@ -1288,6 +1299,8 @@ message DelegationEvent {
     DelegatorId delegation_added = 5;
     // A delegator was removed.
     DelegatorId delegation_removed = 6;
+    // An existing baker was removed.
+    BakerRemoved baker_removed = 7;
   }
 }
 
@@ -3474,11 +3487,11 @@ message DryRunErrorResponse {
     }
 
     // The specified account was not found.
-    message AccountNotFound {   
+    message AccountNotFound {
     }
 
     // The specified instance was not found.
-    message InstanceNotFound {   
+    message InstanceNotFound {
     }
 
     // The amount that was requested to be minted would overflow the total supply.
