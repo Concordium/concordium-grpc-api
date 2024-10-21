@@ -6,6 +6,8 @@
 - Support for changes related to validator suspension in protocol version 8:
   - Added `BakerSuspended`, `BakerResumed` message types and corresponding
     events to `BakerEvent`.
+- Add `GetConsensusDetailedStatus` endpoint for querying detailed consensus
+  status information.
 
 ## Node 7.0 API
 
