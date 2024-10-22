@@ -3661,7 +3661,7 @@ message RawQuorumCertificate {
     // The aggregated signature by the finalization committee on the block.
     QuorumSignature aggregate_signature = 4;
     // A list of the finalizers that formed the quorum certificate
-    // i.e., the ones who have contributed to the 'aggregate_siganture'.
+    // i.e., the ones who have contributed to the 'aggregate_signature'.
     // The finalizers are identified by their finalizer index, which refers to the
     // finalization committee for the epoch.
     repeated FinalizerIndex signatories = 5;
@@ -3694,7 +3694,7 @@ message RawFinalizerRound {
     // The round that was signed off.
     Round round = 1;
     // The finalizers (identified by their 'FinalizerIndex') that
-    // signed off the in 'round'.
+    // signed off in 'round'.
     repeated FinalizerIndex finalizers = 2;
 }
 
