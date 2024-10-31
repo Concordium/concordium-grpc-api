@@ -311,6 +311,14 @@ service Queries {
   //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
   rpc GetFirstBlockEpoch (EpochRequest) returns (BlockHash);
 
+  // Get the detailed status of the consensus. This is only available for consensus version 1.
+  //
+  // The following error cases are possible:
+  //  * `NOT_FOUND` if the query specifies an unknown genesis index.
+  //  * `INVALID_ARGUMENT` if the query specifies a genesis index at consensus version 0.
+  //  * `UNIMPLEMENTED` if the endpoint is disabled on the node.
+  rpc GetConsensusDetailedStatus (ConsensusDetailedStatusQuery) returns (ConsensusDetailedStatus);
+
   // Dry run a series of transactions and operations on a state derived from a specified block.
   // The server should send a single `DryRunResponse` for each `DryRunRequest` received, unless
   // the call fails with an error status code. If a request produces a `DryRunErrorResponse`, then

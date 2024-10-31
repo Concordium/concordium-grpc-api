@@ -3229,7 +3229,7 @@ message BakerRewardPeriodInfo {
   bool is_finalizer = 6;
 }
 
-// The signature of a 'QuorumCertificate'.
+// The signature of a 'QuorumCertificate' or 'QuorumMessage'.
 message QuorumSignature {
   // The bytes representing the raw aggregate signature.
   // The bytes have a fixed length of 48 bytes.
@@ -3632,3 +3632,300 @@ message DryRunSuccessResponse {
     }
 }
 
+// The index of a particular finalizer in the finalization committee.
+message FinalizerIndex {
+    uint32 value = 1;
+}
+
+// The message that is multicast by a finalizer when validating and signing a block.
+message QuorumMessage {
+    // Signature on the relevant quorum signature message.
+    QuorumSignature signature = 1;
+    // Hash of the block that is signed.
+    BlockHash block = 2;
+    // Index of the finalizer signing the message.
+    FinalizerIndex finalizer = 3;
+    // Round of the block.
+    Round round = 4;
+    // Epoch of the block.
+    Epoch epoch = 5;
+}
+
+message RawQuorumCertificate {
+    // The hash of the block that the quorum certificate refers to.
+    BlockHash block_hash = 1;
+    // The round of the block.
+    Round round = 2;
+    // The epoch of the block.
+    Epoch epoch = 3;
+    // The aggregated signature by the finalization committee on the block.
+    QuorumSignature aggregate_signature = 4;
+    // A list of the finalizers that formed the quorum certificate
+    // i.e., the ones who have contributed to the 'aggregate_signature'.
+    // The finalizers are identified by their finalizer index, which refers to the
+    // finalization committee for the epoch.
+    repeated FinalizerIndex signatories = 5;
+}
+
+// A (non-aggregate) signature of a validator. This is used to sign blocks produced by
+// the validator as well as some finalization messages.
+message BlockSignature {
+    bytes value = 1;
+}
+
+// A timeout message including the sender's signature.
+message TimeoutMessage {
+    // Index of the finalizer signing the message.
+    FinalizerIndex finalizer = 1;
+    // Round which timed out.
+    Round round = 2;
+    // Current epoch number of the finalizer sending the timeout message.
+    // This can be different from the epoch of the quorum certificate.
+    Epoch epoch = 3;
+    // Highest quorum certificate known to the finalizer at the time of timeout.
+    RawQuorumCertificate quorum_certificate = 4;
+    // Signature on the appropriate timeout signature message.
+    TimeoutSignature signature = 5;
+    // Signature of the finalizer on the timeout message as a whole.
+    BlockSignature message_signature = 6;
+}
+
+message RawFinalizerRound {
+    // The round that was signed off.
+    Round round = 1;
+    // The finalizers (identified by their 'FinalizerIndex') that
+    // signed off in 'round'.
+    repeated FinalizerIndex finalizers = 2;
+}
+
+// A timeout certificate is the certificate that the
+// finalization committee issues when a round times out,
+// thus making it possible for the protocol to proceed to the
+// next round.
+message RawTimeoutCertificate {
+    // The round that timed out.
+    Round round = 1;
+    // The minimum epoch of which signatures are included
+    // in the 'aggregate_signature'.
+    Epoch min_epoch = 2;
+    // The rounds of which finalizers have their best
+    // QCs in the 'min_epoch'.
+    repeated RawFinalizerRound qc_rounds_first_epoch = 3;
+    // The rounds of which finalizers have their best
+    // QCs in the epoch 'min_epoch' + 1.
+    repeated RawFinalizerRound qc_rounds_second_epoch = 4;
+    // The aggregated signature by the finalization committee that witnessed
+    // the 'round' timed out.
+    TimeoutSignature aggregate_signature = 5;
+  }
+  
+
+message PersistentRoundStatus {
+    // The last signed quorum message by the node.
+    optional QuorumMessage last_signed_quorum_message = 1;
+    // The last signed timeout message by the node.
+    optional TimeoutMessage last_signed_timeout_message = 2;
+    // The last round the node baked in.
+    Round last_baked_round = 3;
+    // The latest timeout certificate seen by the node. May be absent if the node has seen a
+    // quorum certificate for a more recent round.
+    optional RawTimeoutCertificate latest_timeout = 4;
+}
+
+message RoundTimeout {
+    // Timeout certificate for the round that timed out.
+    RawTimeoutCertificate timeout_certificate = 1;
+    // The highest known quorum certificate when the round timed out.
+    RawQuorumCertificate quorum_certificate = 2;
+}
+
+message RawFinalizationEntry {
+    // The quorum certificate for the finalized block.
+    RawQuorumCertificate finalized_qc = 1;
+    // The quorum certificate for the block that finalizes
+    // the block that 'finalized_qc' points to.
+    RawQuorumCertificate successor_qc = 2;
+    // A proof that the successor block is an immediate
+    // successor of the finalized block.
+    SuccessorProof successor_proof = 3;
+  }
+  
+
+// The current round status.
+message RoundStatus {
+    // The current round from the perspective of the node.
+    // This should always be higher than the round of the highest certified block.
+    // If the previous round did not timeout, it should be one more than the round of
+    // the `highest_certified_block`. Otherwise, it should be one more than the round of
+    // the `previous_round_timeout`.
+    Round current_round = 1;
+    // The quorum certificate for the highest certified block.
+    RawQuorumCertificate highest_certified_block = 2;
+    // If the last round timed out, this is the timeout certificate for that round and
+    // the highest quorum certificate at the time the round timed out.
+    optional RoundTimeout previous_round_timeout = 3;
+    // Flag indicating whether the node should attempt to bake in the current round.
+    // This is set to true when the round is advanced, and set to false once the node has
+    // attempted to bake for the round.
+    bool round_eligible_to_bake = 4;
+    // The current epoch. This should either be the same as the epoch of the last finalized
+    // block (if its timestamp is before the trigger block time) or the next epoch from the last
+    // finalized block (if its timestamp is at least the trigger block time).
+    Epoch current_epoch = 5;
+    // If present, an epoch finalization entry for the epoch before `current_epoch`.
+    // An entry must be present if the current epoch is greater than the epoch of the last
+    // finalized block.
+    optional RawFinalizationEntry last_epoch_finalization_entry = 6;
+    // The current duration the node will wait before a round times out.
+    Duration current_timeout = 7;
+}
+
+message BlockTableSummary {
+    // The number of blocks in the dead block cache.
+    uint64 dead_block_cache_size = 1;
+    // The blocks that are currently live (not dead and not finalized).
+    repeated BlockHash live_blocks = 2;
+}
+
+// A list of block hashes at a particular branch height.
+message BranchBlocks {
+    repeated BlockHash blocks_at_branch_height = 1;
+}
+
+message RoundExistingBlock {
+    // The round for which the node saw a block.
+    Round round = 1;
+    // The baker that baked the block.
+    BakerId baker = 2;
+    // The hash of the block.
+    BlockHash block = 3;
+}
+
+message RoundExistingQC {
+    // The round for which a QC was seen.
+    Round round = 1;
+    // The epoch of the QC.
+    Epoch epoch = 2;
+}
+
+// The keys an stake of a specific baker.
+message FullBakerInfo {
+    // The baker's identity.
+    BakerId baker_identity = 1;
+    // The baker's election verify key.
+    BakerElectionVerifyKey election_verify_key = 2;
+    // The baker's signature verify key.
+    BakerSignatureVerifyKey signature_verify_key = 3;
+    // The baker's aggregation verify key.
+    BakerAggregationVerifyKey aggregation_verify_key = 4;
+    // The stake of the baker.
+    Amount stake = 5;
+}
+
+// The hash of the finalization committee, derived from the weights and aggregation
+// keys of the finalizers.
+message FinalizationCommitteeHash {
+    bytes value = 1;
+}
+
+message BakersAndFinalizers {
+    // The set of bakers.
+    repeated FullBakerInfo bakers = 1;
+    // The IDs of the bakers that are finalizers.
+    // The order determines the finalizer index.
+    repeated BakerId finalizers = 2;
+    // The total effective stake of the bakers.
+    Amount baker_total_stake = 3;
+    // The total effective stake of the finalizers.
+    Amount finalizer_total_stake = 4;
+    // The hash of the finalization committee.
+    FinalizationCommitteeHash finalization_committee_hash = 5;
+}
+
+message EpochBakers {
+    // The bakers and finalizers for the previous epoch.
+    // If the current epoch is 0, then this is the same as the bakers for the current epoch.
+    BakersAndFinalizers previous_epoch_bakers = 1;
+    // The bakers and finalizers for the current epoch.
+    // If this is absent, it should be treated as the same as the bakers for the previous epoch.
+    optional BakersAndFinalizers current_epoch_bakers = 2;
+    // The bakers and finalizers for the next epoch.
+    // If this is absent, it should be treated as the same as the bakers for the current epoch.
+    optional BakersAndFinalizers next_epoch_bakers = 3;
+    // The first epoch of the next payday.
+    Epoch next_payday = 4;
+}
+
+message TimeoutMessages {
+    // The first epoch for which timeout messages are present.
+    Epoch first_epoch = 1;
+    // The timeout messages for the first epoch.
+    // There should always be at least one.
+    repeated TimeoutMessage first_epoch_timeouts = 2;
+    // The timeout messages for `first_epoch + 1`.
+    repeated TimeoutMessage second_epoch_timeouts = 3;
+}
+
+message AggregatedSignatures {
+    // The block hash for which the signatures are aggregated.
+    BlockHash signed_block = 1;
+    // The total weight of the finalizers that signed the block.
+    Amount signature_weight = 2;
+    // The aggregate signature of the finalizers.
+    QuorumSignature aggregate_signature = 3;
+    // The set of finalizers that have signed.
+    repeated FinalizerIndex signatories = 4;
+}
+
+message QuorumMessages {
+    // The collected quorum messages for the current round.
+    repeated QuorumMessage quorum_messages = 1;
+    // The current aggregate of the valid quorum messages.
+    repeated AggregatedSignatures aggregated_signatures = 2;
+}
+
+message ConsensusDetailedStatusQuery {
+    // If specified, this determines the genesis index to get status for.
+    // If not specified, the status is returned for the latest genesis index.
+    optional GenesisIndex genesis_index = 1;
+}
+
+message ConsensusDetailedStatus {
+    // The hash of the genesis block.
+    BlockHash genesis_block = 1;
+    // The persisted elements of the round status.
+    PersistentRoundStatus persistent_round_status = 2;
+    // The status of the current round.
+    RoundStatus round_status = 3;
+    // The number of non-finalized transactions.
+    uint64 non_finalized_transaction_count = 4;
+    // The purge counter for the transaction table.
+    int64 transaction_table_purge_counter = 5;
+    // Summary of the block table.
+    BlockTableSummary block_table = 6;
+    // The live blocks organized by height after the last finalized block.
+    repeated BranchBlocks branches = 7;
+    // Which bakers the node has seen legally-signed blocks with live parents from in
+    // non-finalized rounds.
+    repeated RoundExistingBlock round_existing_blocks = 8;
+    // Which non-finalized rounds the node has seen quorum certificates for.
+    repeated RoundExistingQC round_existing_qcs = 9;
+    // The absolute block height of the genesis block of the era.
+    AbsoluteBlockHeight genesis_block_height = 10;
+    // The hash of the last finalized block.
+    BlockHash last_finalized_block = 11;
+    // The height of the last finalized block.
+    BlockHeight last_finalized_block_height = 12;
+    // Unless the last finalized block is the genesis block, this should be a finalization
+    // entry for the last finalized block.
+    // As this includes a quorum certificate for the last finalized block, that can be used
+    // to determine the epoch and round of the last finalized block.
+    optional RawFinalizationEntry latest_finalization_entry = 13;
+    // The bakers and finalizers for the previous, current and next epoch, relative to the last
+    // finalized block.
+    EpochBakers epoch_bakers = 14;
+    // The timeout messages collected by the node for the current round.
+    optional TimeoutMessages timeout_messages = 15;
+    // If a protocol update has occurred, this is the hash of the terminal block.
+    optional BlockHash terminal_block = 16;
+}
