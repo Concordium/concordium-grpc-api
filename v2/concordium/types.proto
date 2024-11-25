@@ -1852,7 +1852,7 @@ message UpdatePayload {
     Energy block_energy_limit_update = 21;
     // Finalization committee parameters (chain parameters version 2).
     FinalizationCommitteeParameters finalization_committee_parameters_update = 22;
-    // Validator score parameters (chain parameteres version 3)
+    // Validator score parameters (chain parameters version 3)
     ValidatorScoreParameters validator_score_parameters_update = 23;
   }
 }
