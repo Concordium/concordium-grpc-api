@@ -8,6 +8,8 @@
     events to `BakerEvent`.
 - Add `GetConsensusDetailedStatus` endpoint for querying detailed consensus
   status information.
+- Add `parameter` field to `ContractInitializedEvent` containing the parameter passed
+  to the contract initializer.
 
 ## Node 7.0 API
 
