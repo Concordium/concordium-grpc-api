@@ -3929,10 +3929,3 @@ message ConsensusDetailedStatus {
     // If a protocol update has occurred, this is the hash of the terminal block.
     optional BlockHash terminal_block = 16;
 }
-
-// Indicates that an account is pending -- either a scheduled release or a cooldown -- and
-// when the first release or cooldown will elapse.
-message AccountPending {
-    AccountIndex account_index = 1;
-    Timestamp first_timestamp = 2;
-}
