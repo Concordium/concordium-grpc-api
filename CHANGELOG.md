@@ -11,7 +11,7 @@
 - Add `GetScheduledReleaseAccounts` endpoint for querying the list of accounts that
   have scheduled releases.
 - Add `GetCooldownAccounts`, `GetPreCooldownAccounts` and `GetPrePreCooldownAccounts`
-  endpoints for querying the lists of account that have pending cooldowns in protocol
+  endpoints for querying the lists of accounts that have pending cooldowns in protocol
   version 7 onwards.
 
 ## Node 7.0 API
