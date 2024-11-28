@@ -8,6 +8,11 @@
     events to `BakerEvent`.
 - Add `GetConsensusDetailedStatus` endpoint for querying detailed consensus
   status information.
+- Add `GetScheduledReleaseAccounts` endpoint for querying the list of accounts that
+  have scheduled releases.
+- Add `GetCooldownAccounts`, `GetPreCooldownAccounts` and `GetPrePreCooldownAccounts`
+  endpoints for querying the lists of accounts that have pending cooldowns in protocol
+  version 7 onwards.
 - Add `parameter` field to `ContractInitializedEvent` containing the parameter passed
   to the contract initializer.
 

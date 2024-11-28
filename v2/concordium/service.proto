@@ -174,6 +174,27 @@ service Queries {
   // Get next available sequence numbers for updating chain parameters after a given block.
   rpc GetNextUpdateSequenceNumbers (BlockHashInput) returns (NextUpdateSequenceNumbers);
 
+  // Get all accounts that have scheduled releases, with the timestamp of the first pending
+  // scheduled release for that account. (Note, this only identifies accounts by index, and
+  // only indicates the first pending release for each account.)
+  rpc GetScheduledReleaseAccounts (BlockHashInput) returns (stream AccountPending);
+
+  // Get all accounts that have stake in cooldown, with the timestamp of the first pending
+  // cooldown expiry for each account. (Note, this only identifies accounts by index,
+  // and only indicates the first pending cooldown for each account.)
+  // Prior to protocol version 7, the resulting stream will always be empty.
+  rpc GetCooldownAccounts (BlockHashInput) returns (stream AccountPending);
+
+  // Get all accounts that have stake in pre-cooldown.
+  // (This only identifies accounts by index.)
+  // Prior to protocol version 7, the resulting stream will always be empty.
+  rpc GetPreCooldownAccounts (BlockHashInput) returns (stream AccountIndex);
+
+  // Get all accounts that have stake in pre-pre-cooldown.
+  // (This only identifies accounts by index.)
+  // Prior to protocol version 7, the resulting stream will always be empty.
+  rpc GetPrePreCooldownAccounts (BlockHashInput) returns (stream AccountIndex);
+
   // Get the projected earliest time at which a particular baker will be required to bake a block.
   // If the current consensus version is 0, this returns the status 'Unavailable', as the endpoint
   // is only supported by consensus version 1.
