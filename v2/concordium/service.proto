@@ -175,7 +175,7 @@ service Queries {
   rpc GetNextUpdateSequenceNumbers (BlockHashInput) returns (NextUpdateSequenceNumbers);
 
   // Get all accounts that have scheduled releases, with the timestamp of the first pending
-  // scheduled release for that account.  (Note, this only identifies accounts by index, and
+  // scheduled release for that account. (Note, this only identifies accounts by index, and
   // only indicates the first pending release for each account.)
   rpc GetScheduledReleaseAccounts (BlockHashInput) returns (stream AccountPending);
 
@@ -185,11 +185,13 @@ service Queries {
   // Prior to protocol version 7, the resulting stream will always be empty.
   rpc GetCooldownAccounts (BlockHashInput) returns (stream AccountPending);
 
-  // Get all accounts (by account index) that have stake in pre-cooldown.
+  // Get all accounts that have stake in pre-cooldown.
+  // (This only identifies accounts by index.)
   // Prior to protocol version 7, the resulting stream will always be empty.
   rpc GetPreCooldownAccounts (BlockHashInput) returns (stream AccountIndex);
 
-  // Get all accounts (by account index) that have stake in pre-pre-cooldown.
+  // Get all accounts that have stake in pre-pre-cooldown.
+  // (This only identifies accounts by index.)
   // Prior to protocol version 7, the resulting stream will always be empty.
   rpc GetPrePreCooldownAccounts (BlockHashInput) returns (stream AccountIndex);
 
