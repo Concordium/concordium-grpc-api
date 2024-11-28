@@ -13,6 +13,8 @@
 - Add `GetCooldownAccounts`, `GetPreCooldownAccounts` and `GetPrePreCooldownAccounts`
   endpoints for querying the lists of accounts that have pending cooldowns in protocol
   version 7 onwards.
+- Add `parameter` field to `ContractInitializedEvent` containing the parameter passed
+  to the contract initializer.
 
 ## Node 7.0 API
 
