@@ -2545,6 +2545,19 @@ message BlockSpecialEvent {
     Amount finalization_reward = 4;
   }
 
+  // The id of a validator that got suspended due to too many missed rounds.
+  message ValidatorSuspended {
+    // The id of the suspended validator.
+    BakerId bakerId = 1;
+  }
+
+  // The id of a validator that is primed for suspension at the next snapshot
+  // epoch due to too many missed rounds.
+  message ValidatorPrimedForSuspension {
+    // The id of the primed validator.
+    BakerId bakerId = 1;
+  }
+
   oneof event {
     BakingRewards baking_rewards = 1;
     Mint mint = 2;
@@ -2554,6 +2567,8 @@ message BlockSpecialEvent {
     PaydayAccountReward payday_account_reward = 6;
     BlockAccrueReward block_accrue_reward = 7;
     PaydayPoolReward payday_pool_reward = 8;
+    ValidatorSuspended validator_suspended = 9;
+    ValidatorPrimedForSuspension validator_primed_for_suspension= 10;
   }
 }
 
