@@ -1454,6 +1454,11 @@ message FinalizationCommitteeParameters {
   AmountFraction finalizer_relative_stake_threshold = 3;
 }
 
+message ValidatorScoreParameters {
+  // The maximal number of missed rounds before a validator gets suspended.
+  uint64 maximum_missed_rounds = 1;
+}
+
 // Parameters for the consensus protocol used from protocol version 6.
 message ConsensusParametersV1 {
   // Parameters controlling round timeouts.
@@ -1847,6 +1852,8 @@ message UpdatePayload {
     Energy block_energy_limit_update = 21;
     // Finalization committee parameters (chain parameters version 2).
     FinalizationCommitteeParameters finalization_committee_parameters_update = 22;
+    // Validator score parameters (chain parameters version 3)
+    ValidatorScoreParameters validator_score_parameters_update = 23;
   }
 }
 
@@ -2604,6 +2611,8 @@ message PendingUpdate {
     Energy block_energy_limit = 24;
     // Updates to the finalization committee for for chain parameters version 2.
     FinalizationCommitteeParameters finalization_committee_parameters = 25;
+    // Updates to the validator score parameters for chain parameters version 3.
+    ValidatorScoreParameters validator_score_parameters = 26;
   }
 }
 
@@ -2649,6 +2658,8 @@ message NextUpdateSequenceNumbers {
   SequenceNumber block_energy_limit = 19;
   // Updates to the finalization committee parameters
   SequenceNumber finalization_committee_parameters = 20;
+  // Updates to the validator score parameters for chain parameters version 3.
+  SequenceNumber validator_score_parameters = 21;
 }
 
 // A request to send a new block item to the chain.
@@ -3143,6 +3154,45 @@ message ChainParametersV2 {
   AuthorizationsV1 level2_keys = 14;
   // Finalization committee parameters
   FinalizationCommitteeParameters finalization_committee_parameters = 15;
+}
+
+// Updatable chain parameters that apply to protocol versions 8.
+message ChainParametersV3 {
+  // Consensus parameters.
+  ConsensusParametersV1 consensus_parameters = 1;
+  // Euro per energy exchange rate.
+  ExchangeRate euro_per_energy = 2;
+  // Micro CCD per euro exchange rate.
+  ExchangeRate micro_ccd_per_euro = 3;
+  // Extra number of epochs before reduction in stake, or baker
+  // deregistration is completed.
+  CooldownParametersCpv1 cooldown_parameters = 4;
+  // Current time parameters.
+  // The time parameters indicates the mint rate and the
+  // reward period length, i.e. the time between paydays.
+  TimeParametersCpv1 time_parameters = 5;
+  // The limit for the number of account creations in a block.
+  CredentialsPerBlockLimit account_creation_limit = 6;
+  // Current mint distribution
+  MintDistributionCpv1 mint_distribution = 7;
+  // Current transaction fee distribution.
+  TransactionFeeDistribution transaction_fee_distribution = 8;
+  // Current gas reward parameters.
+  GasRewardsCpv2 gas_rewards = 9;
+  // The foundation account.
+  AccountAddress foundation_account = 10;
+  // Parameters governing baking pools and their commissions.
+  PoolParametersCpv1 pool_parameters = 11;
+  // Keys allowed to do root updates.
+  HigherLevelKeys root_keys = 12;
+  // Keys allowed to do level1 updates;
+  HigherLevelKeys level1_keys = 13;
+  // Keys allowed to do parameter updates.
+  AuthorizationsV1 level2_keys = 14;
+  // Finalization committee parameters
+  FinalizationCommitteeParameters finalization_committee_parameters = 15;
+  // Validator score parameters
+  ValidatorScoreParameters validator_score_parameters = 16;
 }
 
 // Chain parameters.
