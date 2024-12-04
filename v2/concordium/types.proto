@@ -2550,6 +2550,8 @@ message BlockSpecialEvent {
   message ValidatorSuspended {
     // The id of the suspended validator.
     BakerId bakerId = 1;
+    // The account of the suspended validator.
+    AccountAddress account = 2;
   }
 
   // The id of a validator that is primed for suspension at the next snapshot
@@ -2557,6 +2559,8 @@ message BlockSpecialEvent {
   message ValidatorPrimedForSuspension {
     // The id of the primed validator.
     BakerId bakerId = 1;
+    // The account of the primed validator.
+    AccountAddress account = 2;
   }
 
   oneof event {
