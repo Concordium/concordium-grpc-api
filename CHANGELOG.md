@@ -8,6 +8,7 @@
     events to `BakerEvent`.
   - Added `validator_suspended` and `validator_primed_for_suspension` cases
     for `BlockSpecialEvent`.
+  - Extended `PoolCurrentPaydayInfo` and `PoolInfoResponse`.
 - Add `GetConsensusDetailedStatus` endpoint for querying detailed consensus
   status information.
 - Add `GetScheduledReleaseAccounts` endpoint for querying the list of accounts that
