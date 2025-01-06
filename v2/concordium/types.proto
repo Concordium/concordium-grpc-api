@@ -2186,6 +2186,12 @@ message PoolCurrentPaydayInfo {
   Amount delegated_capital = 7;
   // The commission rates that apply for the current reward period.
   CommissionRates commission_rates = 8;
+  // A flag indicating whether the pool owner is primed for suspension.
+  // Absent if the protocol version does not support validator suspension.
+  optional bool is_primed_for_suspension = 9;
+  // The number of missed rounds in the current reward period.
+  // Absent if the protocol version does not support validator suspension.
+  optional uint64 missed_rounds = 10;
 }
 
 // Type for the response of GetPoolInfo.
@@ -2218,6 +2224,9 @@ message PoolInfoResponse {
   optional PoolCurrentPaydayInfo current_payday_info = 8;
   // Total capital staked across all pools, including passive delegation.
   Amount all_pool_total_capital = 9;
+  // A flag indicating whether the pool owner is suspended.
+  // Absent if the protocol version does not support validator suspension.
+  optional bool is_suspended = 10;
 }
 
 // Type for the response of GetPassiveDelegationInfo.
