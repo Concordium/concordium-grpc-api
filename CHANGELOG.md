@@ -6,6 +6,8 @@
 - Support for changes related to validator suspension in protocol version 8:
   - Added `BakerSuspended`, `BakerResumed` message types and corresponding
     events to `BakerEvent`.
+  - Added `validator_suspended` and `validator_primed_for_suspension` cases
+    for `BlockSpecialEvent`.
 - Add `GetConsensusDetailedStatus` endpoint for querying detailed consensus
   status information.
 - Add `GetScheduledReleaseAccounts` endpoint for querying the list of accounts that

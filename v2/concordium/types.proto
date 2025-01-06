@@ -2573,7 +2573,7 @@ message BlockSpecialEvent {
     BlockAccrueReward block_accrue_reward = 7;
     PaydayPoolReward payday_pool_reward = 8;
     ValidatorSuspended validator_suspended = 9;
-    ValidatorPrimedForSuspension validator_primed_for_suspension= 10;
+    ValidatorPrimedForSuspension validator_primed_for_suspension = 10;
   }
 }
 
