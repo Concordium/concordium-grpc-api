@@ -2187,9 +2187,11 @@ message PoolCurrentPaydayInfo {
   // The commission rates that apply for the current reward period.
   CommissionRates commission_rates = 8;
   // A flag indicating whether the pool owner is primed for suspension.
-  bool is_primed_for_suspension = 9;
+  // Absent if the protocol version does not support validator suspension.
+  optional bool is_primed_for_suspension = 9;
   // The number of missed rounds in the current reward period.
-  uint64 missed_rounds = 10;
+  // Absent if the protocol version does not support validator suspension.
+  optional uint64 missed_rounds = 10;
 }
 
 // Type for the response of GetPoolInfo.
