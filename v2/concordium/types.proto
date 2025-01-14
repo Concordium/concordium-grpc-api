@@ -2225,7 +2225,7 @@ message PoolInfoResponse {
   // Total capital staked across all pools, including passive delegation.
   Amount all_pool_total_capital = 9;
   // A flag indicating whether the pool owner is suspended.
-  // Absent if the protocol version does not support validator suspension.
+  // Absent if the protocol version does not support validator suspension or the pool is removed.
   optional bool is_suspended = 10;
 }
 
