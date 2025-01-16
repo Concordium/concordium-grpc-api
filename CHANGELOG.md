@@ -19,6 +19,7 @@
 - Add `parameter` field to `ContractInitializedEvent` containing the parameter passed
   to the contract initializer.
 - Add chain parameters v3 with the new `ValidatorScoreParameters` parameters.
+- Add `validator_score_parameters` to `NextUpdateSequenceNumbers`.
 
 ## Node 7.0 API
 
