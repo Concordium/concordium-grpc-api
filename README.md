@@ -54,4 +54,4 @@ Use the following command to generate the gRPC files for different languages:
 - Make sure you are using the correct version of protoc. Older versions may have limitations when handling proto3 optional fields, leading to compilation issues.
 - If compilation errors occur related to optional fields, upgrading protoc to version 28.3 should resolve these issues.
 - The generated files should include both the gRPC client/service stubs and the data classes defined in types.proto.
-- If protoc is not compiling the appropriate files, 3rd party plugins may be the solution denpending on case, older versions of protoc had more dependancies on plugins.
+- If protoc is not compiling the appropriate files, 3rd party plugins may be the solution depending on case, older versions of protoc had more dependencies on plugins.
