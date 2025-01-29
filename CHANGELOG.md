@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## Node 8.0 API
+
 - Extend `ProtocolVersion` enum with a protocol version 8 variant `PROTOCOL_VERSION_8`.
 - Support for changes related to validator suspension in protocol version 8:
   - Added `BakerSuspended`, `BakerResumed` message types and corresponding
