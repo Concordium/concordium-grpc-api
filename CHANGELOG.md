@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
+
 ## Node 8.0 API
 
 - Extend `ProtocolVersion` enum with a protocol version 8 variant `PROTOCOL_VERSION_8`.
