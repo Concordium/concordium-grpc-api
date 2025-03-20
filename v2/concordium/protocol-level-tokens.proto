@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package concordium.v2.plt;
+
+// This specifies the package we want to use for our generated Go code.
+// Has no effect on code generated on other languages.
+option go_package = "./pb";
+
+// This specifies the package we want to use for our generated Java classes.
+// Has no effect on code generated on other languages.
+option java_package = "com.concordium.grpc.v2.plt";
+
+// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations,
+// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc.
+// If not generating Java code, this option has no effect.
+option java_multiple_files = true;
+
+// This specifies the package we want to use for our generated C# classes.
+// Has no effect on code generated on other languages.
+option csharp_namespace = "Concordium.Grpc.V2.Plt";
+
+import "kernel.proto";
+
+// The unique symbol and identifier of a protocol level token.
+message TokenId {
+  // Unique identifier for the token, guaranteed to be distinct across the
+  // entire concordium blockchain.
+  string symbol = 1;
+}
+
+// A token module reference. This is always 32 bytes long.
+message TokenModuleRef {
+  bytes value = 1;
+}
+
+// PLT amount representation. The actual amount is computed as `digits *
+// 10^(-nr_of_decimals)`.
+message TokenAmount {
+  // The digits of the amount.
+  uint64 digits = 1;
+  // Number of decimals in the representation
+  uint32 nr_of_decimals = 2;
+}
+
+// Token state at the block level
+message TokenState {
+  // The token name. This should be unique, but uniqueness is enforced only by
+  // the chain governance, not by the consensus protocol.
+  string token_name = 1;
+  // The reference of the module implementing this token.
+  TokenModuleRef token_module_ref = 2;
+  // Account address of the issuer. The issuer is the holder of the nominated
+  // account which can perform token-governance operations.
+  concordium.v2.AccountAddress issuer = 3;
+  // Number of decimals in the decimal number representation of amounts.
+  uint32 nr_of_decimals = 4;
+  // A URL pointing to additional meta information about the token.
+  optional string token_meta_url = 5;
+  // Feature flags with the following semantics by position:
+  // 0: Whether the token supports an allow list.
+  // 1: Whether the token supports a deny list.
+  // 2: Whether the token supports minting.
+  // 3: Whether the token supports burning.
+  repeated bool feature_flag = 6;
+  // The total available token supply.
+  TokenAmount total_supply = 7;
+}
+
+// Token state at the account level
+message TokenAccountState {
+  // The available balance.
+  TokenAmount balance = 1;
+  // Whether the account is a member of the allow list of the token.
+  // If present, tokens can be transferred only, if both sender and receiver are
+  // members of the allow list of the token.
+  optional bool member_allow_list = 2;
+  // Whether the account is a member of the deny list of the token.
+  // If present, tokens can be transferred only, if neither sender or receiver
+  // are members of the deny list.
+  optional bool member_deny_list = 3;
+}
+
+// A memo optionally attached to an event/transaction.
+message Memo {
+  string memo = 1;
+}
+
+// Token events originating from governance transactions.
+message TokenGovernanceEvent {
+  message Mint {
+    TokenId token_symbol = 1;
+    concordium.v2.AccountAddress account_address = 2;
+    TokenAmount amount = 3;
+  }
+
+  message Burn {
+    TokenId token_symbol = 1;
+    concordium.v2.AccountAddress account_address = 2;
+    TokenAmount amount = 3;
+  }
+
+  message AddAllowList {
+    TokenId token_symbol = 1;
+    concordium.v2.AccountAddress account_address = 2;
+  }
+
+  message RemoveAllowList {
+    TokenId token_symbol = 1;
+    concordium.v2.AccountAddress account_address = 2;
+  }
+
+  message AddDenyList {
+    TokenId token_symbol = 1;
+    concordium.v2.AccountAddress account_address = 2;
+  }
+
+  message RemoveDenyList {
+    TokenId token_symbol = 1;
+    concordium.v2.AccountAddress account_address = 2;
+  }
+
+  oneof event {
+    Mint mint = 1;
+    Burn burn = 2;
+    AddAllowList add_allow_list = 3;
+    RemoveAllowList remove_allow_list = 4;
+    AddDenyList add_deny_list = 5;
+    RemoveDenyList remove_deny_list = 6;
+  }
+}
+
+//Token events originating from account transactions.
+message TokenHolderEvent {
+  // A token transfer between two accounts.
+  message Transfer {
+    TokenId symbol = 1;
+    TokenAmount amount = 2;
+    concordium.v2.AccountAddress from_address = 3;
+    concordium.v2.AccountAddress to_address = 4;
+    optional Memo memo = 5;
+  }
+
+  oneof event {
+    Transfer transfer = 1;
+  }
+}
