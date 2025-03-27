@@ -14,6 +14,11 @@ and an auxiliary file with all the types for requests and responses
 
 - [types.proto](./v2/concordium/types.proto)
 
+Additionally, the following two files contain message definitions for protocol level tokens (PLT) and message definitions that are shared between core types and PLTs respectively.
+
+- [protocol-level-tokens.proto](./v2/concordium/protocol-level-tokens.proto)
+- [kernel.proto](./v2/concordium/kernel.proto)
+
 The two health services exist to expose a different API. The first health service returns status via grpc status codes. The second health service is a standard Google health service that communicates service health via response values.
 
 The rendered documentation for the V2 API is available at
