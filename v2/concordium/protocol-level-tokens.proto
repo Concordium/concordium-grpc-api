@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package concordium.v2.plt;
+
+// This specifies the package we want to use for our generated Go code.
+// Has no effect on code generated on other languages.
+option go_package = "./pb";
+
+// This specifies the package we want to use for our generated Java classes.
+// Has no effect on code generated on other languages.
+option java_package = "com.concordium.grpc.v2.plt";
+
+// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations,
+// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc.
+// If not generating Java code, this option has no effect.
+option java_multiple_files = true;
+
+// This specifies the package we want to use for our generated C# classes.
+// Has no effect on code generated on other languages.
+option csharp_namespace = "Concordium.Grpc.V2.Plt";
+
+import "kernel.proto";
+
+// A Cbor encoded bytestring
+message CBor {
+  // A CBOR encoded byte string.
+  bytes value = 1;
+}
+
+// The unique symbol and identifier of a protocol level token.
+message TokenId {
+  // Unique identifier for the token, guaranteed to be distinct across the
+  // entire concordium blockchain.
+  string symbol = 1;
+}
+
+// A token module reference. This is always 32 bytes long.
+message TokenModuleRef {
+  bytes value = 1;
+}
+
+// PLT amount representation. The actual amount is computed as `digits *
+// 10^(-nr_of_decimals)`.
+message TokenAmount {
+  // The digits of the amount.
+  uint64 digits = 1;
+  // Number of decimals in the representation
+  uint32 nr_of_decimals = 2;
+}
+
+// Token state at the block level
+message TokenState {
+  // The reference of the module implementing this token.
+  TokenModuleRef token_module_ref = 1;
+  // Account address of the issuer. The issuer is the holder of the nominated
+  // account which can perform token-governance operations.
+  concordium.v2.AccountAddress issuer = 2;
+  // Number of decimals in the decimal number representation of amounts.
+  uint32 nr_of_decimals = 3;
+  // The total available token supply.
+  TokenAmount total_supply = 4;
+  // Token module specific state, such as token name, feature flags, meta data. 
+  CBor module_state = 5;
+}
+
+// Token state at the account level
+message TokenAccountState {
+  // The available balance.
+  TokenAmount balance = 1;
+  // Whether the account is a member of the allow list of the token.
+  // If present, tokens can be transferred only, if both sender and receiver are
+  // members of the allow list of the token.
+  optional bool member_allow_list = 2;
+  // Whether the account is a member of the deny list of the token.
+  // If present, tokens can be transferred only, if neither sender or receiver
+  // are members of the deny list.
+  optional bool member_deny_list = 3;
+}
+
+// Token events originating from governance transactions.
+message TokenGovernanceEvent {
+  // The unique token symbol.
+  TokenId token_symbol = 1;
+  // The type of the event.
+  string type  = 2;
+  // The CBOR encoded event details.
+  CBor details = 3;
+}
+
+//Token events originating from account transactions.
+message TokenHolderEvent {
+  // The unique token symbol.
+  TokenId token_symbol = 1;
+  // The type of the event.
+  string type  = 2;
+  // The CBOR encoded event details.
+  CBor details = 3;
+}

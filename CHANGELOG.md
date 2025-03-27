@@ -3,6 +3,11 @@
 ## Unreleased changes
 
 - Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
+- Support for protocol level tokens.
+  - Added account / block level token state.
+  - Token identifiers.
+  - Token governance / holder events.
+  - Endpoint to query token block level state.
 
 ## Node 8.0 API
 

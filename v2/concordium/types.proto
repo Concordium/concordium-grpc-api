@@ -19,6 +19,9 @@ option java_multiple_files = true;
 // Has no effect on code generated on other languages.
 option csharp_namespace = "Concordium.Grpc.V2";
 
+import "kernel.proto";
+import "protocol-level-tokens.proto";
+
 // A message that contains no information.
 message Empty {
 }
@@ -337,11 +340,6 @@ message EncryptionKey {
   bytes value = 1;
 }
 
-// An address of an account. Always 32 bytes.
-message AccountAddress {
-  bytes value = 1;
-}
-
 // An address of either a contract or an account.
 message Address {
   oneof type {
@@ -503,8 +501,24 @@ message Cooldown {
   CooldownStatus status = 3;
 }
 
+// The token state at the block level.
+message TokenInfo {
+  // The unique token id.
+  plt.TokenId token_id = 1;
+  // The associated block level state.
+  plt.TokenState token_state = 2;
+}
+
 // Information about the account at a particular point in time.
 message AccountInfo {
+  // Protocol level token (PLT).
+  message Token {
+    // The unique token id
+    plt.TokenId token_id = 1;
+    // The associated token account level state
+    plt.TokenAccountState token_account_state = 2;
+  }
+
   // Next sequence number to be used for transactions signed from this account.
   SequenceNumber sequence_number = 1;
   // Current (unencrypted) balance of the account.
@@ -541,12 +555,15 @@ message AccountInfo {
   // This was introduced in protocol version 7, and so is not present in
   // earlier protocol versions.
   repeated Cooldown cooldowns = 11;
-  // The available (unencrypted) balance of the account (i.e. that can be transferred
-  // or used to pay for transactions). This is the balance minus the locked amount.
-  // The locked amount is the maximum of the amount in the release schedule and
-  // the total amount that is actively staked or in cooldown (inactive stake).
-  // This was introduced in node version 7.0.
+  // The available (unencrypted) balance of CCD's of the account (i.e. that
+  // can be transferred or used to pay for transactions). This is the balance
+  // minus the locked amount. The locked amount is the maximum of the amount
+  // in the release schedule and the total amount that is actively staked or in
+  // cooldown (inactive stake). This was introduced in node version 7.0.
   Amount available_balance = 12;
+
+  // The protocol level tokens (PLT) held by the account.
+  repeated Token tokens = 13;
 }
 
 // Input to queries which take a block as a parameter.
@@ -611,6 +628,14 @@ message AccountInfoRequest {
   BlockHashInput block_hash = 1;
   // Specification of the account.
   AccountIdentifierInput account_identifier = 2;
+}
+
+// Request for token information.
+message TokenInfoRequest {
+  // Block in which to query the token information.
+  BlockHashInput block_hash = 1;
+  // Specification of the token identifier.
+  plt.TokenId token_id = 2;
 }
 
 // Information about a finalized block that is part of the streaming response.
@@ -1086,11 +1111,6 @@ message BakerKeysEvent {
     BakerAggregationVerifyKey aggregation_key = 5;
 }
 
-// A memo which can be included as part of a transfer. Max size is 256 bytes.
-message Memo {
-  bytes value = 1;
-}
-
 message BakerStakeUpdatedData {
   // Affected baker.
   BakerId baker_id = 1;
@@ -1425,6 +1445,10 @@ message AccountTransactionEffects {
     BakerConfigured baker_configured = 18;
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
+    // A token holder event.
+    plt.TokenHolderEvent token_holder_event = 20;
+    // Events originating from token governance.
+    plt.TokenGovernanceEvent token_governance_event = 21;
   }
 }
 
