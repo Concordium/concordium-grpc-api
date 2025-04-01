@@ -1,6 +1,8 @@
 syntax = "proto3";
 
+import "v2/concordium/kernel.proto";
 import "v2/concordium/types.proto";
+import "v2/concordium/protocol-level-tokens.proto";
 
 package concordium.v2;
 
@@ -41,6 +43,10 @@ service Queries {
 
   // Retrieve the list of accounts that exist at the end of the given block.
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
+
+  // Retrieve the list of protocol level tokens that exist at the end of the
+  // given block.
+  rpc GetTokenList (BlockHashInput) returns (stream concordium.v2.plt.TokenId);
 
   // Get a list of all smart contract modules. The stream will end
   // when all modules that exist in the state at the end of the given
