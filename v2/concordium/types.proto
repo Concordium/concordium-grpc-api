@@ -19,8 +19,8 @@ option java_multiple_files = true;
 // Has no effect on code generated on other languages.
 option csharp_namespace = "Concordium.Grpc.V2";
 
-import "kernel.proto";
-import "protocol-level-tokens.proto";
+import "v2/concordium/kernel.proto";
+import "v2/concordium/protocol-level-tokens.proto";
 
 // A message that contains no information.
 message Empty {
