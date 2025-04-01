@@ -8,6 +8,7 @@
   - Token identifiers.
   - Token governance / holder events.
   - Endpoint to query token block level state.
+  - Endpoint to query list of existing protocol level tokens.
 
 ## Node 8.0 API
 
