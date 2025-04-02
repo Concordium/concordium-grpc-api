@@ -1137,7 +1137,10 @@ message RegisteredData {
   bytes value = 1;
 }
 
-// Events that may result from the ConfigureBaker transaction.
+// Events that may result from the `ConfigureBaker` transaction which adds, modify, or removes a baker
+// pool starting in protocol version 4.
+// Before protocol version 4, distinct baker transaction types (`baker_added`, `baker_removed`, `baker_stake_updated`, `baker_restake_earnings_updated`, 
+// and `baker_keys_updated`) existed which emitted baker related events instead.
 message BakerEvent {
   // A baker was added.
   message BakerAdded {
@@ -1157,6 +1160,9 @@ message BakerEvent {
     // The new stake.
     Amount new_stake = 2;
   }
+  // The baker's stake was decreased.
+  // The behavior of decreasing the stake of bakers differs from before and after protocol version 7 
+  // (see https://proposals.concordium.com/updates/P7.html for more details).
   message BakerStakeDecreased {
     // Baker's id.
     BakerId baker_id = 1;
@@ -1211,12 +1217,14 @@ message BakerEvent {
   }
 
   // A baker has been suspended.
+  // This event can occur starting from protocol 8.
   message BakerSuspended {
     // Suspended baker's id
     BakerId baker_id = 1;
   }
 
   // A baker has been resumed.
+  // This event can occur starting from protocol 8.
   message BakerResumed {
     // The resumed baker's id
     BakerId baker_id = 1;
@@ -1225,11 +1233,18 @@ message BakerEvent {
   oneof event {
     // A baker was added.
     BakerAdded baker_added = 1;
-    // A baker was removed.
+    // A baker was removed. 
+    // When a baker being removed, it results in its delegators targeting the pool to be moved to the passive pool
+    // meaning `DelegationSetDelegationTarget` events may occur in the same transaction, order of events?
+    // The behavior of bakers being removed differs from before and after protocol version 7 
+    // (see https://proposals.concordium.com/updates/P7.html for more details).
+    // When does the `DelegationEvent::BakerRemoved` occur vs the `BakerEvent::BakerRemoved`?
     BakerId baker_removed = 2;
     // The baker's stake was increased.
     BakerStakeIncreased baker_stake_increased = 3;
     // The baker's stake was decreased.
+    // The behavior of decreasing the stake of bakers differs from before and after protocol version 7 
+    // (see https://proposals.concordium.com/updates/P7.html for more details).
     BakerStakeDecreased baker_stake_decreased = 4;
     // The baker's setting for restaking earnings was updated.
     BakerRestakeEarningsUpdated baker_restake_earnings_updated = 5;
@@ -1246,10 +1261,14 @@ message BakerEvent {
     // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
     // An existing delegator was removed.
+    // Does this event happen when a delegator actively moves itself from a baker pool (or passive delegation) 
+    // to not-delegating or only one of these?
     DelegationRemoved delegation_removed = 12;
     // The baker's account has been suspended.
+    // This event can occur starting from protocol 8.
     BakerSuspended baker_suspended = 13;
     // The baker's account has been suspended.
+    // This event can occur starting from protocol 8.
     BakerResumed baker_resumed = 14;
   }
 }
@@ -1281,7 +1300,7 @@ message DelegationEvent {
   message DelegationSetDelegationTarget {
     // Delegator's id
     DelegatorId delegator_id = 1;
-    // New delegation target
+    // New delegation target (either to a baker pool or passive delegation)
     DelegationTarget delegation_target = 2;
   }
   message BakerRemoved {
@@ -1295,13 +1314,17 @@ message DelegationEvent {
     DelegationStakeDecreased delegation_stake_decreased = 2;
     // The delegator's restaking setting was updated.
     DelegationSetRestakeEarnings delegation_set_restake_earnings = 3;
-    // The delegator's delegation target was updated.
+    // The delegator's delegation target was updated either by a transaction from the delegator 
+    // or by the protocol (e.g., if a baker pool is closed/removed, its delegators are moved to passive delegation).
     DelegationSetDelegationTarget delegation_set_delegation_target = 4;
     // A delegator was added.
+    // This event is always accommodated by a `DelegationStakeIncreased` and a `DelegationSetDelegationTarget` event in the same transaction, order?.
     DelegatorId delegation_added = 5;
     // A delegator was removed.
+    // This event is always accommodated by a `DelegationStakeDecreased` event in the same transaction, order?.
     DelegatorId delegation_removed = 6;
     // An existing baker was removed.
+    // When does the `DelegationEvent::BakerRemoved` occur vs the `BakerEvent::BakerRemoved`?
     BakerRemoved baker_removed = 7;
   }
 }
@@ -1397,19 +1420,38 @@ message AccountTransactionEffects {
     // A simple account to account transfer occurred.
     AccountTransfer account_transfer = 5;
     // A baker was added.
+    // The associated baker transaction type can no longer be created starting from protocol 4
+    // and hence this effect does not occur anymore.
+    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
     BakerEvent.BakerAdded baker_added = 6;
-    // A baker was removed.
+    // A baker was removed. 
+    // The associated baker transaction type can no longer be created starting from protocol 4
+    // and hence this effect does not occur anymore.
+    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
     BakerId baker_removed = 7;
     // A baker's stake was updated.
+    // The associated baker transaction type can no longer be created starting from protocol 4
+    // and hence this effect does not occur anymore.
+    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
     BakerStakeUpdated baker_stake_updated = 8;
     // A baker's restake earnings setting was updated.
+    // The associated baker transaction type can no longer be created starting from protocol 4
+    // and hence this effect does not occur anymore.
+    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
     BakerEvent.BakerRestakeEarningsUpdated baker_restake_earnings_updated = 9;
     // A baker's keys were updated.
+    // The associated baker transaction type can no longer be created starting from protocol 4
+    // and hence this effect does not occur anymore.
+    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
     BakerKeysEvent baker_keys_updated = 10;
     // An encrypted amount was transferred.
+    // The associated transaction type can no longer be created starting from protocol 7
+    // and hence this effect does not occur anymore.
     EncryptedAmountTransferred encrypted_amount_transferred = 11;
     // An account transferred part of its public balance to its encrypted
     // balance.
+    // The associated transaction type can no longer be created starting from protocol 7
+    // and hence this effect does not occur anymore.
     EncryptedSelfAmountAddedEvent transferred_to_encrypted = 12;
     // An account transferred part of its encrypted balance to its public balance.
     TransferredToPublic transferred_to_public = 13;
@@ -1422,8 +1464,11 @@ message AccountTransactionEffects {
     // Some data was registered on the chain.
     RegisteredData data_registered = 17;
     // A baker was configured. The details of what happened are contained in a list of BakerEvents.
+    // The associated transaction type is available starting from protocol version 4 and replaces the existing baker transaction types and effects from earlier protocols (`baker_added`,
+    // `baker_removed`, `baker_stake_updated`, `baker_restake_earnings_updated`, and `baker_keys_updated`).
     BakerConfigured baker_configured = 18;
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
+    // This transaction type is available starting from protocol version 4.
     DelegationConfigured delegation_configured = 19;
   }
 }
