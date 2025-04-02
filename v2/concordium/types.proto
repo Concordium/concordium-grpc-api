@@ -1640,13 +1640,28 @@ message CommissionRanges {
   InclusiveRangeAmountFraction transaction = 3;
 }
 
-// A bound on the relative share of the total staked capital that a baker can
-// have as its stake. This is required to be greater than 0.
+// The capital bound is a chain parameter that is set to guarantee network decentralization by preventing 
+// a single validator from gaining excessive power in the consensus protocol.
+// The capital bound is required to be set to a value greater than 0 (capital_bound > 0).
+// The value roughly describes the maximum proportion of the total stake in the protocol (from all validators including passive delegation) 
+// to the stake of a validator that a validator can achieve where the total stake of the validator is considered effective
+// (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
+// Once a validator passes this bound, some of the validator's total stake no longer contribute to the validator's effective stake.
+// See the comment at the `delegated_capital_cap` type for the exact formula.
+// The value is stored as a fraction with precision of `1/100_000`. For example, a capital bound of 0.05 is stored as 5000.
 message CapitalBound {
   AmountFraction value = 1;
 }
 
-// A leverage factor.
+// The leverage factor (leverage bound) is a chain parameter that is set to guarantee that each validator 
+// has skin in the game with respect to its delegators by providing some of the CCD staked at the validator's pool from the validator's funds.  
+// The leverage factor is required to be set to a value greater than 1 (1 <= leverage_factor).
+// The leverage factor is the maximum proportion of total stake of a validator (including the validator's own stake and the delegated 
+// stake to the validator) to the validator's own stake (excluding delegated stake to the validator)
+// that a validator can achieve where the total stake of the validator is considered effective
+// (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
+// Once a validator passes this bound, some of the validator's total stake no longer contribute to the validator's effective stake.
+// See the comment at the `delegated_capital_cap` type for the exact formula.
 message LeverageFactor {
   Ratio value = 1;
 }
@@ -2212,8 +2227,21 @@ message PoolInfoResponse {
   optional Amount equity_capital = 3;
   // The capital delegated to the pool by other accounts. Absent if the pool is removed.
   optional Amount delegated_capital = 4;
-  // The maximum amount that may be delegated to the pool, accounting for leverage and stake limits.
+  // The maximum amount that may be delegated to the pool, accounting for leverage and capital bounds.
   // Absent if the pool is removed.
+  // 
+  // leverage_bound_cap for pool p: Lₚ = λ * Cₚ - Cₚ = (λ - 1) * Cₚ
+  // capital_bound_cap for pool p: Bₚ = max (0, floor( (κ * (T - Dₚ) - Cₚ) / (1 - K) ))
+  // delegated_capital_cap for pool p = min (Lₚ, Bₚ)
+  //
+  // Where
+  // κ is the `CapitalBound`.
+  // λ is the `LeverageFactor`.
+  // T is the total staked capital on the whole chain (including passive
+  // delegation).
+  // Dₚ is the delegated capital of pool p.
+  // Cₚ is the equity capital (staked by the pool owner excluding delegated stake
+  // to the pool) of pool p.
   optional Amount delegated_capital_cap = 5;
   // The pool info associated with the pool: open status, metadata URL and commission rates.
   // Absent if the pool is removed.
