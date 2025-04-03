@@ -1216,15 +1216,16 @@ message BakerEvent {
     DelegatorId delegator_id = 1;
   }
 
-  // A baker has been suspended.
-  // This event can occur starting from protocol 8.
+  // A baker has been suspended either by a transaction sent from the baker itself 
+  // or by the protocol (e.g. due to inactivity).
+  // This message can occur starting from protocol 8.
   message BakerSuspended {
     // Suspended baker's id
     BakerId baker_id = 1;
   }
 
-  // A baker has been resumed.
-  // This event can occur starting from protocol 8.
+  // A baker has been resumed by a transaction sent from the baker itself.
+  // This message can occur starting from protocol 8.
   message BakerResumed {
     // The resumed baker's id
     BakerId baker_id = 1;
@@ -1233,12 +1234,13 @@ message BakerEvent {
   oneof event {
     // A baker was added.
     BakerAdded baker_added = 1;
-    // A baker was removed. 
-    // When a baker being removed, it results in its delegators targeting the pool to be moved to the passive pool
-    // meaning `DelegationSetDelegationTarget` events may occur in the same transaction, order of events?
+    // A baker was removed by a transaction that decreased the baker's own stake to 0.
+    // When a baker being removed, it results in its delegators targeting the pool to be moved to the passive delegation
+    // meaning `BakerEvent::DelegationSetDelegationTarget` events may occur in the same transaction, order of events?
     // The behavior of bakers being removed differs from before and after protocol version 7 
     // (see https://proposals.concordium.com/updates/P7.html for more details).
-    // When does the `DelegationEvent::BakerRemoved` occur vs the `BakerEvent::BakerRemoved`?
+    // If the cause of the baker removal is a transaction from an existing baker that switched its staking behavior to `delegation`,
+    // the `DelegationEvent::BakerRemoved` is emitted instead of this event.
     BakerId baker_removed = 2;
     // The baker's stake was increased.
     BakerStakeIncreased baker_stake_increased = 3;
@@ -1260,14 +1262,19 @@ message BakerEvent {
     BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
     // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
-    // An existing delegator was removed.
+    // An existing delegator was removed by a transaction or protocol and cause????,
+    // If the account is a delegator in the current payday, it will remain so until the
+    // next payday, although the delegation record will be removed from the account immediately.
     // Does this event happen when a delegator actively moves itself from a baker pool (or passive delegation) 
-    // to not-delegating or only one of these?
+    // to not-delegating via a transaction or only one of these?
+    // If the cause of the delegation removal is a transaction from an existing delegator that switched its delegation status to not delegating (or is it that the transaction decreases the delegators's stake to 0)?,
+    // the `DelegationEvent::DelegationRemoved` is emitted instead of this event.
     DelegationRemoved delegation_removed = 12;
-    // The baker's account has been suspended.
+    // The baker's account has been suspended either by a transaction sent from the baker itself 
+    // or by the protocol (e.g. due to inactivity).
     // This event can occur starting from protocol 8.
     BakerSuspended baker_suspended = 13;
-    // The baker's account has been suspended.
+    // The baker's account has been resumed by a transaction sent from the baker itself.
     // This event can occur starting from protocol 8.
     BakerResumed baker_resumed = 14;
   }
@@ -1314,17 +1321,26 @@ message DelegationEvent {
     DelegationStakeDecreased delegation_stake_decreased = 2;
     // The delegator's restaking setting was updated.
     DelegationSetRestakeEarnings delegation_set_restake_earnings = 3;
-    // The delegator's delegation target was updated either by a transaction from the delegator 
+    // The delegator's delegation target (either a baker pool or passive delegation) was updated either by a transaction from the delegator 
     // or by the protocol (e.g., if a baker pool is closed/removed, its delegators are moved to passive delegation).
     DelegationSetDelegationTarget delegation_set_delegation_target = 4;
     // A delegator was added.
     // This event is always accommodated by a `DelegationStakeIncreased` and a `DelegationSetDelegationTarget` event in the same transaction, order?.
     DelegatorId delegation_added = 5;
-    // A delegator was removed.
-    // This event is always accommodated by a `DelegationStakeDecreased` event in the same transaction, order?.
+    // A delegator was removed by a transaction sent from the delegator that switched the delegation status to not delegating (or that decreased the delegators's stake to 0)?.
+    // If the account is a delegator in the current payday, it will remain so until the
+    // next payday, although the delegation record will be removed from the account immediately.
+    // This event is always accommodated by a `DelegationEvent::DelegationStakeDecreased` event in the same transaction, order?.
+    // If the cause of the delegation removal is a transaction (cause) ????,
+    // the `BakerEvent::DelegationRemoved` is emitted instead of this event.
     DelegatorId delegation_removed = 6;
-    // An existing baker was removed.
-    // When does the `DelegationEvent::BakerRemoved` occur vs the `BakerEvent::BakerRemoved`?
+    // An existing baker was removed by a transaction sent from an baker that switched its staking behavior to `delegation`.
+    // When a baker being removed, it results in its delegators targeting the pool to be moved to the passive delegation
+    // meaning `DelegationSetDelegationTarget` events may occur in the same transaction, order of events?
+    // The behavior of bakers being removed differs from before and after protocol version 7 
+    // (see https://proposals.concordium.com/updates/P7.html for more details).
+    // If the cause of the baker removal is a transaction that decreased the baker's own stake to 0, 
+    // the `BakerEvent::BakerRemoved` is emitted instead of this event.
     BakerRemoved baker_removed = 7;
   }
 }
@@ -2299,7 +2315,7 @@ message PoolInfoResponse {
   // Total capital staked across all pools, including passive delegation.
   Amount all_pool_total_capital = 9;
   // A flag indicating whether the pool owner is suspended.
-  // Absent if the protocol version does not support validator suspension or the pool is removed.
+  // Absent if the protocol version does not support validator suspension (meaning prior protocol version 8) or the pool is removed.
   optional bool is_suspended = 10;
 }
 
