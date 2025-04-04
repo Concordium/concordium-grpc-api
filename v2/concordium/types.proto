@@ -1091,9 +1091,9 @@ message Memo {
   bytes value = 1;
 }
 
-// The associated baker transaction type can no longer be created starting from protocol 4
-// and hence this message does not occur anymore.
-// The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
+// The associated baker transaction type can no longer be created starting from protocol version 4.
+// Hence, this message does not occur anymore.
+// The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
 message BakerStakeUpdatedData {
   // Affected baker.
   BakerId baker_id = 1;
@@ -1141,11 +1141,12 @@ message RegisteredData {
 }
 
 // Events that may result from the `ConfigureBaker` transaction which adds, modify, or removes a baker pool starting in protocol version 4.
-// Before protocol version 4, distinct baker transaction types (`baker_added`, `baker_removed`, `baker_stake_updated`, `baker_restake_earnings_updated`, 
-// and `baker_keys_updated`) existed which emitted baker related events instead.
+// Before protocol version 4, distinct baker transaction types (`BakerAdded`, `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, 
+// and `BakerKeysUpdated`) existed which emitted baker related events instead.
 message BakerEvent {
   // A baker was added.
-  // This event is always accommodated by a `BakerEvent::BakerStakeIncreased` event in the same transaction.
+  // This message/event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, `BakerEvent::BakerSetOpenStatus`,
+  // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.  
   message BakerAdded {
     // The keys with which the baker registered.
     BakerKeysEvent keys_event = 1;
@@ -1214,19 +1215,20 @@ message BakerEvent {
     AmountFraction finalization_reward_commission = 2;
   }
   // Removed an existing delegator.
-  // An existing delegator was removed by a transaction or protocol and cause????,
+  // An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a baker.
   // If the account is a delegator in the current payday, it will remain so until the
-  // next payday, although the delegation record will be removed from the account immediately.
-  // If the cause of the delegation removal is a transaction from an existing delegator that switched its delegation status to not delegating (or is it that the transaction decreases the delegators's stake to 0)?,
+  // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+  // If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator's stake to 0,
   // the `DelegationEvent::DelegationRemoved` is emitted instead of this event/message.
   message DelegationRemoved {
     // Delegator's id.
     DelegatorId delegator_id = 1;
   }
 
-  // A baker has been suspended either by a transaction sent from the baker itself 
-  // or by the protocol (e.g. due to inactivity).
-  // This message can occur starting from protocol 8.
+  // The baker's account has been suspended by a transaction sent from the baker itself.
+  // This event can occur starting from protocol 8.
+  // If the baker is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
+  // event is emitted instead of this event.
   message BakerSuspended {
     // Suspended baker's id
     BakerId baker_id = 1;
@@ -1241,12 +1243,11 @@ message BakerEvent {
 
   oneof event {
     // A baker was added.
-    // This event is always accommodated by a `BakerEvent::BakerStakeIncreased` event in the same transaction.
+    // This event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, `BakerEvent::BakerSetOpenStatus`,
+    // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
     BakerAdded baker_added = 1;
-    // A baker was removed by a transaction that decreased the baker's own stake to 0.
-    // This event is always accommodated by a `BakerEvent::BakerStakeDecreased` event in the same transaction.
-    // When a baker being removed, it results in its delegators targeting the pool to be moved to the passive delegation
-    // meaning `BakerEvent::DelegationSetDelegationTarget` events may occur in the same transaction.
+    // A baker was removed by a transaction sent by the baker that decreased the baker's own stake to 0.
+    // When a baker is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
     // The behavior of bakers being removed differs from before and after protocol version 7 
     // (see https://proposals.concordium.com/updates/P7.html for more details).
     // If the cause of the baker removal is a transaction from an existing baker that switched its staking behavior to `delegation`,
@@ -1272,15 +1273,18 @@ message BakerEvent {
     BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
     // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
-    // An existing delegator was removed by a transaction or protocol and cause????,
+    // An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a baker.
+    // This event is always accommodated by a `BakerEvent::BakerAdded`, `BakerEvent::BakerSetRestakeEarnings`, `BakerEvent::BakerSetOpenStatus`,
+    // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
     // If the account is a delegator in the current payday, it will remain so until the
-    // next payday, although the delegation record will be removed from the account immediately.
-    // If the cause of the delegation removal is a transaction from an existing delegator that switched its delegation status to not delegating (or is it that the transaction decreases the delegators's stake to 0)?,
+    // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+    // If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator's stake to 0,
     // the `DelegationEvent::DelegationRemoved` is emitted instead of this event.
     DelegationRemoved delegation_removed = 12;
-    // The baker's account has been suspended either by a transaction sent from the baker itself 
-    // or by the protocol (e.g. due to inactivity).
+    // The baker's account has been suspended by a transaction sent from the baker itself.
     // This event can occur starting from protocol 8.
+    // If the baker is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
+    // event is emitted instead of this event.
     BakerSuspended baker_suspended = 13;
     // The baker's account has been resumed by a transaction sent from the baker itself.
     // This event can occur starting from protocol 8.
@@ -1293,8 +1297,8 @@ message DelegatorId {
   AccountIndex id = 1;
 }
 
-// Events that may result from the `DelegationEvent` transaction which adds, modify, or removes a delegator starting in protocol version 4.
-// There was no delegation feature before protocol level 4.
+// Events that may result from the `ConfigureDelegation` transaction which adds, modify, or removes a delegator starting in protocol version 4.
+// There was no delegation feature before protocol version 4.
 message DelegationEvent {
   message DelegationStakeIncreased {
     // Delegator's id
@@ -1331,23 +1335,20 @@ message DelegationEvent {
     DelegationStakeDecreased delegation_stake_decreased = 2;
     // The delegator's restaking setting was updated.
     DelegationSetRestakeEarnings delegation_set_restake_earnings = 3;
-    // The delegator's delegation target (either a baker pool or passive delegation) was updated either by a transaction from the delegator 
-    // or by the `ConfigureBaker` transaction when a baker pool was closed/removed which results in its delegators are moved to passive delegation.
+    // The delegator's delegation target (either a baker pool or passive delegation) was updated by a transaction from the delegator.
     DelegationSetDelegationTarget delegation_set_delegation_target = 4;
     // A delegator was added.
-    // This event is always accommodated by a `DelegationEvent::DelegationStakeIncreased` and a `DelegationEvent::DelegationSetDelegationTarget` event in the same transaction.
+    // This event is always accommodated by a `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
     DelegatorId delegation_added = 5;
-    // A delegator was removed by a transaction sent from the delegator that switched the delegation status to not delegating (or that decreased the delegators's stake to 0)?.
+    // A delegator was removed by a transaction sent from the delegator that decreased the delegators's stake to 0.
     // If the account is a delegator in the current payday, it will remain so until the
-    // next payday, although the delegation record will be removed from the account immediately.
-    // This event is always accommodated by a `DelegationEvent::DelegationStakeDecreased` event in the same transaction.
-    // If the cause of the delegation removal is a transaction (cause) ????,
+    // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+    // If the cause of the delegation removal is a transaction sent from a delegator that switched its staking behavior to being a baker,
     // the `BakerEvent::DelegationRemoved` is emitted instead of this event.
     DelegatorId delegation_removed = 6;
     // An existing baker was removed by a transaction sent from an baker that switched its staking behavior to `delegation`.
-    // This event is always accommodated by a `BakerEvent::BakerStakeDecreased` event (true or not?) in the same transaction.
-    // When a baker being removed, it results in its delegators targeting the pool to be moved to the passive delegation
-    // meaning `DelegationSetDelegationTarget` events may occur in the same transaction.
+    // This event is always accommodated by a `DelegationEvent::DelegationAdded`, `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
+    // When a baker is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
     // The behavior of bakers being removed differs from before and after protocol version 7 
     // (see https://proposals.concordium.com/updates/P7.html for more details).
     // If the cause of the baker removal is a transaction that decreased the baker's own stake to 0, 
@@ -1385,9 +1386,9 @@ message AccountTransactionEffects {
   }
   // A baker got its stake reduced. This is the result of a
   // successful UpdateBakerStake transaction.
-  // The associated baker transaction type can no longer be created starting from protocol 4
-  // and hence this message does not occur anymore.
-  // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
+  // The associated baker transaction type can no longer be created starting from protocol version 4.
+  // Hence, this message does not occur anymore.
+  // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
   message BakerStakeUpdated {
     // If the stake was updated (that is, it changed and did not stay the
     // same) then this is present, otherwise it is not present.
@@ -1395,8 +1396,8 @@ message AccountTransactionEffects {
   }
   // An encrypted amount was transferred. This is the result of a successful
   // EncryptedAmountTransfer transaction.
-  // The associated transaction type can no longer be created starting from protocol 7
-  // and hence this message does not occur anymore.
+  // The associated transaction type can no longer be created starting from protocol 7.
+  // Hence, this message does not occur anymore.
   message EncryptedAmountTransferred {
     EncryptedAmountRemovedEvent removed = 1;
     NewEncryptedAmountEvent added = 2;
@@ -1430,19 +1431,19 @@ message AccountTransactionEffects {
   }
   // A baker was configured. The details of what happened are contained in
   // the list of BakerEvents.
-  // The associated transaction type is available starting from protocol version 4 and replaces the existing baker transaction types and effects from earlier protocols (`baker_added`,
-  // `baker_removed`, `baker_stake_updated`, `baker_restake_earnings_updated`, and `baker_keys_updated`).
+  // The associated transaction type is available starting from protocol version 4 and replaces the existing baker transaction types and effects from earlier protocols (`BakerAdded`,
+  // `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).
   message BakerConfigured {
     repeated BakerEvent events = 1;
   }
   // An account configured delegation. The details of what happened are
   // contained in the list of DelegationEvents.
-  // The associated transaction type is available starting from protocol version 4 and replaces the existing baker transaction types and effects from earlier protocols (`baker_added`,
-  // `baker_removed`, `baker_stake_updated`, `baker_restake_earnings_updated`, and `baker_keys_updated`).
+  // The associated transaction type is available starting from protocol version 4 and replaces the existing baker transaction types and effects from earlier protocols (`BakerAdded`,
+  // `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).
   message DelegationConfigured {
     repeated DelegationEvent events = 1;
   }
-
+ 
   oneof effect {
     // No effects other than payment from this transaction.
     // The rejection reason indicates why the transaction failed.
@@ -1456,38 +1457,38 @@ message AccountTransactionEffects {
     // A simple account to account transfer occurred.
     AccountTransfer account_transfer = 5;
     // A baker was added.
-    // The associated baker transaction type can no longer be created starting from protocol 4
-    // and hence this effect does not occur anymore.
-    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
+    // The associated baker transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerEvent.BakerAdded baker_added = 6;
     // A baker was removed. 
-    // The associated baker transaction type can no longer be created starting from protocol 4
-    // and hence this effect does not occur anymore.
-    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
+    // The associated baker transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerId baker_removed = 7;
     // A baker's stake was updated.
-    // The associated baker transaction type can no longer be created starting from protocol 4
-    // and hence this effect does not occur anymore.
-    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
+    // The associated baker transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerStakeUpdated baker_stake_updated = 8;
     // A baker's restake earnings setting was updated.
-    // The associated baker transaction type can no longer be created starting from protocol 4
-    // and hence this effect does not occur anymore.
-    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
+    // The associated baker transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerEvent.BakerRestakeEarningsUpdated baker_restake_earnings_updated = 9;
     // A baker's keys were updated.
-    // The associated baker transaction type can no longer be created starting from protocol 4
-    // and hence this effect does not occur anymore.
-    // The functionality was replaced in protocol 4 by the `baker_configured` transaction type.
+    // The associated baker transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerKeysEvent baker_keys_updated = 10;
     // An encrypted amount was transferred.
-    // The associated transaction type can no longer be created starting from protocol 7
-    // and hence this effect does not occur anymore.
+    // The associated transaction type can no longer be created starting from protocol 7.
+    // Hence, this effect does not occur anymore.
     EncryptedAmountTransferred encrypted_amount_transferred = 11;
     // An account transferred part of its public balance to its encrypted
     // balance.
-    // The associated transaction type can no longer be created starting from protocol 7
-    // and hence this effect does not occur anymore.
+    // The associated transaction type can no longer be created starting from protocol 7.
+    // Hence, this effect does not occur anymore.
     EncryptedSelfAmountAddedEvent transferred_to_encrypted = 12;
     // An account transferred part of its encrypted balance to its public balance.
     TransferredToPublic transferred_to_public = 13;
@@ -1500,8 +1501,8 @@ message AccountTransactionEffects {
     // Some data was registered on the chain.
     RegisteredData data_registered = 17;
     // A baker was configured. The details of what happened are contained in a list of BakerEvents.
-    // The associated transaction type is available starting from protocol version 4 and replaces the existing baker transaction types and effects from earlier protocols (`baker_added`,
-    // `baker_removed`, `baker_stake_updated`, `baker_restake_earnings_updated`, and `baker_keys_updated`).
+    // The associated transaction type is available starting from protocol version 4 and replaces the existing baker transaction types and effects from earlier protocols (`BakerAdded`,
+    // `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).
     BakerConfigured baker_configured = 18;
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     // This transaction type is available starting from protocol version 4.
@@ -1729,14 +1730,13 @@ message CommissionRanges {
 // (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
 // Once a validator passes this bound, some of the validator's total stake no longer contribute to the validator's effective stake.
 // See the comment at the `delegated_capital_cap` type for the exact formula.
-// The value is stored as a fraction with precision of `1/100_000`. For example, a capital bound of 0.05 is stored as 5000.
 message CapitalBound {
   AmountFraction value = 1;
 }
 
 // The leverage factor (leverage bound) is a chain parameter that is set to guarantee that each validator 
 // has skin in the game with respect to its delegators by providing some of the CCD staked at the validator's pool from the validator's funds.  
-// The leverage factor is required to be set to a value greater than 1 (1 <= leverage_factor).
+// The leverage factor is required to be set to a value greater or equal than 1 (1 <= leverage_factor).
 // The leverage factor is the maximum proportion of total stake of a validator (including the validator's own stake and the delegated 
 // stake to the validator) to the validator's own stake (excluding delegated stake to the validator)
 // that a validator can achieve where the total stake of the validator is considered effective
@@ -2538,10 +2538,10 @@ message LeadershipElectionNonce {
 
 // Response type for GetElectionInfo.
 // Contains information related to baker election for a perticular block.
-// Since the election info is recomputed only at payday blocks, the `get_election_info` endpoint returns the same value
+// Since the election info is recomputed only at payday? (or is it snapshot?) blocks, the `get_election_info` endpoint returns the same value
 // for the whole payday period.
 message ElectionInfo {
-  // Since the election info is recomputed only at payday blocks, the `get_election_info` endpoint returns the same value
+  // Since the election info is recomputed only at payday? (or is it snapshot?) blocks, the `get_election_info` endpoint returns the same value
   // for the whole payday period.
   message Baker {
     // The ID of the baker.
@@ -2578,7 +2578,6 @@ message BlockSpecialEvent {
 
   // Rewards issued to all the bakers at the end of an epoch for baking blocks in the epoch,
   // in proportion to the number of blocks they contributed.
-  // Is this event deprecated in protocol version 4?
   message BakingRewards {
     // The amount awarded to each baker.
     AccountAmounts baker_rewards = 1;
@@ -2587,8 +2586,8 @@ message BlockSpecialEvent {
   }
 
   // Minting of new CCDs.
-  // Starting from protocol 4, this event occurs only in each payday block.
-  // Before protocol 4, this event occured every block (slot).
+  // Starting from protocol version 4, this event occurs only in each payday block.
+  // Before protocol version 4, this event occured every block (slot).
   message Mint {
     // The amount allocated to the banking reward account.
     Amount mint_baking_reward = 1;
@@ -2629,7 +2628,7 @@ message BlockSpecialEvent {
     AccountAddress foundation_account = 7;
   }
 
-  // Foundation tax paid at a payday block starting from protocol level 4.
+  // Foundation tax paid at a payday block starting from protocol version 4.
   message PaydayFoundationReward {
     // The account that got rewarded.
     AccountAddress foundation_account = 1;
@@ -2637,7 +2636,7 @@ message BlockSpecialEvent {
     Amount development_charge = 2;
   }
 
-  // Reward payment to the given account at a payday block starting from protocol level 4.
+  // Reward payment to the given account at a payday block starting from protocol version 4.
   // When listed in a block summary, the delegated pool of the account is
   // given by the last `PaydayPoolReward` outcome included before this outcome.
   //
@@ -2680,7 +2679,7 @@ message BlockSpecialEvent {
     BakerId baker = 7;
   }
 
-  // Payment distributed to a pool or passive delegators at a payday block starting from protocol level 4.
+  // Payment distributed to a pool or passive delegators at a payday block starting from protocol version 4.
   // When listed in a block summary, the reward distribution to the delagtors of the given pool is
   // given by the following `PaydayAccountReward` outcomes included after this outcome.
   //
@@ -2726,31 +2725,27 @@ message BlockSpecialEvent {
 
   oneof event {
     // Reward issued to all the bakers at the end of an epoch for baking blocks in the epoch.
-    // Does this event still exists or stoped existing with protocol version 4?
     BakingRewards baking_rewards = 1;
     // Minting of new CCDs.
-    // Starting from protocol 4, this event occurs in each payday block.
-    // Before protocol 4, this event occured every block (slot).
+    // Starting from protocol version 4, this event occurs in each payday block.
+    // Before protocol version 4, this event occured every block (slot).
     Mint mint = 2;
     FinalizationRewards finalization_rewards = 3;
     BlockReward block_reward = 4;
-    // Foundation rewards paid out at a payday block starting from protocol level 4.
-    // How was it before protocol version 4?
+    // Foundation rewards paid out at a payday block starting from protocol version 4.
     PaydayFoundationReward payday_foundation_reward = 5;
-    // Reward payment to the given account at a payday block (from passive deleagtion or delegation to a baker or being a baker) starting from protocol level 4.
+    // Reward payment to the given account at a payday block (from passive deleagtion or delegation to a baker or being a baker) starting from protocol version 4.
     // When listed in a block summary, the delegated pool of the account is
     // given by the last `PaydayPoolReward` outcome included before this outcome.
-    // How was it before protocol version 4?
     PaydayAccountReward payday_account_reward = 6;
-    // What is the difference between this event and the `baking_rewards` event ??????????.
-    // This event seems to be emitted every block, but the actual reward payout execution is happing at the end of the payday block. Might be that `baking_rewards` event is deprecated in protocol version 4?
     BlockAccrueReward block_accrue_reward = 7;
-    // Payment distributed to a pool or passive delegators at a payday block starting from protocol level 4.
+    // Payment distributed to a pool or passive delegators at a payday block starting from protocol version 4.
     // When listed in a block summary, the reward distribution to the delagtors of the given pool is
     // given by the following `PaydayAccountReward` outcomes included after this outcome.
-    // How was it before protocol version 4?
     PaydayPoolReward payday_pool_reward = 8;
     // The protocol suspends validators due to inactivity.
+    // If the baker is suspended  by a transaction sent from the baker itself, the `BakerEvent::BakerSuspended`
+    // event is emitted instead of this event.
     // The event can occur starting from protocol version 8.
     ValidatorSuspended validator_suspended = 9;
     // The protocol primes validators for suspension due to inactivity.
