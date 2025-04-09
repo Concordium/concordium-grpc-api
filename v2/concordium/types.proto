@@ -1047,6 +1047,7 @@ message ContractTraceElement {
   }
 
   // A previously interrupted contract was resumed.
+  // This message can occur starting from protocol version 5.
   message Upgraded {
     // The that was upgraded.
     ContractAddress address = 1;
@@ -1067,6 +1068,7 @@ message ContractTraceElement {
     // A previously interrupted contract was resumed.
     Resumed resumed = 4;
     // A contract was upgraded.
+    // This trace element can occur starting from protocol version 5.
     Upgraded upgraded = 5;
   }
 }
@@ -1087,6 +1089,7 @@ message BakerKeysEvent {
 }
 
 // A memo which can be included as part of a transfer. Max size is 256 bytes.
+// This message can occur starting from protocol version 2.
 message Memo {
   bytes value = 1;
 }
@@ -1145,7 +1148,7 @@ message RegisteredData {
 // and `BakerKeysUpdated`) existed which emitted baker related events instead.
 message BakerEvent {
   // A baker was added.
-  // This message/event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, `BakerEvent::BakerSetOpenStatus`,
+  // This message/event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
   // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.  
   message BakerAdded {
     // The keys with which the baker registered.
@@ -1165,7 +1168,7 @@ message BakerEvent {
     Amount new_stake = 2;
   }
   // The baker's stake was decreased.
-  // The behavior of decreasing the stake of bakers differs from before and after protocol version 7 
+  // The behavior of decreasing the stake of bakers changed in protocol version 7 
   // (see https://proposals.concordium.com/updates/P7.html for more details).
   message BakerStakeDecreased {
     // Baker's id.
@@ -1180,6 +1183,7 @@ message BakerEvent {
     bool restake_earnings = 2;
   }
   // Updated open status for a baker pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetOpenStatus {
     // Baker's id.
     BakerId baker_id = 1;
@@ -1187,6 +1191,7 @@ message BakerEvent {
     OpenStatus open_status = 2;
   }
   // Updated metadata url for a baker pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetMetadataUrl {
     // Baker's id.
     BakerId baker_id = 1;
@@ -1194,20 +1199,23 @@ message BakerEvent {
     string url = 2;
   }
   // Updated transaction fee commission for a baker pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetTransactionFeeCommission {
     // Baker's id.
     BakerId baker_id = 1;
     // The transaction fee commission.
     AmountFraction transaction_fee_commission = 2;
   }
-  // Updated baking reward commission for baker pool
+  // Updated baking reward commission for baker pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetBakingRewardCommission {
     // Baker's id
     BakerId baker_id = 1;
     // The baking reward commission
     AmountFraction baking_reward_commission = 2;
   }
-  // Updated finalization reward commission for baker pool
+  // Updated finalization reward commission for baker pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetFinalizationRewardCommission {
     // Baker's id
     BakerId baker_id = 1;
@@ -1220,22 +1228,23 @@ message BakerEvent {
   // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
   // If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator's stake to 0,
   // the `DelegationEvent::DelegationRemoved` is emitted instead of this event/message.
+  // This message can occur starting from protocol version 7.
   message DelegationRemoved {
     // Delegator's id.
     DelegatorId delegator_id = 1;
   }
 
   // The baker's account has been suspended by a transaction sent from the baker itself.
-  // This event can occur starting from protocol 8.
   // If the baker is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
   // event is emitted instead of this event.
+  // This message can occur starting from protocol version 8.
   message BakerSuspended {
     // Suspended baker's id
     BakerId baker_id = 1;
   }
 
   // A baker has been resumed by a transaction sent from the baker itself.
-  // This message can occur starting from protocol 8.
+  // This message can occur starting from protocol version 8.
   message BakerResumed {
     // The resumed baker's id
     BakerId baker_id = 1;
@@ -1243,12 +1252,12 @@ message BakerEvent {
 
   oneof event {
     // A baker was added.
-    // This event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, `BakerEvent::BakerSetOpenStatus`,
+    // This event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
     // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
     BakerAdded baker_added = 1;
     // A baker was removed by a transaction sent by the baker that decreased the baker's own stake to 0.
     // When a baker is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
-    // The behavior of bakers being removed differs from before and after protocol version 7 
+    // The behavior of bakers being removed changed in protocol version 7 
     // (see https://proposals.concordium.com/updates/P7.html for more details).
     // If the cause of the baker removal is a transaction from an existing baker that switched its staking behavior to `delegation`,
     // the `DelegationEvent::BakerRemoved` is emitted instead of this event.
@@ -1256,7 +1265,7 @@ message BakerEvent {
     // The baker's stake was increased.
     BakerStakeIncreased baker_stake_increased = 3;
     // The baker's stake was decreased.
-    // The behavior of decreasing the stake of bakers differs from before and after protocol version 7 
+    // The behavior of decreasing the stake of bakers changed in protocol version 7 
     // (see https://proposals.concordium.com/updates/P7.html for more details).
     BakerStakeDecreased baker_stake_decreased = 4;
     // The baker's setting for restaking earnings was updated.
@@ -1274,20 +1283,21 @@ message BakerEvent {
     // The baker's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
     // An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a baker.
-    // This event is always accommodated by a `BakerEvent::BakerAdded`, `BakerEvent::BakerSetRestakeEarnings`, `BakerEvent::BakerSetOpenStatus`,
+    // This event is always accommodated by a `BakerEvent::BakerAdded`, `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
     // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
     // If the account is a delegator in the current payday, it will remain so until the
     // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
     // If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator's stake to 0,
     // the `DelegationEvent::DelegationRemoved` is emitted instead of this event.
+    // This event was introduced in protocol version version 7.
     DelegationRemoved delegation_removed = 12;
     // The baker's account has been suspended by a transaction sent from the baker itself.
-    // This event can occur starting from protocol 8.
     // If the baker is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
     // event is emitted instead of this event.
+    // This event can occur starting from protocol version 8.
     BakerSuspended baker_suspended = 13;
     // The baker's account has been resumed by a transaction sent from the baker itself.
-    // This event can occur starting from protocol 8.
+    // This event can occur starting from protocol version 8.
     BakerResumed baker_resumed = 14;
   }
 }
@@ -1324,6 +1334,7 @@ message DelegationEvent {
     // New delegation target (either to a baker pool or passive delegation)
     DelegationTarget delegation_target = 2;
   }
+  // This message can occur starting from protocol version 7.
   message BakerRemoved {
     // Baker's id
     BakerId baker_id = 1;
@@ -1349,10 +1360,11 @@ message DelegationEvent {
     // An existing baker was removed by a transaction sent from an baker that switched its staking behavior to `delegation`.
     // This event is always accommodated by a `DelegationEvent::DelegationAdded`, `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
     // When a baker is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
-    // The behavior of bakers being removed differs from before and after protocol version 7 
+    // The behavior of bakers being removed changed in protocol version 7.
     // (see https://proposals.concordium.com/updates/P7.html for more details).
     // If the cause of the baker removal is a transaction that decreased the baker's own stake to 0, 
     // the `BakerEvent::BakerRemoved` is emitted instead of this event.
+    // This event can occur starting from protocol version 7.
     BakerRemoved baker_removed = 7;
   }
 }
@@ -1382,6 +1394,7 @@ message AccountTransactionEffects {
     // Receiver account.
     AccountAddress receiver = 2;
     // Memo.
+    // This field can occur starting from protocol version 2.
     optional Memo memo = 3;
   }
   // A baker got its stake reduced. This is the result of a
@@ -1401,6 +1414,7 @@ message AccountTransactionEffects {
   message EncryptedAmountTransferred {
     EncryptedAmountRemovedEvent removed = 1;
     NewEncryptedAmountEvent added = 2;
+    // This field can occur starting from protocol version 2.
     optional Memo memo = 3;
   }
   // An account transferred part of its encrypted balance to its public
@@ -1417,6 +1431,7 @@ message AccountTransactionEffects {
     // The list of releases. Ordered by increasing timestamp.
     repeated NewRelease amount = 2;
     // Optional memo.
+    // This field can occur starting from protocol version 2.
     optional Memo memo = 3;
   }
   // Account's credentials were updated. This is the result of a
@@ -2071,11 +2086,16 @@ enum TransactionType {
   TRANSFER_WITH_SCHEDULE = 13;
   UPDATE_CREDENTIALS = 14;
   REGISTER_DATA = 15;
+  // Introduced in protocol version 2.
   TRANSFER_WITH_MEMO = 16;
   // Deprecated in protocol version 7.
+  // Introduced in protocol version 2.
   ENCRYPTED_AMOUNT_TRANSFER_WITH_MEMO = 17;
+  // Introduced in protocol version 2.
   TRANSFER_WITH_SCHEDULE_AND_MEMO = 18;
+  // Introduced in protocol version 4.
   CONFIGURE_BAKER = 19;
+  // Introduced in protocol version 4.
   CONFIGURE_DELEGATION = 20;
 }
 
@@ -3176,6 +3196,7 @@ message TransferPayload {
 }
 
 // Payload of a transfer between two accounts with a memo.
+// This message can occur starting from protocol version 2.
 message TransferWithMemoPayload {
   // Amount of CCD to send.
   Amount amount = 1;
@@ -3191,11 +3212,11 @@ message AccountTransactionPayload {
     // A pre-serialized payload in the binary serialization format defined
     // by the protocol.
     bytes raw_payload = 1;
-    // A transfer between two accounts. With an optional memo.
     VersionedModuleSource deploy_module = 2;
     InitContractPayload init_contract = 3;
     UpdateContractPayload update_contract = 4;
     TransferPayload transfer = 5;
+    // This payload can occur starting from protocol version 2.
     TransferWithMemoPayload transfer_with_memo = 6;
     RegisteredData register_data = 7;
   }
