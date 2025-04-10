@@ -56,7 +56,7 @@ message BlockHeight {
   uint64 value = 1;
 }
 
-// The ID of a baker, which is the index of its account.
+// The ID of a validator, which is the index of its account.
 message BakerId {
   uint64 value = 1;
 }
@@ -163,48 +163,48 @@ message EncryptedBalance {
 // Entity to which the account delegates a portion of its stake.
 message DelegationTarget {
   oneof target {
-    // Delegate passively, i.e., to no specific baker.
+    // Delegate passively, i.e., to no specific validator.
     Empty passive = 1;
-    // Delegate to a specific baker.
+    // Delegate to a specific validator.
     BakerId baker = 2;
   }
 }
 
-// Baker's public key used to check whether they won the lottery or not.
+// Validator's public key used to check whether they won the lottery or not.
 message BakerElectionVerifyKey {
   bytes value = 1;
 }
 
-// Baker's public key used to check that they are indeed the ones who
+// Validator's public key used to check that they are indeed the ones who
 // produced the block.
 message BakerSignatureVerifyKey {
   bytes value = 1;
 }
 
-// Baker's public key used to check signatures on finalization records.
-// This is only used if the baker has sufficient stake to participate in
+// Validator's public key used to check signatures on finalization records.
+// This is only used if the validator has sufficient stake to participate in
 // finalization.
 message BakerAggregationVerifyKey {
   bytes value = 1;
 }
 
-// Information about a baker.
+// Information about a validator.
 message BakerInfo {
-  // Identity of the baker. This is actually the account index of
-  // the account controlling the baker.
+  // Identity of the validator. This is actually the account index of
+  // the account controlling the validator.
   BakerId baker_id = 1;
-  // Baker's public key used to check whether they won the lottery or not.
+  // Validator's public key used to check whether they won the lottery or not.
   BakerElectionVerifyKey election_key = 2;
-  // Baker's public key used to check that they are indeed the ones who
+  // Validator's public key used to check that they are indeed the ones who
   // produced the block.
   BakerSignatureVerifyKey signature_key = 3;
-  // Baker's public key used to check signatures on finalization records.
-  // This is only used if the baker has sufficient stake to participate in
+  // Validator's public key used to check signatures on finalization records.
+  // This is only used if the validator has sufficient stake to participate in
   // finalization.
   BakerAggregationVerifyKey aggregation_key = 4;
 }
 
-// Pending change to the stake either of a baker or delegator.
+// Pending change to the stake either of a validator or delegator.
 message StakePendingChange {
   message Reduce {
     Amount new_stake = 1;
@@ -237,13 +237,13 @@ message AmountFraction {
 message CommissionRates {
   // Fraction of finalization rewards charged by the pool owner.
   AmountFraction finalization = 1;
-  // Fraction of baking rewards charged by the pool owner.
+  // Fraction of block production rewards charged by the pool owner.
   AmountFraction baking = 2;
   // Fraction of transaction rewards charged by the pool owner.
   AmountFraction transaction = 3;
 }
 
-// Additional information about a baking pool.
+// Additional information about a validator pool.
 // This information is added with the introduction of delegation.
 message BakerPoolInfo {
   // Whether the pool allows delegators.
@@ -254,20 +254,20 @@ message BakerPoolInfo {
   CommissionRates commission_rates = 3;
 }
 
-// Information about the account stake, if the account is either a baker or a
+// Information about the account stake, if the account is either a validator or a
 // delegator.
 message AccountStakingInfo {
   message Baker {
     // Amount staked at present.
     Amount staked_amount = 1;
-    // A flag indicating whether rewards paid to the baker are automatically
+    // A flag indicating whether rewards paid to the validator are automatically
     // restaked or not.
     bool restake_earnings = 2;
-    // Information about the baker that is staking.
+    // Information about the validator that is staking.
     BakerInfo baker_info = 3;
     // If present, any pending change to the delegated stake.
     optional StakePendingChange pending_change = 4;
-    // Present if the account is currently a baker, i.e., it is in the baking
+    // Present if the account is currently a validator, i.e., it is in the validator
     // committee of the current epoch.
     optional BakerPoolInfo pool_info = 5;
     // A flag indicating whether the account is currently suspended or not. The
@@ -290,7 +290,7 @@ message AccountStakingInfo {
   }
 
   oneof staking_info {
-    // The account is a baker.
+    // The account is a validator.
     Baker baker = 1;
     // The account is a delegator.
     Delegator delegator = 2;
@@ -473,7 +473,7 @@ message AccountCredential {
 }
 
 message Cooldown {
-  // The status of a cooldown. When stake is removed from a baker or delegator
+  // The status of a cooldown. When stake is removed from a validator or delegator
   // (from protocol version 7) it first enters the pre-pre-cooldown state.
   // The next time the stake snaphot is taken (at the epoch transition before
   // a payday) it enters the pre-cooldown state. At the subsequent payday, it
@@ -527,11 +527,11 @@ message AccountInfo {
   // Internal index of the account. Accounts on the chain get sequential
   // indices. These should generally not be used outside of the chain,
   // the account address is meant to be used to refer to accounts,
-  // however the account index serves the role of the baker id, if the
-  // account is a baker. Hence it is exposed here as well.
+  // however the account index serves the role of the validator id, if the
+  // account is a validator. Hence it is exposed here as well.
   AccountIndex index = 8;
-  // Present if the account is a baker or delegator. In that case
-  // it is the information about the baker or delegator.
+  // Present if the account is a validator or delegator. In that case
+  // it is the information about the validator or delegator.
   optional AccountStakingInfo stake = 9;
   // Canonical address of the account. This is derived from the first credential
   // that created the account.
@@ -779,7 +779,7 @@ message Energy {
   uint64 value = 1;
 }
 
-// A number representing a slot for baking a block.
+// A number representing a slot for producing a block.
 message Slot {
   uint64 value = 1;
 }
@@ -866,20 +866,20 @@ message RejectReason {
     RejectedInit rejected_init = 12;
     // Rejected due to contract logic in receive function of a contract.
     RejectedReceive rejected_receive = 13;
-    // Proof that the baker owns relevant private keys is not valid.
+    // Proof that the validator owns relevant private keys is not valid.
     Empty invalid_proof = 14;
-    // Tried to add baker for an account that already has a baker.
+    // Tried to add validator for an account that already has a validator.
     BakerId already_a_baker = 15;
-    // Tried to remove a baker for an account that has no baker.
+    // Tried to remove a validator for an account that has no validator.
     AccountAddress not_a_baker = 16;
     // The amount on the account was insufficient to cover the proposed stake.
     Empty insufficient_balance_for_baker_stake = 17;
-    // The amount provided is under the threshold required for becoming a baker.
+    // The amount provided is under the threshold required for becoming a validator.
     Empty stake_under_minimum_threshold_for_baking = 18;
-    // The change could not be made because the baker is in cooldown for
+    // The change could not be made because the validator is in cooldown for
     // another change.
     Empty baker_in_cooldown = 19;
-    // A baker with the given aggregation key already exists.
+    // A validator with the given aggregation key already exists.
     BakerAggregationVerifyKey duplicate_aggregation_key = 20;
     // Encountered credential ID that does not exist.
     Empty non_existent_credential_id = 21;
@@ -932,16 +932,16 @@ message RejectReason {
     // The account is not allowed to send encrypted transfers (or transfer
     // from/to public to/from encrypted).
     Empty not_allowed_to_handle_encrypted = 40;
-    // A configure baker transaction is missing one or more arguments in order
-    // to add a baker.
+    // A `ConfigureBaker` transaction is missing one or more arguments in order
+    // to add a validator.
     Empty missing_baker_add_parameters = 41;
-    // Finalization reward commission is not in the valid range for a baker.
+    // Finalization reward commission is not in the valid range for a validator.
     Empty finalization_reward_commission_not_in_range = 42;
-    // Baking reward commission is not in the valid range for a baker.
+    // Block production reward commission is not in the valid range for a validator.
     Empty baking_reward_commission_not_in_range = 43;
-    // Transaction fee commission is not in the valid range for a baker.
+    // Transaction fee commission is not in the valid range for a validator.
     Empty transaction_fee_commission_not_in_range = 44;
-    // Tried to add baker for an account that already has a delegator.
+    // Tried to add validator for an account that already has a delegator.
     Empty already_a_delegator = 45;
     // The amount on the account was insufficient to cover the proposed stake.
     Empty insufficient_balance_for_delegation_stake = 46;
@@ -954,7 +954,7 @@ message RejectReason {
     Empty delegator_in_cooldown = 49;
     // Account is not a delegation account.
     AccountAddress not_a_delegator = 50;
-    // Delegation target is not a baker
+    // Delegation target is not a validator
     BakerId delegation_target_not_a_baker = 51;
     // The amount would result in pool capital higher than the maximum
     // threshold.
@@ -1021,7 +1021,7 @@ message InstanceUpdatedEvent {
 // Effects produced by successful smart contract invocations.
 // A single invocation will produce a sequence of these effects.
 message ContractTraceElement {
-  // A contract transferred an amount to an account.
+  // A contract transferred an amount of CCD to an account.
   message Transferred {
     // Sender contract.
     ContractAddress sender = 1;
@@ -1047,6 +1047,7 @@ message ContractTraceElement {
   }
 
   // A previously interrupted contract was resumed.
+  // This message can occur starting from protocol version 5.
   message Upgraded {
     // The that was upgraded.
     ContractAddress address = 1;
@@ -1059,7 +1060,7 @@ message ContractTraceElement {
   oneof element {
     // A contract instance was updated.
     InstanceUpdatedEvent updated = 1;
-    // A contract transferred an amount to an account.
+    // A contract transferred an amount of CCD to an account.
     Transferred transferred = 2;
     // A contract was interrupted.
     // This occurs when a contract invokes another contract or makes a transfer to an account.
@@ -1067,19 +1068,20 @@ message ContractTraceElement {
     // A previously interrupted contract was resumed.
     Resumed resumed = 4;
     // A contract was upgraded.
+    // This trace element can occur starting from protocol version 5.
     Upgraded upgraded = 5;
   }
 }
 
-// Result of a successful change of baker keys.
+// Result of a successful change of validator keys.
 message BakerKeysEvent {
-    // ID of the baker whose keys were changed.
+    // ID of the validator whose keys were changed.
     BakerId baker_id = 1;
-    // Account address of the baker.
+    // Account address of the validator.
     AccountAddress account = 2;
     // The new public key for verifying block signatures.
     BakerSignatureVerifyKey sign_key = 3;
-    // The new public key for verifying whether the baker won the block
+    // The new public key for verifying whether the validator won the block
     // lottery.
     BakerElectionVerifyKey election_key = 4;
     // The new public key for verifying finalization records.
@@ -1087,12 +1089,16 @@ message BakerKeysEvent {
 }
 
 // A memo which can be included as part of a transfer. Max size is 256 bytes.
+// This message can occur starting from protocol version 2.
 message Memo {
   bytes value = 1;
 }
 
+// The associated transaction type can no longer be created starting from protocol version 4.
+// Hence, this message does not occur anymore.
+// The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
 message BakerStakeUpdatedData {
-  // Affected baker.
+  // Affected validator.
   BakerId baker_id = 1;
   // New stake.
   Amount new_stake = 2;
@@ -1137,119 +1143,161 @@ message RegisteredData {
   bytes value = 1;
 }
 
-// Events that may result from the ConfigureBaker transaction.
+// Events that may result from the `ConfigureBaker` transaction which adds, modify, or removes a validator pool starting in protocol version 4.
+// Before protocol version 4, distinct transaction types (`BakerAdded`, `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, 
+// and `BakerKeysUpdated`) existed which emitted validator related events instead.
 message BakerEvent {
-  // A baker was added.
+  // A validator was added.
+  // This message/event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+  // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.  
   message BakerAdded {
-    // The keys with which the baker registered.
+    // The keys with which the validator registered.
     BakerKeysEvent keys_event = 1;
-    // The amount the account staked to become a baker. This amount is
+    // The amount the account staked to become a validator. This amount is
     // locked.
     Amount stake = 2;
-    // Whether the baker will automatically add earnings to their stake or
+    // Whether the validator will automatically add earnings to their stake or
     // not.
     bool restake_earnings = 3;
   }
-  // Baker stake increased.
+  // Validator stake increased.
   message BakerStakeIncreased {
-    // Baker's id.
+    // Validator's id.
     BakerId baker_id = 1;
     // The new stake.
     Amount new_stake = 2;
   }
+  // The validator's stake was decreased.
+  // The behavior of decreasing the stake of validators changed in protocol version 7 
+  // (see https://proposals.concordium.com/updates/P7.html for more details).
   message BakerStakeDecreased {
-    // Baker's id.
+    // Validator's id.
     BakerId baker_id = 1;
     // The new stake.
     Amount new_stake = 2;
   }
   message BakerRestakeEarningsUpdated {
-    // Baker's id.
+    // Validator's id.
     BakerId baker_id = 1;
     // The new value of the flag.
     bool restake_earnings = 2;
   }
-  // Updated open status for a baker pool.
+  // Updated open status for a validator pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetOpenStatus {
-    // Baker's id.
+    // Validator's id.
     BakerId baker_id = 1;
     // The new open status.
     OpenStatus open_status = 2;
   }
-  // Updated metadata url for a baker pool.
+  // Updated metadata url for a validator pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetMetadataUrl {
-    // Baker's id.
+    // Validator's id.
     BakerId baker_id = 1;
     // The URL.
     string url = 2;
   }
-  // Updated transaction fee commission for a baker pool.
+  // Updated transaction fee commission for a validator pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetTransactionFeeCommission {
-    // Baker's id.
+    // Validator's id.
     BakerId baker_id = 1;
     // The transaction fee commission.
     AmountFraction transaction_fee_commission = 2;
   }
-  // Updated baking reward commission for baker pool
+  // Updated block production reward commission for validator pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetBakingRewardCommission {
-    // Baker's id
+    // Validator's id
     BakerId baker_id = 1;
-    // The baking reward commission
+    // The block production reward commission
     AmountFraction baking_reward_commission = 2;
   }
-  // Updated finalization reward commission for baker pool
+  // Updated finalization reward commission for validator pool.
+  // This message can occur starting from protocol version 4.
   message BakerSetFinalizationRewardCommission {
-    // Baker's id
+    // Validator's id
     BakerId baker_id = 1;
     // The finalization reward commission
     AmountFraction finalization_reward_commission = 2;
   }
   // Removed an existing delegator.
+  // An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a validator.
+  // If the account is a delegator in the current payday, it will remain so until the
+  // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+  // If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator's stake to 0,
+  // the `DelegationEvent::DelegationRemoved` is emitted instead of this event/message.
+  // This message can occur starting from protocol version 7.
   message DelegationRemoved {
     // Delegator's id.
     DelegatorId delegator_id = 1;
   }
 
-  // A baker has been suspended.
+  // The validator has been suspended by a transaction sent from the validator itself.
+  // If the validator is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
+  // event is emitted instead of this event.
+  // This message can occur starting from protocol version 8.
   message BakerSuspended {
-    // Suspended baker's id
+    // Suspended validator's id
     BakerId baker_id = 1;
   }
 
-  // A baker has been resumed.
+  // A validator has been resumed by a transaction sent from the validator itself.
+  // This message can occur starting from protocol version 8.
   message BakerResumed {
-    // The resumed baker's id
+    // The resumed validator's id
     BakerId baker_id = 1;
   }
 
   oneof event {
-    // A baker was added.
+    // A validator was added.
+    // This event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+    // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
     BakerAdded baker_added = 1;
-    // A baker was removed.
+    // A validator was removed by a transaction sent by the validator that decreased the validator's own stake to 0.
+    // When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
+    // The behavior of validators being removed changed in protocol version 7 
+    // (see https://proposals.concordium.com/updates/P7.html for more details).
+    // If the cause of the validator removal is a transaction from an existing validator that switched its staking behavior to `delegation`,
+    // the `DelegationEvent::BakerRemoved` is emitted instead of this event.
     BakerId baker_removed = 2;
-    // The baker's stake was increased.
+    // The validator's stake was increased.
     BakerStakeIncreased baker_stake_increased = 3;
-    // The baker's stake was decreased.
+    // The validator's stake was decreased.
+    // The behavior of decreasing the stake of validators changed in protocol version 7 
+    // (see https://proposals.concordium.com/updates/P7.html for more details).
     BakerStakeDecreased baker_stake_decreased = 4;
-    // The baker's setting for restaking earnings was updated.
+    // The validator's setting for restaking earnings was updated.
     BakerRestakeEarningsUpdated baker_restake_earnings_updated = 5;
-    // Baker keys were updated.
+    // Validator keys were updated.
     BakerKeysEvent baker_keys_updated = 6;
-    // The baker's open status was updated.
+    // The validator's open status was updated.
     BakerSetOpenStatus baker_set_open_status = 7;
-    // The baker's metadata URL was updated.
+    // The validator's metadata URL was updated.
     BakerSetMetadataUrl baker_set_metadata_url = 8;
-    // The baker's transaction fee commission was updated.
+    // The validator's transaction fee commission was updated.
     BakerSetTransactionFeeCommission baker_set_transaction_fee_commission = 9;
-    // The baker's baking reward commission was updated.
+    // The validator's block production reward commission was updated.
     BakerSetBakingRewardCommission baker_set_baking_reward_commission = 10;
-    // The baker's finalization reward commission was updated.
+    // The validator's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
-    // An existing delegator was removed.
+    // An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a validator.
+    // This event is always accompanied by `BakerEvent::BakerAdded`, `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+    // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
+    // If the account is a delegator in the current payday, it will remain so until the
+    // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+    // If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator's stake to 0,
+    // the `DelegationEvent::DelegationRemoved` is emitted instead of this event.
+    // This event was introduced in protocol version version 7.
     DelegationRemoved delegation_removed = 12;
-    // The baker's account has been suspended.
+    // The validator has been suspended by a transaction sent from the validator itself.
+    // If the validator is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
+    // event is emitted instead of this event.
+    // This event can occur starting from protocol version 8.
     BakerSuspended baker_suspended = 13;
-    // The baker's account has been suspended.
+    // The validator has been resumed by a transaction sent from the validator itself.
+    // This event can occur starting from protocol version 8.
     BakerResumed baker_resumed = 14;
   }
 }
@@ -1259,6 +1307,8 @@ message DelegatorId {
   AccountIndex id = 1;
 }
 
+// Events that may result from the `ConfigureDelegation` transaction which adds, modify, or removes a delegator starting in protocol version 4.
+// There was no delegation feature before protocol version 4.
 message DelegationEvent {
   message DelegationStakeIncreased {
     // Delegator's id
@@ -1281,11 +1331,12 @@ message DelegationEvent {
   message DelegationSetDelegationTarget {
     // Delegator's id
     DelegatorId delegator_id = 1;
-    // New delegation target
+    // New delegation target (either to a validator pool or passive delegation)
     DelegationTarget delegation_target = 2;
   }
+  // This message can occur starting from protocol version 7.
   message BakerRemoved {
-    // Baker's id
+    // Validator's id
     BakerId baker_id = 1;
   }
   oneof event {
@@ -1295,13 +1346,25 @@ message DelegationEvent {
     DelegationStakeDecreased delegation_stake_decreased = 2;
     // The delegator's restaking setting was updated.
     DelegationSetRestakeEarnings delegation_set_restake_earnings = 3;
-    // The delegator's delegation target was updated.
+    // The delegator's delegation target (either a validator pool or passive delegation) was updated by a transaction from the delegator.
     DelegationSetDelegationTarget delegation_set_delegation_target = 4;
     // A delegator was added.
+    // This event is always accompanied by `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
     DelegatorId delegation_added = 5;
-    // A delegator was removed.
+    // A delegator was removed by a transaction sent from the delegator that decreased the delegators's stake to 0.
+    // If the account is a delegator in the current payday, it will remain so until the
+    // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+    // If the cause of the delegation removal is a transaction sent from a delegator that switched its staking behavior to being a validator,
+    // the `BakerEvent::DelegationRemoved` is emitted instead of this event.
     DelegatorId delegation_removed = 6;
-    // An existing baker was removed.
+    // An existing validator was removed by a transaction sent from an validator that switched its staking behavior to `delegation`.
+    // This event is always accompanied by `DelegationEvent::DelegationAdded`, `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
+    // When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
+    // The behavior of validators being removed changed in protocol version 7.
+    // (see https://proposals.concordium.com/updates/P7.html for more details).
+    // If the cause of the validator removal is a transaction that decreased the validator's own stake to 0, 
+    // the `BakerEvent::BakerRemoved` is emitted instead of this event.
+    // This event can occur starting from protocol version 7.
     BakerRemoved baker_removed = 7;
   }
 }
@@ -1331,10 +1394,14 @@ message AccountTransactionEffects {
     // Receiver account.
     AccountAddress receiver = 2;
     // Memo.
+    // This field can occur starting from protocol version 2.
     optional Memo memo = 3;
   }
-  // An account was deregistered as a baker. This is the result of a
-  // successful UpdateBakerStake transaction.
+  // A validator updated its stake. This is the result of a
+  // successful `UpdateBakerStake` transaction.
+  // The associated transaction type can no longer be created starting from protocol version 4.
+  // Hence, this message does not occur anymore.
+  // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
   message BakerStakeUpdated {
     // If the stake was updated (that is, it changed and did not stay the
     // same) then this is present, otherwise it is not present.
@@ -1342,9 +1409,12 @@ message AccountTransactionEffects {
   }
   // An encrypted amount was transferred. This is the result of a successful
   // EncryptedAmountTransfer transaction.
+  // The associated transaction type can no longer be created starting from protocol 7.
+  // Hence, this message does not occur anymore.
   message EncryptedAmountTransferred {
     EncryptedAmountRemovedEvent removed = 1;
     NewEncryptedAmountEvent added = 2;
+    // This field can occur starting from protocol version 2.
     optional Memo memo = 3;
   }
   // An account transferred part of its encrypted balance to its public
@@ -1361,6 +1431,7 @@ message AccountTransactionEffects {
     // The list of releases. Ordered by increasing timestamp.
     repeated NewRelease amount = 2;
     // Optional memo.
+    // This field can occur starting from protocol version 2.
     optional Memo memo = 3;
   }
   // Account's credentials were updated. This is the result of a
@@ -1373,17 +1444,21 @@ message AccountTransactionEffects {
     // The (possibly) updated account threshold.
     AccountThreshold new_threshold = 3;
   }
-  // A baker was configured. The details of what happened are contained in
-  // the list of BakerEvents.
+  // A validator was configured. The details of what happened are contained in
+  // the list of `BakerEvents`.
+  // The associated transaction type is available starting from protocol version 4 and replaces the existing transaction types and effects from earlier protocols (`BakerAdded`,
+  // `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).
   message BakerConfigured {
     repeated BakerEvent events = 1;
   }
   // An account configured delegation. The details of what happened are
   // contained in the list of DelegationEvents.
+  // The associated transaction type is available starting from protocol version 4 and replaces the existing transaction types and effects from earlier protocols (`BakerAdded`,
+  // `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).
   message DelegationConfigured {
     repeated DelegationEvent events = 1;
   }
-
+ 
   oneof effect {
     // No effects other than payment from this transaction.
     // The rejection reason indicates why the transaction failed.
@@ -1396,20 +1471,39 @@ message AccountTransactionEffects {
     ContractUpdateIssued contract_update_issued = 4;
     // A simple account to account transfer occurred.
     AccountTransfer account_transfer = 5;
-    // A baker was added.
+    // A validator was added.
+    // The associated transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerEvent.BakerAdded baker_added = 6;
-    // A baker was removed.
+    // A validator was removed. 
+    // The associated transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerId baker_removed = 7;
-    // A baker's stake was updated.
+    // A validator's stake was updated.
+    // The associated transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerStakeUpdated baker_stake_updated = 8;
-    // A baker's restake earnings setting was updated.
+    // A validator's restake earnings setting was updated.
+    // The associated transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerEvent.BakerRestakeEarningsUpdated baker_restake_earnings_updated = 9;
-    // A baker's keys were updated.
+    // A validator's keys were updated.
+    // The associated transaction type can no longer be created starting from protocol version 4.
+    // Hence, this effect does not occur anymore.
+    // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerKeysEvent baker_keys_updated = 10;
     // An encrypted amount was transferred.
+    // The associated transaction type can no longer be created starting from protocol 7.
+    // Hence, this effect does not occur anymore.
     EncryptedAmountTransferred encrypted_amount_transferred = 11;
     // An account transferred part of its public balance to its encrypted
     // balance.
+    // The associated transaction type can no longer be created starting from protocol 7.
+    // Hence, this effect does not occur anymore.
     EncryptedSelfAmountAddedEvent transferred_to_encrypted = 12;
     // An account transferred part of its encrypted balance to its public balance.
     TransferredToPublic transferred_to_public = 13;
@@ -1421,9 +1515,12 @@ message AccountTransactionEffects {
     CredentialsUpdated credentials_updated = 16;
     // Some data was registered on the chain.
     RegisteredData data_registered = 17;
-    // A baker was configured. The details of what happened are contained in a list of BakerEvents.
+    // A validator was configured. The details of what happened are contained in a list of `BakerEvents`.
+    // The associated transaction type is available starting from protocol version 4 and replaces the existing transaction types and effects from earlier protocols (`BakerAdded`,
+    // `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).
     BakerConfigured baker_configured = 18;
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
+    // This transaction type is available starting from protocol version 4.
     DelegationConfigured delegation_configured = 19;
   }
 }
@@ -1542,7 +1639,7 @@ message AuthorizationsV0 {
   // Access structure for updating the gas rewards.
   AccessStructure parameter_gas_rewards = 10;
   // Access structure for updating the pool parameters. For V0 this is only
-  // the baker stake threshold, for V1 there are more.
+  // the validator stake threshold, for V1 there are more.
   AccessStructure pool_parameters = 11;
   // Access structure for adding new anonymity revokers.
   AccessStructure add_anonymity_revoker = 12;
@@ -1555,7 +1652,7 @@ message AuthorizationsV0 {
 // This is the payload of an update to authorization.
 message AuthorizationsV1 {
   AuthorizationsV0 v0 = 1;
-  // Access structure for updating the cooldown periods related to baking and delegation.
+  // Access structure for updating the cooldown periods related to validation and delegation.
   AccessStructure parameter_cooldown = 2;
   // Access structure for updating the length of the reward period.
   AccessStructure parameter_time = 3;
@@ -1634,19 +1731,37 @@ message InclusiveRangeAmountFraction {
 message CommissionRanges {
   // The range of allowed finalization commissions.
   InclusiveRangeAmountFraction finalization = 1;
-  // The range of allowed baker commissions.
+  // The range of allowed validator commissions.
   InclusiveRangeAmountFraction baking = 2;
   // The range of allowed transaction commissions.
   InclusiveRangeAmountFraction transaction = 3;
 }
 
-// A bound on the relative share of the total staked capital that a baker can
-// have as its stake. This is required to be greater than 0.
+// The capital bound is a chain parameter that is set to guarantee network decentralization by preventing 
+// a single validator from gaining excessive power in the consensus protocol.
+// The capital bound is required to be set to a value greater than 0 (capital_bound > 0).
+// The value roughly describes the maximum proportion of the total stake in the protocol (from all validators including passive delegation) 
+// to the stake of a validator that a validator can achieve where the total stake of the validator is considered effective
+// (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
+// Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.
+// Delegators are prevented from increasing their delegation to the pool 
+// (via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the capital bound cap.
+// See the comment at the `delegated_capital_cap` type for the exact formula.
 message CapitalBound {
   AmountFraction value = 1;
 }
 
-// A leverage factor.
+// The leverage factor (leverage bound) is a chain parameter that is set to guarantee that each validator 
+// has skin in the game with respect to its delegators by providing some of the CCD staked at the validator's pool from the validator's funds.  
+// The leverage factor is required to be set to a value greater than or equal to 1 (1 <= leverage_factor).
+// The leverage factor is the maximum proportion of total stake of a validator (including the validator's own stake and the delegated 
+// stake to the validator) to the validator's own stake (excluding delegated stake to the validator)
+// that a validator can achieve where the total stake of the validator is considered effective
+// (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
+// Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.
+// Delegators are prevented from increasing their delegation to the pool 
+// (via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the leverage bound cap.
+// See the comment at the `delegated_capital_cap` type for the exact formula.
 message LeverageFactor {
   Ratio value = 1;
 }
@@ -1688,18 +1803,18 @@ message CooldownParametersCpv1 {
 message PoolParametersCpv1 {
   // Fraction of finalization rewards charged by the passive delegation.
   AmountFraction passive_finalization_commission = 1;
-  // Fraction of baking rewards charged by the passive delegation.
+  // Fraction of block production rewards charged by the passive delegation.
   AmountFraction passive_baking_commission = 2;
   // Fraction of transaction rewards charged by the L-pool.
   AmountFraction passive_transaction_commission = 3;
-  // Bounds on the commission rates that may be charged by bakers.
+  // Bounds on the commission rates that may be charged by validators.
   CommissionRanges commission_bounds = 4;
-  // Minimum equity capital required for a new baker.
+  // Minimum equity capital required for a new validator.
   Amount minimum_equity_capital = 5;
-  // Maximum fraction of the total staked capital of that a new baker can
+  // Maximum fraction of the total staked capital of that a new validator can
   // have.
   CapitalBound capital_bound = 6;
-  // The maximum leverage that a baker can have as a ratio of total stake
+  // The maximum leverage that a validator can have as a ratio of total stake
   // to equity capital.
   LeverageFactor leverage_bound = 7;
 }
@@ -1728,14 +1843,14 @@ message ProtocolUpdate {
   // Auxiliary data whose interpretation is defined by the new specification.
   bytes specification_auxiliary_data = 4;
 }
-// The minting rate and the distribution of newly-minted CCD among bakers,
+// The minting rate and the distribution of newly-minted CCD among validators,
 // finalizers, and the foundation account. It must be the case that
 // baking_reward + finalization_reward <= 1. The remaining amount is the
 // platform development charge.
 message MintDistributionCpv0 {
   // Mint rate per slot.
   MintRate mint_per_slot = 1;
-  // The fraction of newly created CCD allocated to baker rewards.
+  // The fraction of newly created CCD allocated to validator rewards.
   AmountFraction baking_reward = 2;
   // The fraction of newly created CCD allocated to finalization rewards.
   AmountFraction finalization_reward = 3;
@@ -1743,7 +1858,7 @@ message MintDistributionCpv0 {
 
 // Parameters determining the distribution of transaction fees.
 message TransactionFeeDistribution {
-  // The fraction allocated to the baker.
+  // The fraction allocated to the validator.
   AmountFraction baker = 1;
   // The fraction allocated to the GAS account.
   AmountFraction gas_account = 2;
@@ -1751,7 +1866,7 @@ message TransactionFeeDistribution {
 
 // Distribution of gas rewards for chain parameters version 0 and 1.
 message GasRewards {
-  // The fraction paid to the baker.
+  // The fraction paid to the validator.
   AmountFraction baker = 1;
   // Fraction paid for including a finalization proof in a block.
   AmountFraction finalization_proof = 2;
@@ -1763,7 +1878,7 @@ message GasRewards {
 
 // Distribution of gas rewards for chain parameters version 2.
 message GasRewardsCpv2 {
-  // The fraction paid to the baker.
+  // The fraction paid to the validator.
   AmountFraction baker = 1;
   // Fraction paid for including each account creation transaction in a block.
   AmountFraction account_creation = 3;
@@ -1771,10 +1886,9 @@ message GasRewardsCpv2 {
   AmountFraction chain_update = 4;
 }
 
-// Minimum stake needed to become a baker. This only applies to protocol version
-// 1-3.
+// Minimum stake needed to become a validator. This only applies to protocol version 1-3.
 message BakerStakeThreshold {
-  // Minimum threshold required for registering as a baker.
+  // Minimum threshold required for registering as a validator.
   Amount baker_stake_threshold = 1;
 }
 
@@ -1824,7 +1938,7 @@ message UpdatePayload {
     TransactionFeeDistribution transaction_fee_distribution_update = 7;
     // The gas rewards were updated.
     GasRewards gas_rewards_update = 8;
-    // The minimum amount of CCD needed to be come a baker was updated.
+    // The minimum amount of CCD needed to be come a validator was updated.
     BakerStakeThreshold baker_stake_threshold_update = 9;
     // The root keys were updated.
     RootUpdate root_update = 10;
@@ -1957,22 +2071,35 @@ enum TransactionType {
   INIT_CONTRACT = 1;
   UPDATE = 2;
   TRANSFER = 3;
+  // Deprecated in protocol version 4.
   ADD_BAKER = 4;
+  // Deprecated in protocol version 4.
   REMOVE_BAKER = 5;
+  // Deprecated in protocol version 4.
   UPDATE_BAKER_STAKE = 6;
+  // Deprecated in protocol version 4.
   UPDATE_BAKER_RESTAKE_EARNINGS = 7;
+  // Deprecated in protocol version 4.
   UPDATE_BAKER_KEYS = 8;
   UPDATE_CREDENTIAL_KEYS = 9;
+  // Deprecated in protocol version 7.
   ENCRYPTED_AMOUNT_TRANSFER = 10;
+  // Deprecated in protocol version 7.
   TRANSFER_TO_ENCRYPTED = 11;
   TRANSFER_TO_PUBLIC = 12;
   TRANSFER_WITH_SCHEDULE = 13;
   UPDATE_CREDENTIALS = 14;
   REGISTER_DATA = 15;
+  // Introduced in protocol version 2.
   TRANSFER_WITH_MEMO = 16;
+  // Deprecated in protocol version 7.
+  // Introduced in protocol version 2.
   ENCRYPTED_AMOUNT_TRANSFER_WITH_MEMO = 17;
+  // Introduced in protocol version 2.
   TRANSFER_WITH_SCHEDULE_AND_MEMO = 18;
+  // Introduced in protocol version 4.
   CONFIGURE_BAKER = 19;
+  // Introduced in protocol version 4.
   CONFIGURE_DELEGATION = 20;
 }
 
@@ -2119,7 +2246,7 @@ message BlockInfo {
   optional Slot slot_number = 9;
   // The time of the slot in which the block was baked.
   Timestamp slot_time = 10;
-  // The baker id of account baking this block. Not provided for a genesis block.
+  // The validator id of the account producing this block. Not provided for a genesis block.
   optional BakerId baker = 11;
   // Whether the block is finalized.
   bool finalized = 12;
@@ -2143,15 +2270,15 @@ message BlockInfo {
 message PoolInfoRequest {
   // Block in which to query the pool information.
   BlockHashInput block_hash = 1;
-  // The 'BakerId' of the pool owner.
+  // The validator id of the pool owner.
   BakerId baker = 2;
 }
 
-// A pending change to a baker pool.
+// A pending change to a validator pool.
 message PoolPendingChange {
-  // A reduction in baker equity capital is pending.
+  // A reduction in validator equity capital is pending.
   message Reduce {
-    // New baker equity capital.
+    // New validator equity capital.
     Amount reduced_equity_capital = 1;
     // Timestamp when the change takes effect.
     Timestamp effective_time = 2;
@@ -2169,19 +2296,19 @@ message PoolPendingChange {
   }
 }
 
-// Information about a baker pool in the current reward period.
+// Information about a validator pool in the current reward period.
 message PoolCurrentPaydayInfo {
   // The number of blocks baked in the current reward period.
   uint64 blocks_baked = 1;
-  // Whether the baker has contributed a finalization proof in the current reward period.
+  // Whether the validator has contributed a finalization proof in the current reward period.
   bool finalization_live = 2;
   // The transaction fees accruing to the pool in the current reward period.
   Amount transaction_fees_earned = 3;
-  // The effective stake of the baker in the current reward period.
+  // The effective stake of the validator in the current reward period.
   Amount effective_stake = 4;
-  // The lottery power of the baker in the current reward period.
+  // The lottery power of the validator in the current reward period.
   double lottery_power = 5;
-  // The effective equity capital of the baker for the current reward period.
+  // The effective equity capital of the validator for the current reward period.
   Amount baker_equity_capital = 6;
   // The effective delegated capital to the pool for the current reward period.
   Amount delegated_capital = 7;
@@ -2204,7 +2331,7 @@ message PoolCurrentPaydayInfo {
 // `pool_info` fields will all be absent. The `equity_pending_change` field
 // will also be absent, as stake changes are immediate.
 message PoolInfoResponse {
-  // The 'BakerId' of the pool owner.
+  // The validator id of the pool owner.
   BakerId baker = 1;
   // The account address of the pool owner.
   AccountAddress address = 2;
@@ -2212,8 +2339,21 @@ message PoolInfoResponse {
   optional Amount equity_capital = 3;
   // The capital delegated to the pool by other accounts. Absent if the pool is removed.
   optional Amount delegated_capital = 4;
-  // The maximum amount that may be delegated to the pool, accounting for leverage and stake limits.
+  // The maximum amount that may be delegated to the pool, accounting for leverage and capital bounds.
   // Absent if the pool is removed.
+  // 
+  // leverage_bound_cap for pool p: Lₚ = λ * Cₚ - Cₚ = (λ - 1) * Cₚ
+  // capital_bound_cap for pool p: Bₚ = max (0, floor( (κ * (T - Dₚ) - Cₚ) / (1 - K) ))
+  // delegated_capital_cap for pool p = min (Lₚ, Bₚ)
+  //
+  // Where
+  // κ is the `CapitalBound`.
+  // λ is the `LeverageFactor`.
+  // T is the total staked capital on the whole chain (including passive
+  // delegation).
+  // Dₚ is the delegated capital of pool p.
+  // Cₚ is the equity capital (staked by the pool owner excluding delegated stake
+  // to the pool) of pool p.
   optional Amount delegated_capital_cap = 5;
   // The pool info associated with the pool: open status, metadata URL and commission rates.
   // Absent if the pool is removed.
@@ -2226,7 +2366,7 @@ message PoolInfoResponse {
   // Total capital staked across all pools, including passive delegation.
   Amount all_pool_total_capital = 9;
   // A flag indicating whether the pool owner is suspended.
-  // Absent if the protocol version does not support validator suspension or the pool is removed.
+  // Absent if the protocol version does not support validator suspension (meaning prior protocol version 8) or the pool is removed.
   optional bool is_suspended = 10;
 }
 
@@ -2285,7 +2425,7 @@ message TokenomicsInfo {
     Amount total_amount = 1;
     // The total CCD in encrypted balances.
     Amount total_encrypted_amount = 2;
-    // The amount in the baking reward account.
+    // The amount in the block production reward account.
     Amount baking_reward_account = 3;
     // The amount in the finalization reward account.
     Amount finalization_reward_account = 4;
@@ -2300,7 +2440,7 @@ message TokenomicsInfo {
     Amount total_amount = 1;
     // The total CCD in encrypted balances.
     Amount total_encrypted_amount = 2;
-    // The amount in the baking reward account.
+    // The amount in the block production reward account.
     Amount baking_reward_account = 3;
     // The amount in the finalization reward account.
     Amount finalization_reward_account = 4;
@@ -2312,7 +2452,7 @@ message TokenomicsInfo {
     Timestamp next_payday_time = 7;
     // The rate at which CCD will be minted (as a proportion of the total supply) at the next payday.
     MintRate next_payday_mint_rate = 8;
-    // The total capital put up as stake by bakers and delegators.
+    // The total capital put up as stake by validators and delegators.
     Amount total_staked_capital = 9;
     // The protocol version.
     ProtocolVersion protocol_version = 10;
@@ -2383,7 +2523,7 @@ message InvokeInstanceResponse {
 message GetPoolDelegatorsRequest {
   // Block in which to query the delegators.
   BlockHashInput block_hash = 1;
-  // The 'BakerId' of the pool owner.
+  // The validator id of the pool owner.
   BakerId baker = 2;
 }
 
@@ -2414,34 +2554,36 @@ message Branch {
 }
 
 // The leadership election nonce is an unpredictable value updated once an
-// epoch to make sure that bakers cannot predict too far in the future when
+// epoch to make sure that validators cannot predict too far in the future when
 // they will win the right to bake blocks.
 message LeadershipElectionNonce {
   bytes value = 1;
 }
 
 // Response type for GetElectionInfo.
-// Contains information related to baker election for a perticular block.
+// Contains information related to validator election for a perticular block.
+// The `ElectionInfo` will be the same for all blocks in the same epoch. 
+// Moreover, from protocol version 4, it is the same for all blocks in the same payday.
 message ElectionInfo {
   message Baker {
-    // The ID of the baker.
+    // The ID of the validator.
     BakerId baker = 1;
-    // The account address of the baker.
+    // The account address of the validator.
     AccountAddress account = 2;
-    // The lottery power of the baker, rounded to the nearest representable "double".
+    // The lottery power of the validator, rounded to the nearest representable "double".
     double lottery_power = 3;
   }
 
-  // Baking lottery election difficulty. Present only in protocol versions 1-5.
+  // Block production lottery election difficulty. Present only in protocol versions 1-5.
   optional ElectionDifficulty election_difficulty = 1;
   // Current leadership election nonce for the lottery.
   LeadershipElectionNonce election_nonce = 2;
-  // List of the currently eligible bakers.
+  // List of the currently eligible validators.
   repeated Baker baker_election_info = 3;
 }
 
 // A protocol generated event that is not directly caused by a transaction. This
-// includes minting new CCD, rewarding different bakers and delegators, etc.
+// includes minting new CCD, rewarding different validators and delegators, etc.
 message BlockSpecialEvent {
   // A representation of a mapping from an account address to an amount.
   message AccountAmounts {
@@ -2456,16 +2598,19 @@ message BlockSpecialEvent {
     repeated Entry entries = 1;
   }
 
-  // Payment to each baker of a previous epoch, in proportion to the number
-  // of blocks they contributed.
+  // Rewards issued to each validator at the end of an epoch for producing blocks in the epoch,
+  // in proportion to the number of blocks they contributed. This only occurs in protocol versions
+  // 1 to 3. From protocol version 4, it is replaced by `PaydayPoolReward` and `PaydayAccountReward` messages.
   message BakingRewards {
-    // The amount awarded to each baker.
+    // The amount awarded to each validator.
     AccountAmounts baker_rewards = 1;
-    // The remaining balance of the baker reward account.
+    // The remaining balance of the validator reward account.
     Amount remainder = 2;
   }
 
-  // Minting of new CCD.
+  // Minting of new CCDs.
+  // Starting from protocol version 4, this event occurs only in each payday block.
+  // Before protocol version 4, this event occured every block (slot).
   message Mint {
     // The amount allocated to the banking reward account.
     Amount mint_baking_reward = 1;
@@ -2486,7 +2631,7 @@ message BlockSpecialEvent {
   }
 
   // Disbursement of fees from a block between the GAS account,
-  // the baker, and the foundation. It should always be that:
+  // the validator, and the foundation. It should always be that:
   //
   // ```transaction_fees + old_gas_account = new_gas_account + baker_reward + foundation_charge```
   message BlockReward {
@@ -2496,17 +2641,17 @@ message BlockSpecialEvent {
     Amount old_gas_account = 2;
     // The new balance of the GAS account.
     Amount new_gas_account = 3;
-    // The amount awarded to the baker.
+    // The amount awarded to the validator.
     Amount baker_reward = 4;
     // The amount awarded to the foundation.
     Amount foundation_charge = 5;
-    // The baker of the block, who receives the award.
+    // The validator of the block, who receives the award.
     AccountAddress baker = 6;
     // The foundation account.
     AccountAddress foundation_account = 7;
   }
 
-  // Foundation tax.
+  // Foundation tax paid at a payday block starting from protocol version 4.
   message PaydayFoundationReward {
     // The account that got rewarded.
     AccountAddress foundation_account = 1;
@@ -2514,13 +2659,26 @@ message BlockSpecialEvent {
     Amount development_charge = 2;
   }
 
-  // Reward payment to the given account.
+  // Reward payment to the given account at a payday block starting from protocol version 4.
+  // When listed in a block summary, the delegated pool of the account is
+  // given by the last `PaydayPoolReward` outcome included before this outcome.
+  //
+  // For example:
+  // PaydayPoolReward to pool 1
+  // PaydayAccountReward to account 5
+  // PaydayAccountReward to account 6
+  // PaydayAccountReward to account 1 (is the payout to the validator itself)
+  // PaydayPoolReward to `None`
+  // PaydayAccountReward to account 10
+  // PaydayAccountReward to account 3
+  // Means 5, 6 are receiving rewards from delegating to validator 1 and 10, 3 are receiving rewards from passive
+  // delegation.
   message PaydayAccountReward {
     // The account that got rewarded.
     AccountAddress account = 1;
     // The transaction fee reward at payday to the account.
     Amount transaction_fees = 2;
-    // The baking reward at payday to the account.
+    // The block production reward at payday to the account.
     Amount baker_reward = 3;
     // The finalization reward at payday to the account.
     Amount finalization_reward = 4;
@@ -2534,29 +2692,43 @@ message BlockSpecialEvent {
     Amount old_gas_account = 2;
     // The new balance of the GAS account.
     Amount new_gas_account = 3;
-    // The amount awarded to the baker.
+    // The amount awarded to the validator.
     Amount baker_reward = 4;
     // The amount awarded to the passive delegators.
     Amount passive_reward = 5;
     // The amount awarded to the foundation.
     Amount foundation_charge = 6;
-    // The baker of the block, who will receive the award.
+    // The validator of the block, who will receive the award.
     BakerId baker = 7;
   }
 
-  // Payment distributed to a pool or passive delegators.
+  // Payment distributed to a pool or passive delegators at a payday block starting from protocol version 4.
+  // When listed in a block summary, the reward distribution to the delagtors of the given pool is
+  // given by the following `PaydayAccountReward` outcomes included after this outcome.
+  //
+  // For example:
+  // PaydayPoolReward to pool 1
+  // PaydayAccountReward to account 5
+  // PaydayAccountReward to account 6
+  // PaydayAccountReward to account 1 (is the payout to the validator itself)
+  // PaydayPoolReward to `None`
+  // PaydayAccountReward to account 10
+  // PaydayAccountReward to account 3
+  // Means 5, 6 are receiving rewards from delegating to validator 1 and 10, 3 are receiving rewards from passive
+  // delegation.
   message PaydayPoolReward {
     // The pool owner (passive delegators when not present).
     optional BakerId pool_owner = 1;
     // Accrued transaction fees for pool.
     Amount transaction_fees = 2;
-    // Accrued baking rewards for pool.
+    // Accrued block production rewards for pool.
     Amount baker_reward = 3;
     // Accrued finalization rewards for pool.
     Amount finalization_reward = 4;
   }
 
   // The id of a validator that got suspended due to too many missed rounds.
+  // The message can occur starting from protocol version 8.
   message ValidatorSuspended {
     // The id of the suspended validator.
     BakerId bakerId = 1;
@@ -2566,6 +2738,7 @@ message BlockSpecialEvent {
 
   // The id of a validator that is primed for suspension at the next snapshot
   // epoch due to too many missed rounds.
+  // The message can occur starting from protocol version 8.
   message ValidatorPrimedForSuspension {
     // The id of the primed validator.
     BakerId bakerId = 1;
@@ -2574,15 +2747,34 @@ message BlockSpecialEvent {
   }
 
   oneof event {
+    // Rewards issued to each validator at the end of an epoch for producing blocks in the epoch,
+    // in proportion to the number of blocks they contributed. This only occurs in protocol versions
+    // 1 to 3. From protocol version 4, it is replaced by `PaydayPoolReward` and `PaydayAccountReward` messages.
     BakingRewards baking_rewards = 1;
+    // Minting of new CCDs.
+    // Starting from protocol version 4, this event occurs in each payday block.
+    // Before protocol version 4, this event occured every block (slot).
     Mint mint = 2;
     FinalizationRewards finalization_rewards = 3;
     BlockReward block_reward = 4;
+    // Foundation rewards paid out at a payday block starting from protocol version 4.
     PaydayFoundationReward payday_foundation_reward = 5;
+    // Reward payment to the given account at a payday block (from passive deleagtion or delegation to a validator or being a validator) starting from protocol version 4.
+    // When listed in a block summary, the delegated pool of the account is
+    // given by the last `PaydayPoolReward` outcome included before this outcome.
     PaydayAccountReward payday_account_reward = 6;
     BlockAccrueReward block_accrue_reward = 7;
+    // Payment distributed to a pool or passive delegators at a payday block starting from protocol version 4.
+    // When listed in a block summary, the reward distribution to the delagtors of the given pool is
+    // given by the following `PaydayAccountReward` outcomes included after this outcome.
     PaydayPoolReward payday_pool_reward = 8;
+    // The protocol suspends validators due to inactivity.
+    // If the validator is suspended  by a transaction sent from the validator itself, the `BakerEvent::BakerSuspended`
+    // event is emitted instead of this event.
+    // The event can occur starting from protocol version 8.
     ValidatorSuspended validator_suspended = 9;
+    // The protocol primes validators for suspension due to inactivity.
+    // The event can occur starting from protocol version 8.
     ValidatorPrimedForSuspension validator_primed_for_suspension = 10;
   }
 }
@@ -2619,7 +2811,7 @@ message PendingUpdate {
     TransactionFeeDistribution transaction_fee_distribution = 13;
     // Updates to the GAS rewards.
     GasRewards gas_rewards = 14;
-    // Updates baker stake threshold. Is only relevant prior to protocol version 4.
+    // Updates validator stake threshold. Is only relevant prior to protocol version 4.
     BakerStakeThreshold pool_parameters_cpv_0 = 15;
     // Updates pool parameters. Introduced in protocol version 4.
     PoolParametersCpv1 pool_parameters_cpv_1 = 16;
@@ -2728,8 +2920,7 @@ message BannedPeer {
     IpAddress ip_address = 1;
 }
 
-// The banned peers given by
-// their IP addresses.
+// The banned peers given by their IP addresses.
 message BannedPeers {
   repeated BannedPeer peers = 1;
 }
@@ -2826,47 +3017,47 @@ message NodeInfo {
     uint64 avg_bps_out = 5;
   }
 
-  // Consensus info for a node configured with baker keys.
+  // Consensus info for a node configured with validator keys.
   message BakerConsensusInfo {
     // The committee information of a node configured with
-    // baker keys but somehow the node is _not_ part of the
-    // current baking committee.
+    // validator keys but somehow the node is _not_ part of the
+    // current validation committee.
     enum PassiveCommitteeInfo {
-      // The node is started with baker keys however it is currently not in the baking committee.
+      // The node is started with validator keys however it is currently not in the validation committee.
       // The node is __not__ baking.
       NOT_IN_COMMITTEE = 0;
-      // The account is registered as a baker but not in the current `Epoch`.
+      // The account is registered as a validator but not in the current `Epoch`.
       // The node is __not__ baking.
       ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE = 1;
-      // The node has configured invalid baker keys i.e., the configured
-      // baker keys do not match the current keys on the baker account.
+      // The node has configured invalid validator keys i.e., the configured
+      // validator keys do not match the current keys on the validator account.
       // The node is __not__ baking.
       ADDED_BUT_WRONG_KEYS = 2;
     }
 
     // Tagging message type for a node that
-    // is configured with baker keys and active in
-    // the current baking committee
+    // is configured with validator keys and active in
+    // the current validation committee
     message ActiveBakerCommitteeInfo {
     }
 
     // Tagging message type for a node that
-    // is configured with baker keys and active in
-    // the current finalizer committee (and also baking committee).
+    // is configured with validator keys and active in
+    // the current finalizer committee (and also validation committee).
     message ActiveFinalizerCommitteeInfo {
     }
 
     BakerId baker_id = 1;
 
-    // Status of the baker configured node.
+    // Status of the validator configured node.
     oneof status {
       // The node is currently not baking.
       PassiveCommitteeInfo passive_committee_info = 2;
-      // The node is configured with baker keys and
-      // is member of the baking committee.
+      // The node is configured with validator keys and
+      // is member of the validation committee.
       ActiveBakerCommitteeInfo active_baker_committee_info = 3;
-      // The node is configured with baker keys and
-      // is member of the baking and finalization committees.
+      // The node is configured with validator keys and
+      // is member of the validator and finalization committees.
       ActiveFinalizerCommitteeInfo active_finalizer_committee_info = 4;
     }
   }
@@ -2880,12 +3071,12 @@ message NodeInfo {
       // The node does not process blocks.
       Empty not_running = 1;
       // Consensus info for a node that is
-      // not configured with baker keys.
+      // not configured with validator keys.
       // The node is only processing blocks and
       // relaying blocks and transactions and responding to
       // catchup messages.
       Empty passive = 2;
-      // The node is configured with baker credentials and consensus is running.
+      // The node is configured with validator credentials and consensus is running.
       BakerConsensusInfo active = 3;
     }
   }
@@ -2914,7 +3105,7 @@ message SendBlockItemRequest {
     // Account transactions are messages which are signed and paid for by an account.
     AccountTransaction account_transaction = 1;
     // Credential deployments create new accounts. They are not paid for
-    // directly by the sender. Instead, bakers are rewarded by the protocol for
+    // directly by the sender. Instead, validators are rewarded by the protocol for
     // including them.
     CredentialDeployment credential_deployment = 2;
     // Update instructions are messages which can update the chain parameters. Including which keys are allowed
@@ -2924,7 +3115,7 @@ message SendBlockItemRequest {
 }
 
 // Credential deployments create new accounts. They are not paid for
-// directly by the sender. Instead, bakers are rewarded by the protocol for
+// directly by the sender. Instead, validators are rewarded by the protocol for
 // including them.
 message CredentialDeployment {
   TransactionTime message_expiry = 1;
@@ -3010,6 +3201,7 @@ message TransferPayload {
 }
 
 // Payload of a transfer between two accounts with a memo.
+// This message can occur starting from protocol version 2.
 message TransferWithMemoPayload {
   // Amount of CCD to send.
   Amount amount = 1;
@@ -3025,11 +3217,11 @@ message AccountTransactionPayload {
     // A pre-serialized payload in the binary serialization format defined
     // by the protocol.
     bytes raw_payload = 1;
-    // A transfer between two accounts. With an optional memo.
     VersionedModuleSource deploy_module = 2;
     InitContractPayload init_contract = 3;
     UpdateContractPayload update_contract = 4;
     TransferPayload transfer = 5;
+    // This payload can occur starting from protocol version 2.
     TransferWithMemoPayload transfer_with_memo = 6;
     RegisteredData register_data = 7;
   }
@@ -3091,7 +3283,7 @@ message ChainParametersV0 {
   ExchangeRate euro_per_energy = 2;
   // Micro CCD per euro exchange rate.
   ExchangeRate micro_ccd_per_euro = 3;
-  // Extra number of epochs before reduction in stake, or baker
+  // Extra number of epochs before reduction in stake, or validator
   // deregistration is completed.
   Epoch baker_cooldown_epochs = 4;
   // The limit for the number of account creations in a block.
@@ -3104,7 +3296,7 @@ message ChainParametersV0 {
   GasRewards gas_rewards = 8;
   // The foundation account.
   AccountAddress foundation_account = 9;
-  // Minimum threshold for becoming a baker.
+  // Minimum threshold for becoming a validator.
   Amount minimum_threshold_for_baking = 10;
   // Keys allowed to do root updates.
   HigherLevelKeys root_keys = 11;
@@ -3122,7 +3314,7 @@ message ChainParametersV1 {
   ExchangeRate euro_per_energy = 2;
   // Micro CCD per euro exchange rate.
   ExchangeRate micro_ccd_per_euro = 3;
-  // Extra number of epochs before reduction in stake, or baker
+  // Extra number of epochs before reduction in stake, or validator
   // deregistration is completed.
   CooldownParametersCpv1 cooldown_parameters = 4;
   // Current time parameters.
@@ -3139,7 +3331,7 @@ message ChainParametersV1 {
   GasRewards gas_rewards = 9;
   // The foundation account.
   AccountAddress foundation_account = 10;
-  // Parameters governing baking pools and their commissions.
+  // Parameters governing validator pools and their commissions.
   PoolParametersCpv1 pool_parameters = 11;
   // Keys allowed to do root updates.
   HigherLevelKeys root_keys = 12;
@@ -3157,7 +3349,7 @@ message ChainParametersV2 {
   ExchangeRate euro_per_energy = 2;
   // Micro CCD per euro exchange rate.
   ExchangeRate micro_ccd_per_euro = 3;
-  // Extra number of epochs before reduction in stake, or baker
+  // Extra number of epochs before reduction in stake, or validator
   // deregistration is completed.
   CooldownParametersCpv1 cooldown_parameters = 4;
   // Current time parameters.
@@ -3174,7 +3366,7 @@ message ChainParametersV2 {
   GasRewardsCpv2 gas_rewards = 9;
   // The foundation account.
   AccountAddress foundation_account = 10;
-  // Parameters governing baking pools and their commissions.
+  // Parameters governing validator pools and their commissions.
   PoolParametersCpv1 pool_parameters = 11;
   // Keys allowed to do root updates.
   HigherLevelKeys root_keys = 12;
@@ -3194,7 +3386,7 @@ message ChainParametersV3 {
   ExchangeRate euro_per_energy = 2;
   // Micro CCD per euro exchange rate.
   ExchangeRate micro_ccd_per_euro = 3;
-  // Extra number of epochs before reduction in stake, or baker
+  // Extra number of epochs before reduction in stake, or validator
   // deregistration is completed.
   CooldownParametersCpv1 cooldown_parameters = 4;
   // Current time parameters.
@@ -3211,7 +3403,7 @@ message ChainParametersV3 {
   GasRewardsCpv2 gas_rewards = 9;
   // The foundation account.
   AccountAddress foundation_account = 10;
-  // Parameters governing baking pools and their commissions.
+  // Parameters governing validator pools and their commissions.
   PoolParametersCpv1 pool_parameters = 11;
   // Keys allowed to do root updates.
   HigherLevelKeys root_keys = 12;
@@ -3241,7 +3433,7 @@ message ChainParameters {
 
 // Details about a finalizer for the finalization round.
 message FinalizationSummaryParty {
-  // Baker ID. Every finalizer is in particular a baker.
+  // Validator ID. Every finalizer is in particular a validator.
   BakerId baker = 1;
   // The weight of the finalizer in the committee. This is an "absolute" weight.
   uint64 weight = 2;
@@ -3286,7 +3478,7 @@ message BlockItem {
     // Account transactions are messages which are signed and paid for by an account.
     AccountTransaction account_transaction = 2;
     // Credential deployments create new accounts. They are not paid for
-    // directly by the sender. Instead, bakers are rewarded by the protocol for
+    // directly by the sender. Instead, validators are rewarded by the protocol for
     // including them.
     CredentialDeployment credential_deployment = 3;
     // Update instructions are messages which can update the chain parameters. Including which keys are allowed
@@ -3295,21 +3487,21 @@ message BlockItem {
   }
 }
 
-// Information about a particular baker with respect to
-// the current reward period.
+// Information about a particular validator with respect to
+// the current reward period. The below values are historical value from the last payday block.
 message BakerRewardPeriodInfo {
-  // The baker id and public keys for the baker.
+  // The validator id and public keys for the validator.
   BakerInfo baker = 1;
-  // The effective stake of the baker for the consensus protocol.
+  // The effective stake of the validator for the consensus protocol.
   // The returned amount accounts for delegation, capital bounds and leverage bounds.
   Amount effective_stake = 2;
-  // The effective commission rate for the baker that applies for the reward period.
+  // The effective commission rate for the validator that applies for the reward period.
   CommissionRates commission_rates = 3;
-  // The amount staked by the baker itself.
+  // The amount staked by the validator itself.
   Amount equity_capital = 4;
-  // The total amount of capital delegated to this baker pool.
+  // The total amount of capital delegated to this validator pool.
   Amount delegated_capital = 5;
-  // Whether the baker is a finalizer or not.
+  // Whether the validator is a finalizer or not.
   bool is_finalizer = 6;
 }
 
@@ -3335,18 +3527,18 @@ message QuorumCertificate {
   QuorumSignature aggregate_signature = 4;
   // A list of the finalizers that formed the quorum certificate
   // i.e., the ones who have contributed to the 'aggregate_siganture'.
-  // The finalizers are identified by their baker id as this is stable
+  // The finalizers are identified by their validator id as this is stable
   // across protocols and epochs.
   repeated BakerId signatories = 5;
 }
 
 // The finalizer round is a map from a 'Round'
-// to the list of finalizers (identified by their 'BakerId') that signed
+// to the list of finalizers (identified by their validator id) that signed
 // off the round.
 message FinalizerRound {
   // The round that was signed off.
   Round round = 1;
-  // The finalizers (identified by their 'BakerId' that
+  // The finalizers (identified by their validator id) that
   // signed off the in 'round'.
   repeated BakerId finalizers = 2;
 }
@@ -3404,8 +3596,7 @@ message EpochFinalizationEntry {
 }
 
 
-// Certificates for a block for protocols supporting
-// ConcordiumBFT.
+// Certificates for a block for protocols supporting ConcordiumBFT.
 message BlockCertificates {
   // The quorum certificate. Is present if and only if the block is
   // not a genesis block.
@@ -3418,13 +3609,13 @@ message BlockCertificates {
   optional EpochFinalizationEntry epoch_finalization_entry = 3;
 }
 
-// Details of which baker won the lottery in a given round in consensus version 1.
+// Details of which validator won the lottery in a given round in consensus version 1.
 message WinningBaker {
     // The round number.
     Round round = 1;
-    // The baker that won the round.
+    // The validator that won the round.
     BakerId winner = 2;
-    // True if the baker produced a block in this round on the finalized chain, and False otherwise.
+    // True if the validator produced a block in this round on the finalized chain, and False otherwise.
     bool present = 3;
 }
 
@@ -3879,7 +4070,7 @@ message BranchBlocks {
 message RoundExistingBlock {
     // The round for which the node saw a block.
     Round round = 1;
-    // The baker that baked the block.
+    // The validator that baked the block.
     BakerId baker = 2;
     // The hash of the block.
     BlockHash block = 3;
@@ -3892,17 +4083,17 @@ message RoundExistingQC {
     Epoch epoch = 2;
 }
 
-// The keys an stake of a specific baker.
+// The keys and stake of a specific validator.
 message FullBakerInfo {
-    // The baker's identity.
+    // The validator's identity.
     BakerId baker_identity = 1;
-    // The baker's election verify key.
+    // The validator's election verify key.
     BakerElectionVerifyKey election_verify_key = 2;
-    // The baker's signature verify key.
+    // The validator's signature verify key.
     BakerSignatureVerifyKey signature_verify_key = 3;
-    // The baker's aggregation verify key.
+    // The validator's aggregation verify key.
     BakerAggregationVerifyKey aggregation_verify_key = 4;
-    // The stake of the baker.
+    // The stake of the validator.
     Amount stake = 5;
 }
 
@@ -3913,12 +4104,12 @@ message FinalizationCommitteeHash {
 }
 
 message BakersAndFinalizers {
-    // The set of bakers.
-    repeated FullBakerInfo bakers = 1;
-    // The IDs of the bakers that are finalizers.
+    // The set of validators.
+    repeated FullBakerInfo validators = 1;
+    // The IDs of the validators that are finalizers.
     // The order determines the finalizer index.
     repeated BakerId finalizers = 2;
-    // The total effective stake of the bakers.
+    // The total effective stake of the validators.
     Amount baker_total_stake = 3;
     // The total effective stake of the finalizers.
     Amount finalizer_total_stake = 4;
@@ -3927,14 +4118,14 @@ message BakersAndFinalizers {
 }
 
 message EpochBakers {
-    // The bakers and finalizers for the previous epoch.
-    // If the current epoch is 0, then this is the same as the bakers for the current epoch.
+    // The validators and finalizers for the previous epoch.
+    // If the current epoch is 0, then this is the same as the validators for the current epoch.
     BakersAndFinalizers previous_epoch_bakers = 1;
-    // The bakers and finalizers for the current epoch.
-    // If this is absent, it should be treated as the same as the bakers for the previous epoch.
+    // The validators and finalizers for the current epoch.
+    // If this is absent, it should be treated as the same as the validators for the previous epoch.
     optional BakersAndFinalizers current_epoch_bakers = 2;
-    // The bakers and finalizers for the next epoch.
-    // If this is absent, it should be treated as the same as the bakers for the current epoch.
+    // The validators and finalizers for the next epoch.
+    // If this is absent, it should be treated as the same as the validators for the current epoch.
     optional BakersAndFinalizers next_epoch_bakers = 3;
     // The first epoch of the next payday.
     Epoch next_payday = 4;
@@ -3989,7 +4180,7 @@ message ConsensusDetailedStatus {
     BlockTableSummary block_table = 6;
     // The live blocks organized by height after the last finalized block.
     repeated BranchBlocks branches = 7;
-    // Which bakers the node has seen legally-signed blocks with live parents from in
+    // Which validators the node has seen legally-signed blocks with live parents from in
     // non-finalized rounds.
     repeated RoundExistingBlock round_existing_blocks = 8;
     // Which non-finalized rounds the node has seen quorum certificates for.
@@ -4005,7 +4196,7 @@ message ConsensusDetailedStatus {
     // As this includes a quorum certificate for the last finalized block, that can be used
     // to determine the epoch and round of the last finalized block.
     optional RawFinalizationEntry latest_finalization_entry = 13;
-    // The bakers and finalizers for the previous, current and next epoch, relative to the last
+    // The validators and finalizers for the previous, current and next epoch, relative to the last
     // finalized block.
     EpochBakers epoch_bakers = 14;
     // The timeout messages collected by the node for the current round.
