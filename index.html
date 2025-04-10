@@ -1935,16 +1935,16 @@ this account. </p></td>
                   <td><p>Internal index of the account. Accounts on the chain get sequential
 indices. These should generally not be used outside of the chain,
 the account address is meant to be used to refer to accounts,
-however the account index serves the role of the baker id, if the
-account is a baker. Hence it is exposed here as well. </p></td>
+however the account index serves the role of the validator id, if the
+account is a validator. Hence it is exposed here as well. </p></td>
                 </tr>
               
                 <tr>
                   <td>stake</td>
                   <td><a href="#concordium.v2.AccountStakingInfo">AccountStakingInfo</a></td>
                   <td>optional</td>
-                  <td><p>Present if the account is a baker or delegator. In that case
-it is the information about the baker or delegator. </p></td>
+                  <td><p>Present if the account is a validator or delegator. In that case
+it is the information about the validator or delegator. </p></td>
                 </tr>
               
                 <tr>
@@ -2132,7 +2132,7 @@ This was introduced in node version 7.0. </p></td>
         
       
         <h3 id="concordium.v2.AccountStakingInfo">AccountStakingInfo</h3>
-        <p>Information about the account stake, if the account is either a baker or a</p><p>delegator.</p>
+        <p>Information about the account stake, if the account is either a validator or a</p><p>delegator.</p>
 
         
           <table class="field-table">
@@ -2145,7 +2145,7 @@ This was introduced in node version 7.0. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.AccountStakingInfo.Baker">AccountStakingInfo.Baker</a></td>
                   <td></td>
-                  <td><p>The account is a baker. </p></td>
+                  <td><p>The account is a validator. </p></td>
                 </tr>
               
                 <tr>
@@ -2183,7 +2183,7 @@ This was introduced in node version 7.0. </p></td>
                   <td>restake_earnings</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>A flag indicating whether rewards paid to the baker are automatically
+                  <td><p>A flag indicating whether rewards paid to the validator are automatically
 restaked or not. </p></td>
                 </tr>
               
@@ -2191,7 +2191,7 @@ restaked or not. </p></td>
                   <td>baker_info</td>
                   <td><a href="#concordium.v2.BakerInfo">BakerInfo</a></td>
                   <td></td>
-                  <td><p>Information about the baker that is staking. </p></td>
+                  <td><p>Information about the validator that is staking. </p></td>
                 </tr>
               
                 <tr>
@@ -2205,7 +2205,7 @@ restaked or not. </p></td>
                   <td>pool_info</td>
                   <td><a href="#concordium.v2.BakerPoolInfo">BakerPoolInfo</a></td>
                   <td>optional</td>
-                  <td><p>Present if the account is currently a baker, i.e., it is in the baking
+                  <td><p>Present if the account is currently a validator, i.e., it is in the validator
 committee of the current epoch. </p></td>
                 </tr>
               
@@ -2422,42 +2422,59 @@ The rejection reason indicates why the transaction failed. </p></td>
                   <td>baker_added</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerAdded">BakerEvent.BakerAdded</a></td>
                   <td></td>
-                  <td><p>A baker was added. </p></td>
+                  <td><p>A validator was added.
+The associated transaction type can no longer be created starting from protocol version 4.
+Hence, this effect does not occur anymore.
+The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_removed</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>A baker was removed. </p></td>
+                  <td><p>A validator was removed. 
+The associated transaction type can no longer be created starting from protocol version 4.
+Hence, this effect does not occur anymore.
+The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_stake_updated</td>
                   <td><a href="#concordium.v2.AccountTransactionEffects.BakerStakeUpdated">AccountTransactionEffects.BakerStakeUpdated</a></td>
                   <td></td>
-                  <td><p>A baker&#39;s stake was updated. </p></td>
+                  <td><p>A validator&#39;s stake was updated.
+The associated transaction type can no longer be created starting from protocol version 4.
+Hence, this effect does not occur anymore.
+The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_restake_earnings_updated</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerRestakeEarningsUpdated">BakerEvent.BakerRestakeEarningsUpdated</a></td>
                   <td></td>
-                  <td><p>A baker&#39;s restake earnings setting was updated. </p></td>
+                  <td><p>A validator&#39;s restake earnings setting was updated.
+The associated transaction type can no longer be created starting from protocol version 4.
+Hence, this effect does not occur anymore.
+The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_keys_updated</td>
                   <td><a href="#concordium.v2.BakerKeysEvent">BakerKeysEvent</a></td>
                   <td></td>
-                  <td><p>A baker&#39;s keys were updated. </p></td>
+                  <td><p>A validator&#39;s keys were updated.
+The associated transaction type can no longer be created starting from protocol version 4.
+Hence, this effect does not occur anymore.
+The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type. </p></td>
                 </tr>
               
                 <tr>
                   <td>encrypted_amount_transferred</td>
                   <td><a href="#concordium.v2.AccountTransactionEffects.EncryptedAmountTransferred">AccountTransactionEffects.EncryptedAmountTransferred</a></td>
                   <td></td>
-                  <td><p>An encrypted amount was transferred. </p></td>
+                  <td><p>An encrypted amount was transferred.
+The associated transaction type can no longer be created starting from protocol 7.
+Hence, this effect does not occur anymore. </p></td>
                 </tr>
               
                 <tr>
@@ -2465,7 +2482,9 @@ The rejection reason indicates why the transaction failed. </p></td>
                   <td><a href="#concordium.v2.EncryptedSelfAmountAddedEvent">EncryptedSelfAmountAddedEvent</a></td>
                   <td></td>
                   <td><p>An account transferred part of its public balance to its encrypted
-balance. </p></td>
+balance.
+The associated transaction type can no longer be created starting from protocol 7.
+Hence, this effect does not occur anymore. </p></td>
                 </tr>
               
                 <tr>
@@ -2507,14 +2526,17 @@ balance. </p></td>
                   <td>baker_configured</td>
                   <td><a href="#concordium.v2.AccountTransactionEffects.BakerConfigured">AccountTransactionEffects.BakerConfigured</a></td>
                   <td></td>
-                  <td><p>A baker was configured. The details of what happened are contained in a list of BakerEvents. </p></td>
+                  <td><p>A validator was configured. The details of what happened are contained in a list of `BakerEvents`.
+The associated transaction type is available starting from protocol version 4 and replaces the existing transaction types and effects from earlier protocols (`BakerAdded`,
+`BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`). </p></td>
                 </tr>
               
                 <tr>
                   <td>delegation_configured</td>
                   <td><a href="#concordium.v2.AccountTransactionEffects.DelegationConfigured">AccountTransactionEffects.DelegationConfigured</a></td>
                   <td></td>
-                  <td><p>A delegator was configured. The details of what happened are contained in a list of DelegatorEvents. </p></td>
+                  <td><p>A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
+This transaction type is available starting from protocol version 4. </p></td>
                 </tr>
               
             </tbody>
@@ -2552,7 +2574,8 @@ balance. </p></td>
                   <td>memo</td>
                   <td><a href="#concordium.v2.Memo">Memo</a></td>
                   <td>optional</td>
-                  <td><p>Memo. </p></td>
+                  <td><p>Memo.
+This field can occur starting from protocol version 2. </p></td>
                 </tr>
               
             </tbody>
@@ -2563,7 +2586,7 @@ balance. </p></td>
         
       
         <h3 id="concordium.v2.AccountTransactionEffects.BakerConfigured">AccountTransactionEffects.BakerConfigured</h3>
-        <p>A baker was configured. The details of what happened are contained in</p><p>the list of BakerEvents.</p>
+        <p>A validator was configured. The details of what happened are contained in</p><p>the list of `BakerEvents`.</p><p>The associated transaction type is available starting from protocol version 4 and replaces the existing transaction types and effects from earlier protocols (`BakerAdded`,</p><p>`BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).</p>
 
         
           <table class="field-table">
@@ -2587,7 +2610,7 @@ balance. </p></td>
         
       
         <h3 id="concordium.v2.AccountTransactionEffects.BakerStakeUpdated">AccountTransactionEffects.BakerStakeUpdated</h3>
-        <p>An account was deregistered as a baker. This is the result of a</p><p>successful UpdateBakerStake transaction.</p>
+        <p>A validator updated its stake. This is the result of a</p><p>successful `UpdateBakerStake` transaction.</p><p>The associated transaction type can no longer be created starting from protocol version 4.</p><p>Hence, this message does not occur anymore.</p><p>The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.</p>
 
         
           <table class="field-table">
@@ -2674,7 +2697,7 @@ same) then this is present, otherwise it is not present. </p></td>
         
       
         <h3 id="concordium.v2.AccountTransactionEffects.DelegationConfigured">AccountTransactionEffects.DelegationConfigured</h3>
-        <p>An account configured delegation. The details of what happened are</p><p>contained in the list of DelegationEvents.</p>
+        <p>An account configured delegation. The details of what happened are</p><p>contained in the list of DelegationEvents.</p><p>The associated transaction type is available starting from protocol version 4 and replaces the existing transaction types and effects from earlier protocols (`BakerAdded`,</p><p>`BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, and `BakerKeysUpdated`).</p>
 
         
           <table class="field-table">
@@ -2698,7 +2721,7 @@ same) then this is present, otherwise it is not present. </p></td>
         
       
         <h3 id="concordium.v2.AccountTransactionEffects.EncryptedAmountTransferred">AccountTransactionEffects.EncryptedAmountTransferred</h3>
-        <p>An encrypted amount was transferred. This is the result of a successful</p><p>EncryptedAmountTransfer transaction.</p>
+        <p>An encrypted amount was transferred. This is the result of a successful</p><p>EncryptedAmountTransfer transaction.</p><p>The associated transaction type can no longer be created starting from protocol 7.</p><p>Hence, this message does not occur anymore.</p>
 
         
           <table class="field-table">
@@ -2725,7 +2748,7 @@ same) then this is present, otherwise it is not present. </p></td>
                   <td>memo</td>
                   <td><a href="#concordium.v2.Memo">Memo</a></td>
                   <td>optional</td>
-                  <td><p> </p></td>
+                  <td><p>This field can occur starting from protocol version 2. </p></td>
                 </tr>
               
             </tbody>
@@ -2826,7 +2849,8 @@ In case of serialization failure this will not be set. </p></td>
                   <td>memo</td>
                   <td><a href="#concordium.v2.Memo">Memo</a></td>
                   <td>optional</td>
-                  <td><p>Optional memo. </p></td>
+                  <td><p>Optional memo.
+This field can occur starting from protocol version 2. </p></td>
                 </tr>
               
             </tbody>
@@ -2903,7 +2927,7 @@ by the protocol. </p></td>
                   <td>deploy_module</td>
                   <td><a href="#concordium.v2.VersionedModuleSource">VersionedModuleSource</a></td>
                   <td></td>
-                  <td><p>A transfer between two accounts. With an optional memo. </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
@@ -2931,7 +2955,7 @@ by the protocol. </p></td>
                   <td>transfer_with_memo</td>
                   <td><a href="#concordium.v2.TransferWithMemoPayload">TransferWithMemoPayload</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>This payload can occur starting from protocol version 2. </p></td>
                 </tr>
               
                 <tr>
@@ -3435,7 +3459,7 @@ Previously, this was the election difficulty. </p></td>
                   <td><a href="#concordium.v2.AccessStructure">AccessStructure</a></td>
                   <td></td>
                   <td><p>Access structure for updating the pool parameters. For V0 this is only
-the baker stake threshold, for V1 there are more. </p></td>
+the validator stake threshold, for V1 there are more. </p></td>
                 </tr>
               
                 <tr>
@@ -3480,7 +3504,7 @@ the baker stake threshold, for V1 there are more. </p></td>
                   <td>parameter_cooldown</td>
                   <td><a href="#concordium.v2.AccessStructure">AccessStructure</a></td>
                   <td></td>
-                  <td><p>Access structure for updating the cooldown periods related to baking and delegation. </p></td>
+                  <td><p>Access structure for updating the cooldown periods related to validation and delegation. </p></td>
                 </tr>
               
                 <tr>
@@ -3498,7 +3522,7 @@ the baker stake threshold, for V1 there are more. </p></td>
         
       
         <h3 id="concordium.v2.BakerAggregationVerifyKey">BakerAggregationVerifyKey</h3>
-        <p>Baker's public key used to check signatures on finalization records.</p><p>This is only used if the baker has sufficient stake to participate in</p><p>finalization.</p>
+        <p>Validator's public key used to check signatures on finalization records.</p><p>This is only used if the validator has sufficient stake to participate in</p><p>finalization.</p>
 
         
           <table class="field-table">
@@ -3522,7 +3546,7 @@ the baker stake threshold, for V1 there are more. </p></td>
         
       
         <h3 id="concordium.v2.BakerElectionVerifyKey">BakerElectionVerifyKey</h3>
-        <p>Baker's public key used to check whether they won the lottery or not.</p>
+        <p>Validator's public key used to check whether they won the lottery or not.</p>
 
         
           <table class="field-table">
@@ -3546,7 +3570,7 @@ the baker stake threshold, for V1 there are more. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent">BakerEvent</h3>
-        <p>Events that may result from the ConfigureBaker transaction.</p>
+        <p>Events that may result from the `ConfigureBaker` transaction which adds, modify, or removes a validator pool starting in protocol version 4.</p><p>Before protocol version 4, distinct transaction types (`BakerAdded`, `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, </p><p>and `BakerKeysUpdated`) existed which emitted validator related events instead.</p>
 
         
           <table class="field-table">
@@ -3559,98 +3583,118 @@ the baker stake threshold, for V1 there are more. </p></td>
                   <td>baker_added</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerAdded">BakerEvent.BakerAdded</a></td>
                   <td></td>
-                  <td><p>A baker was added. </p></td>
+                  <td><p>A validator was added.
+This event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+`BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_removed</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>A baker was removed. </p></td>
+                  <td><p>A validator was removed by a transaction sent by the validator that decreased the validator&#39;s own stake to 0.
+When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
+The behavior of validators being removed changed in protocol version 7 
+(see https://proposals.concordium.com/updates/P7.html for more details).
+If the cause of the validator removal is a transaction from an existing validator that switched its staking behavior to `delegation`,
+the `DelegationEvent::BakerRemoved` is emitted instead of this event. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_stake_increased</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerStakeIncreased">BakerEvent.BakerStakeIncreased</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s stake was increased. </p></td>
+                  <td><p>The validator&#39;s stake was increased. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_stake_decreased</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerStakeDecreased">BakerEvent.BakerStakeDecreased</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s stake was decreased. </p></td>
+                  <td><p>The validator&#39;s stake was decreased.
+The behavior of decreasing the stake of validators changed in protocol version 7 
+(see https://proposals.concordium.com/updates/P7.html for more details). </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_restake_earnings_updated</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerRestakeEarningsUpdated">BakerEvent.BakerRestakeEarningsUpdated</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s setting for restaking earnings was updated. </p></td>
+                  <td><p>The validator&#39;s setting for restaking earnings was updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_keys_updated</td>
                   <td><a href="#concordium.v2.BakerKeysEvent">BakerKeysEvent</a></td>
                   <td></td>
-                  <td><p>Baker keys were updated. </p></td>
+                  <td><p>Validator keys were updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_set_open_status</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerSetOpenStatus">BakerEvent.BakerSetOpenStatus</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s open status was updated. </p></td>
+                  <td><p>The validator&#39;s open status was updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_set_metadata_url</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerSetMetadataUrl">BakerEvent.BakerSetMetadataUrl</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s metadata URL was updated. </p></td>
+                  <td><p>The validator&#39;s metadata URL was updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_set_transaction_fee_commission</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerSetTransactionFeeCommission">BakerEvent.BakerSetTransactionFeeCommission</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s transaction fee commission was updated. </p></td>
+                  <td><p>The validator&#39;s transaction fee commission was updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_set_baking_reward_commission</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerSetBakingRewardCommission">BakerEvent.BakerSetBakingRewardCommission</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s baking reward commission was updated. </p></td>
+                  <td><p>The validator&#39;s block production reward commission was updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_set_finalization_reward_commission</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerSetFinalizationRewardCommission">BakerEvent.BakerSetFinalizationRewardCommission</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s finalization reward commission was updated. </p></td>
+                  <td><p>The validator&#39;s finalization reward commission was updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>delegation_removed</td>
                   <td><a href="#concordium.v2.BakerEvent.DelegationRemoved">BakerEvent.DelegationRemoved</a></td>
                   <td></td>
-                  <td><p>An existing delegator was removed. </p></td>
+                  <td><p>An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a validator.
+This event is always accompanied by `BakerEvent::BakerAdded`, `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+`BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
+If the account is a delegator in the current payday, it will remain so until the
+next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator&#39;s stake to 0,
+the `DelegationEvent::DelegationRemoved` is emitted instead of this event.
+This event was introduced in protocol version version 7. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_suspended</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerSuspended">BakerEvent.BakerSuspended</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s account has been suspended. </p></td>
+                  <td><p>The validator has been suspended by a transaction sent from the validator itself.
+If the validator is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
+event is emitted instead of this event.
+This event can occur starting from protocol version 8. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_resumed</td>
                   <td><a href="#concordium.v2.BakerEvent.BakerResumed">BakerEvent.BakerResumed</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s account has been suspended. </p></td>
+                  <td><p>The validator has been resumed by a transaction sent from the validator itself.
+This event can occur starting from protocol version 8. </p></td>
                 </tr>
               
             </tbody>
@@ -3661,7 +3705,7 @@ the baker stake threshold, for V1 there are more. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerAdded">BakerEvent.BakerAdded</h3>
-        <p>A baker was added.</p>
+        <p>A validator was added.</p><p>This message/event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,</p><p>`BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.</p>
 
         
           <table class="field-table">
@@ -3674,14 +3718,14 @@ the baker stake threshold, for V1 there are more. </p></td>
                   <td>keys_event</td>
                   <td><a href="#concordium.v2.BakerKeysEvent">BakerKeysEvent</a></td>
                   <td></td>
-                  <td><p>The keys with which the baker registered. </p></td>
+                  <td><p>The keys with which the validator registered. </p></td>
                 </tr>
               
                 <tr>
                   <td>stake</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The amount the account staked to become a baker. This amount is
+                  <td><p>The amount the account staked to become a validator. This amount is
 locked. </p></td>
                 </tr>
               
@@ -3689,7 +3733,7 @@ locked. </p></td>
                   <td>restake_earnings</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>Whether the baker will automatically add earnings to their stake or
+                  <td><p>Whether the validator will automatically add earnings to their stake or
 not. </p></td>
                 </tr>
               
@@ -3714,7 +3758,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id. </p></td>
+                  <td><p>Validator&#39;s id. </p></td>
                 </tr>
               
                 <tr>
@@ -3732,7 +3776,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerResumed">BakerEvent.BakerResumed</h3>
-        <p>A baker has been resumed.</p>
+        <p>A validator has been resumed by a transaction sent from the validator itself.</p><p>This message can occur starting from protocol version 8.</p>
 
         
           <table class="field-table">
@@ -3745,7 +3789,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The resumed baker&#39;s id </p></td>
+                  <td><p>The resumed validator&#39;s id </p></td>
                 </tr>
               
             </tbody>
@@ -3756,7 +3800,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerSetBakingRewardCommission">BakerEvent.BakerSetBakingRewardCommission</h3>
-        <p>Updated baking reward commission for baker pool</p>
+        <p>Updated block production reward commission for validator pool.</p><p>This message can occur starting from protocol version 4.</p>
 
         
           <table class="field-table">
@@ -3769,14 +3813,14 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id </p></td>
+                  <td><p>Validator&#39;s id </p></td>
                 </tr>
               
                 <tr>
                   <td>baking_reward_commission</td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
-                  <td><p>The baking reward commission </p></td>
+                  <td><p>The block production reward commission </p></td>
                 </tr>
               
             </tbody>
@@ -3787,7 +3831,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerSetFinalizationRewardCommission">BakerEvent.BakerSetFinalizationRewardCommission</h3>
-        <p>Updated finalization reward commission for baker pool</p>
+        <p>Updated finalization reward commission for validator pool.</p><p>This message can occur starting from protocol version 4.</p>
 
         
           <table class="field-table">
@@ -3800,7 +3844,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id </p></td>
+                  <td><p>Validator&#39;s id </p></td>
                 </tr>
               
                 <tr>
@@ -3818,7 +3862,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerSetMetadataUrl">BakerEvent.BakerSetMetadataUrl</h3>
-        <p>Updated metadata url for a baker pool.</p>
+        <p>Updated metadata url for a validator pool.</p><p>This message can occur starting from protocol version 4.</p>
 
         
           <table class="field-table">
@@ -3831,7 +3875,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id. </p></td>
+                  <td><p>Validator&#39;s id. </p></td>
                 </tr>
               
                 <tr>
@@ -3849,7 +3893,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerSetOpenStatus">BakerEvent.BakerSetOpenStatus</h3>
-        <p>Updated open status for a baker pool.</p>
+        <p>Updated open status for a validator pool.</p><p>This message can occur starting from protocol version 4.</p>
 
         
           <table class="field-table">
@@ -3862,7 +3906,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id. </p></td>
+                  <td><p>Validator&#39;s id. </p></td>
                 </tr>
               
                 <tr>
@@ -3880,7 +3924,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerSetTransactionFeeCommission">BakerEvent.BakerSetTransactionFeeCommission</h3>
-        <p>Updated transaction fee commission for a baker pool.</p>
+        <p>Updated transaction fee commission for a validator pool.</p><p>This message can occur starting from protocol version 4.</p>
 
         
           <table class="field-table">
@@ -3893,7 +3937,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id. </p></td>
+                  <td><p>Validator&#39;s id. </p></td>
                 </tr>
               
                 <tr>
@@ -3911,7 +3955,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerStakeDecreased">BakerEvent.BakerStakeDecreased</h3>
-        <p></p>
+        <p>The validator's stake was decreased.</p><p>The behavior of decreasing the stake of validators changed in protocol version 7 </p><p>(see https://proposals.concordium.com/updates/P7.html for more details).</p>
 
         
           <table class="field-table">
@@ -3924,7 +3968,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id. </p></td>
+                  <td><p>Validator&#39;s id. </p></td>
                 </tr>
               
                 <tr>
@@ -3942,7 +3986,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerStakeIncreased">BakerEvent.BakerStakeIncreased</h3>
-        <p>Baker stake increased.</p>
+        <p>Validator stake increased.</p>
 
         
           <table class="field-table">
@@ -3955,7 +3999,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id. </p></td>
+                  <td><p>Validator&#39;s id. </p></td>
                 </tr>
               
                 <tr>
@@ -3973,7 +4017,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerSuspended">BakerEvent.BakerSuspended</h3>
-        <p>A baker has been suspended.</p>
+        <p>The validator has been suspended by a transaction sent from the validator itself.</p><p>If the validator is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`</p><p>event is emitted instead of this event.</p><p>This message can occur starting from protocol version 8.</p>
 
         
           <table class="field-table">
@@ -3986,7 +4030,7 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Suspended baker&#39;s id </p></td>
+                  <td><p>Suspended validator&#39;s id </p></td>
                 </tr>
               
             </tbody>
@@ -3997,7 +4041,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.DelegationRemoved">BakerEvent.DelegationRemoved</h3>
-        <p>Removed an existing delegator.</p>
+        <p>Removed an existing delegator.</p><p>An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a validator.</p><p>If the account is a delegator in the current payday, it will remain so until the</p><p>next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.</p><p>If the cause of the delegation removal is a transaction sent by the delegator that decreased the delegator's stake to 0,</p><p>the `DelegationEvent::DelegationRemoved` is emitted instead of this event/message.</p><p>This message can occur starting from protocol version 7.</p>
 
         
           <table class="field-table">
@@ -4021,7 +4065,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerId">BakerId</h3>
-        <p>The ID of a baker, which is the index of its account.</p>
+        <p>The ID of a validator, which is the index of its account.</p>
 
         
           <table class="field-table">
@@ -4045,7 +4089,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerInfo">BakerInfo</h3>
-        <p>Information about a baker.</p>
+        <p>Information about a validator.</p>
 
         
           <table class="field-table">
@@ -4058,22 +4102,22 @@ not. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Identity of the baker. This is actually the account index of
-the account controlling the baker. </p></td>
+                  <td><p>Identity of the validator. This is actually the account index of
+the account controlling the validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>election_key</td>
                   <td><a href="#concordium.v2.BakerElectionVerifyKey">BakerElectionVerifyKey</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s public key used to check whether they won the lottery or not. </p></td>
+                  <td><p>Validator&#39;s public key used to check whether they won the lottery or not. </p></td>
                 </tr>
               
                 <tr>
                   <td>signature_key</td>
                   <td><a href="#concordium.v2.BakerSignatureVerifyKey">BakerSignatureVerifyKey</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s public key used to check that they are indeed the ones who
+                  <td><p>Validator&#39;s public key used to check that they are indeed the ones who
 produced the block. </p></td>
                 </tr>
               
@@ -4081,8 +4125,8 @@ produced the block. </p></td>
                   <td>aggregation_key</td>
                   <td><a href="#concordium.v2.BakerAggregationVerifyKey">BakerAggregationVerifyKey</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s public key used to check signatures on finalization records.
-This is only used if the baker has sufficient stake to participate in
+                  <td><p>Validator&#39;s public key used to check signatures on finalization records.
+This is only used if the validator has sufficient stake to participate in
 finalization. </p></td>
                 </tr>
               
@@ -4094,7 +4138,7 @@ finalization. </p></td>
         
       
         <h3 id="concordium.v2.BakerKeysEvent">BakerKeysEvent</h3>
-        <p>Result of a successful change of baker keys.</p>
+        <p>Result of a successful change of validator keys.</p>
 
         
           <table class="field-table">
@@ -4107,14 +4151,14 @@ finalization. </p></td>
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>ID of the baker whose keys were changed. </p></td>
+                  <td><p>ID of the validator whose keys were changed. </p></td>
                 </tr>
               
                 <tr>
                   <td>account</td>
                   <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
                   <td></td>
-                  <td><p>Account address of the baker. </p></td>
+                  <td><p>Account address of the validator. </p></td>
                 </tr>
               
                 <tr>
@@ -4128,7 +4172,7 @@ finalization. </p></td>
                   <td>election_key</td>
                   <td><a href="#concordium.v2.BakerElectionVerifyKey">BakerElectionVerifyKey</a></td>
                   <td></td>
-                  <td><p>The new public key for verifying whether the baker won the block
+                  <td><p>The new public key for verifying whether the validator won the block
 lottery. </p></td>
                 </tr>
               
@@ -4147,7 +4191,7 @@ lottery. </p></td>
         
       
         <h3 id="concordium.v2.BakerPoolInfo">BakerPoolInfo</h3>
-        <p>Additional information about a baking pool.</p><p>This information is added with the introduction of delegation.</p>
+        <p>Additional information about a validator pool.</p><p>This information is added with the introduction of delegation.</p>
 
         
           <table class="field-table">
@@ -4185,7 +4229,7 @@ lottery. </p></td>
         
       
         <h3 id="concordium.v2.BakerRewardPeriodInfo">BakerRewardPeriodInfo</h3>
-        <p>Information about a particular baker with respect to</p><p>the current reward period.</p>
+        <p>Information about a particular validator with respect to</p><p>the current reward period. The below values are historical value from the last payday block.</p>
 
         
           <table class="field-table">
@@ -4198,14 +4242,14 @@ lottery. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerInfo">BakerInfo</a></td>
                   <td></td>
-                  <td><p>The baker id and public keys for the baker. </p></td>
+                  <td><p>The validator id and public keys for the validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>effective_stake</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The effective stake of the baker for the consensus protocol.
+                  <td><p>The effective stake of the validator for the consensus protocol.
 The returned amount accounts for delegation, capital bounds and leverage bounds. </p></td>
                 </tr>
               
@@ -4213,28 +4257,28 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
                   <td>commission_rates</td>
                   <td><a href="#concordium.v2.CommissionRates">CommissionRates</a></td>
                   <td></td>
-                  <td><p>The effective commission rate for the baker that applies for the reward period. </p></td>
+                  <td><p>The effective commission rate for the validator that applies for the reward period. </p></td>
                 </tr>
               
                 <tr>
                   <td>equity_capital</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The amount staked by the baker itself. </p></td>
+                  <td><p>The amount staked by the validator itself. </p></td>
                 </tr>
               
                 <tr>
                   <td>delegated_capital</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The total amount of capital delegated to this baker pool. </p></td>
+                  <td><p>The total amount of capital delegated to this validator pool. </p></td>
                 </tr>
               
                 <tr>
                   <td>is_finalizer</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>Whether the baker is a finalizer or not. </p></td>
+                  <td><p>Whether the validator is a finalizer or not. </p></td>
                 </tr>
               
             </tbody>
@@ -4245,7 +4289,7 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
         
       
         <h3 id="concordium.v2.BakerSignatureVerifyKey">BakerSignatureVerifyKey</h3>
-        <p>Baker's public key used to check that they are indeed the ones who</p><p>produced the block.</p>
+        <p>Validator's public key used to check that they are indeed the ones who</p><p>produced the block.</p>
 
         
           <table class="field-table">
@@ -4269,7 +4313,7 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
         
       
         <h3 id="concordium.v2.BakerStakeThreshold">BakerStakeThreshold</h3>
-        <p>Minimum stake needed to become a baker. This only applies to protocol version</p><p>1-3.</p>
+        <p>Minimum stake needed to become a validator. This only applies to protocol version 1-3.</p>
 
         
           <table class="field-table">
@@ -4282,7 +4326,7 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
                   <td>baker_stake_threshold</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>Minimum threshold required for registering as a baker. </p></td>
+                  <td><p>Minimum threshold required for registering as a validator. </p></td>
                 </tr>
               
             </tbody>
@@ -4293,7 +4337,7 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
         
       
         <h3 id="concordium.v2.BakerStakeUpdatedData">BakerStakeUpdatedData</h3>
-        <p></p>
+        <p>The associated transaction type can no longer be created starting from protocol version 4.</p><p>Hence, this message does not occur anymore.</p><p>The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.</p>
 
         
           <table class="field-table">
@@ -4306,7 +4350,7 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Affected baker. </p></td>
+                  <td><p>Affected validator. </p></td>
                 </tr>
               
                 <tr>
@@ -4342,17 +4386,17 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
             <tbody>
               
                 <tr>
-                  <td>bakers</td>
+                  <td>validators</td>
                   <td><a href="#concordium.v2.FullBakerInfo">FullBakerInfo</a></td>
                   <td>repeated</td>
-                  <td><p>The set of bakers. </p></td>
+                  <td><p>The set of validators. </p></td>
                 </tr>
               
                 <tr>
                   <td>finalizers</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td>repeated</td>
-                  <td><p>The IDs of the bakers that are finalizers.
+                  <td><p>The IDs of the validators that are finalizers.
 The order determines the finalizer index. </p></td>
                 </tr>
               
@@ -4360,7 +4404,7 @@ The order determines the finalizer index. </p></td>
                   <td>baker_total_stake</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The total effective stake of the bakers. </p></td>
+                  <td><p>The total effective stake of the validators. </p></td>
                 </tr>
               
                 <tr>
@@ -4409,7 +4453,7 @@ The order determines the finalizer index. </p></td>
         
       
         <h3 id="concordium.v2.BannedPeers">BannedPeers</h3>
-        <p>The banned peers given by</p><p>their IP addresses.</p>
+        <p>The banned peers given by their IP addresses.</p>
 
         
           <table class="field-table">
@@ -4433,7 +4477,7 @@ The order determines the finalizer index. </p></td>
         
       
         <h3 id="concordium.v2.BlockCertificates">BlockCertificates</h3>
-        <p>Certificates for a block for protocols supporting</p><p>ConcordiumBFT.</p>
+        <p>Certificates for a block for protocols supporting ConcordiumBFT.</p>
 
         
           <table class="field-table">
@@ -4729,7 +4773,7 @@ preceded this block, and defines the era of the block. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td>optional</td>
-                  <td><p>The baker id of account baking this block. Not provided for a genesis block. </p></td>
+                  <td><p>The validator id of the account producing this block. Not provided for a genesis block. </p></td>
                 </tr>
               
                 <tr>
@@ -4824,7 +4868,7 @@ preceded this block, and defines the era of the block. </p></td>
                   <td><a href="#concordium.v2.CredentialDeployment">CredentialDeployment</a></td>
                   <td></td>
                   <td><p>Credential deployments create new accounts. They are not paid for
-directly by the sender. Instead, bakers are rewarded by the protocol for
+directly by the sender. Instead, validators are rewarded by the protocol for
 including them. </p></td>
                 </tr>
               
@@ -5071,7 +5115,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent">BlockSpecialEvent</h3>
-        <p>A protocol generated event that is not directly caused by a transaction. This</p><p>includes minting new CCD, rewarding different bakers and delegators, etc.</p>
+        <p>A protocol generated event that is not directly caused by a transaction. This</p><p>includes minting new CCD, rewarding different validators and delegators, etc.</p>
 
         
           <table class="field-table">
@@ -5084,14 +5128,18 @@ can in principle happen. </p></td>
                   <td>baking_rewards</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.BakingRewards">BlockSpecialEvent.BakingRewards</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Rewards issued to each validator at the end of an epoch for producing blocks in the epoch,
+in proportion to the number of blocks they contributed. This only occurs in protocol versions
+1 to 3. From protocol version 4, it is replaced by `PaydayPoolReward` and `PaydayAccountReward` messages. </p></td>
                 </tr>
               
                 <tr>
                   <td>mint</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.Mint">BlockSpecialEvent.Mint</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Minting of new CCDs.
+Starting from protocol version 4, this event occurs in each payday block.
+Before protocol version 4, this event occured every block (slot). </p></td>
                 </tr>
               
                 <tr>
@@ -5112,14 +5160,16 @@ can in principle happen. </p></td>
                   <td>payday_foundation_reward</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.PaydayFoundationReward">BlockSpecialEvent.PaydayFoundationReward</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Foundation rewards paid out at a payday block starting from protocol version 4. </p></td>
                 </tr>
               
                 <tr>
                   <td>payday_account_reward</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.PaydayAccountReward">BlockSpecialEvent.PaydayAccountReward</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Reward payment to the given account at a payday block (from passive deleagtion or delegation to a validator or being a validator) starting from protocol version 4.
+When listed in a block summary, the delegated pool of the account is
+given by the last `PaydayPoolReward` outcome included before this outcome. </p></td>
                 </tr>
               
                 <tr>
@@ -5133,21 +5183,27 @@ can in principle happen. </p></td>
                   <td>payday_pool_reward</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.PaydayPoolReward">BlockSpecialEvent.PaydayPoolReward</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Payment distributed to a pool or passive delegators at a payday block starting from protocol version 4.
+When listed in a block summary, the reward distribution to the delagtors of the given pool is
+given by the following `PaydayAccountReward` outcomes included after this outcome. </p></td>
                 </tr>
               
                 <tr>
                   <td>validator_suspended</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.ValidatorSuspended">BlockSpecialEvent.ValidatorSuspended</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The protocol suspends validators due to inactivity.
+If the validator is suspended  by a transaction sent from the validator itself, the `BakerEvent::BakerSuspended`
+event is emitted instead of this event.
+The event can occur starting from protocol version 8. </p></td>
                 </tr>
               
                 <tr>
                   <td>validator_primed_for_suspension</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.ValidatorPrimedForSuspension">BlockSpecialEvent.ValidatorPrimedForSuspension</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The protocol primes validators for suspension due to inactivity.
+The event can occur starting from protocol version 8. </p></td>
                 </tr>
               
             </tbody>
@@ -5213,7 +5269,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.BakingRewards">BlockSpecialEvent.BakingRewards</h3>
-        <p>Payment to each baker of a previous epoch, in proportion to the number</p><p>of blocks they contributed.</p>
+        <p>Rewards issued to each validator at the end of an epoch for producing blocks in the epoch,</p><p>in proportion to the number of blocks they contributed. This only occurs in protocol versions</p><p>1 to 3. From protocol version 4, it is replaced by `PaydayPoolReward` and `PaydayAccountReward` messages.</p>
 
         
           <table class="field-table">
@@ -5226,14 +5282,14 @@ can in principle happen. </p></td>
                   <td>baker_rewards</td>
                   <td><a href="#concordium.v2.BlockSpecialEvent.AccountAmounts">BlockSpecialEvent.AccountAmounts</a></td>
                   <td></td>
-                  <td><p>The amount awarded to each baker. </p></td>
+                  <td><p>The amount awarded to each validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>remainder</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The remaining balance of the baker reward account. </p></td>
+                  <td><p>The remaining balance of the validator reward account. </p></td>
                 </tr>
               
             </tbody>
@@ -5278,7 +5334,7 @@ can in principle happen. </p></td>
                   <td>baker_reward</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The amount awarded to the baker. </p></td>
+                  <td><p>The amount awarded to the validator. </p></td>
                 </tr>
               
                 <tr>
@@ -5299,7 +5355,7 @@ can in principle happen. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The baker of the block, who will receive the award. </p></td>
+                  <td><p>The validator of the block, who will receive the award. </p></td>
                 </tr>
               
             </tbody>
@@ -5310,7 +5366,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.BlockReward">BlockSpecialEvent.BlockReward</h3>
-        <p>Disbursement of fees from a block between the GAS account,</p><p>the baker, and the foundation. It should always be that:</p><p>```transaction_fees + old_gas_account = new_gas_account + baker_reward + foundation_charge```</p>
+        <p>Disbursement of fees from a block between the GAS account,</p><p>the validator, and the foundation. It should always be that:</p><p>```transaction_fees + old_gas_account = new_gas_account + baker_reward + foundation_charge```</p>
 
         
           <table class="field-table">
@@ -5344,7 +5400,7 @@ can in principle happen. </p></td>
                   <td>baker_reward</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The amount awarded to the baker. </p></td>
+                  <td><p>The amount awarded to the validator. </p></td>
                 </tr>
               
                 <tr>
@@ -5358,7 +5414,7 @@ can in principle happen. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
                   <td></td>
-                  <td><p>The baker of the block, who receives the award. </p></td>
+                  <td><p>The validator of the block, who receives the award. </p></td>
                 </tr>
               
                 <tr>
@@ -5407,7 +5463,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.Mint">BlockSpecialEvent.Mint</h3>
-        <p>Minting of new CCD.</p>
+        <p>Minting of new CCDs.</p><p>Starting from protocol version 4, this event occurs only in each payday block.</p><p>Before protocol version 4, this event occured every block (slot).</p>
 
         
           <table class="field-table">
@@ -5452,7 +5508,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.PaydayAccountReward">BlockSpecialEvent.PaydayAccountReward</h3>
-        <p>Reward payment to the given account.</p>
+        <p>Reward payment to the given account at a payday block starting from protocol version 4.</p><p>When listed in a block summary, the delegated pool of the account is</p><p>given by the last `PaydayPoolReward` outcome included before this outcome.</p><p>For example:</p><p>PaydayPoolReward to pool 1</p><p>PaydayAccountReward to account 5</p><p>PaydayAccountReward to account 6</p><p>PaydayAccountReward to account 1 (is the payout to the validator itself)</p><p>PaydayPoolReward to `None`</p><p>PaydayAccountReward to account 10</p><p>PaydayAccountReward to account 3</p><p>Means 5, 6 are receiving rewards from delegating to validator 1 and 10, 3 are receiving rewards from passive</p><p>delegation.</p>
 
         
           <table class="field-table">
@@ -5479,7 +5535,7 @@ can in principle happen. </p></td>
                   <td>baker_reward</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The baking reward at payday to the account. </p></td>
+                  <td><p>The block production reward at payday to the account. </p></td>
                 </tr>
               
                 <tr>
@@ -5497,7 +5553,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.PaydayFoundationReward">BlockSpecialEvent.PaydayFoundationReward</h3>
-        <p>Foundation tax.</p>
+        <p>Foundation tax paid at a payday block starting from protocol version 4.</p>
 
         
           <table class="field-table">
@@ -5528,7 +5584,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.PaydayPoolReward">BlockSpecialEvent.PaydayPoolReward</h3>
-        <p>Payment distributed to a pool or passive delegators.</p>
+        <p>Payment distributed to a pool or passive delegators at a payday block starting from protocol version 4.</p><p>When listed in a block summary, the reward distribution to the delagtors of the given pool is</p><p>given by the following `PaydayAccountReward` outcomes included after this outcome.</p><p>For example:</p><p>PaydayPoolReward to pool 1</p><p>PaydayAccountReward to account 5</p><p>PaydayAccountReward to account 6</p><p>PaydayAccountReward to account 1 (is the payout to the validator itself)</p><p>PaydayPoolReward to `None`</p><p>PaydayAccountReward to account 10</p><p>PaydayAccountReward to account 3</p><p>Means 5, 6 are receiving rewards from delegating to validator 1 and 10, 3 are receiving rewards from passive</p><p>delegation.</p>
 
         
           <table class="field-table">
@@ -5555,7 +5611,7 @@ can in principle happen. </p></td>
                   <td>baker_reward</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>Accrued baking rewards for pool. </p></td>
+                  <td><p>Accrued block production rewards for pool. </p></td>
                 </tr>
               
                 <tr>
@@ -5573,7 +5629,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.ValidatorPrimedForSuspension">BlockSpecialEvent.ValidatorPrimedForSuspension</h3>
-        <p>The id of a validator that is primed for suspension at the next snapshot</p><p>epoch due to too many missed rounds.</p>
+        <p>The id of a validator that is primed for suspension at the next snapshot</p><p>epoch due to too many missed rounds.</p><p>The message can occur starting from protocol version 8.</p>
 
         
           <table class="field-table">
@@ -5604,7 +5660,7 @@ can in principle happen. </p></td>
         
       
         <h3 id="concordium.v2.BlockSpecialEvent.ValidatorSuspended">BlockSpecialEvent.ValidatorSuspended</h3>
-        <p>The id of a validator that got suspended due to too many missed rounds.</p>
+        <p>The id of a validator that got suspended due to too many missed rounds.</p><p>The message can occur starting from protocol version 8.</p>
 
         
           <table class="field-table">
@@ -5839,7 +5895,7 @@ or allow results from more recent genesis indices as well (`false`). </p></td>
         
       
         <h3 id="concordium.v2.CapitalBound">CapitalBound</h3>
-        <p>A bound on the relative share of the total staked capital that a baker can</p><p>have as its stake. This is required to be greater than 0.</p>
+        <p>The capital bound is a chain parameter that is set to guarantee network decentralization by preventing </p><p>a single validator from gaining excessive power in the consensus protocol.</p><p>The capital bound is required to be set to a value greater than 0 (capital_bound > 0).</p><p>The value roughly describes the maximum proportion of the total stake in the protocol (from all validators including passive delegation) </p><p>to the stake of a validator that a validator can achieve where the total stake of the validator is considered effective</p><p>(meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).</p><p>Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.</p><p>Delegators are prevented from increasing their delegation to the pool </p><p>(via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the capital bound cap.</p><p>See the comment at the `delegated_capital_cap` type for the exact formula.</p>
 
         
           <table class="field-table">
@@ -5966,7 +6022,7 @@ or allow results from more recent genesis indices as well (`false`). </p></td>
                   <td>baker_cooldown_epochs</td>
                   <td><a href="#concordium.v2.Epoch">Epoch</a></td>
                   <td></td>
-                  <td><p>Extra number of epochs before reduction in stake, or baker
+                  <td><p>Extra number of epochs before reduction in stake, or validator
 deregistration is completed. </p></td>
                 </tr>
               
@@ -6009,7 +6065,7 @@ deregistration is completed. </p></td>
                   <td>minimum_threshold_for_baking</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>Minimum threshold for becoming a baker. </p></td>
+                  <td><p>Minimum threshold for becoming a validator. </p></td>
                 </tr>
               
                 <tr>
@@ -6075,7 +6131,7 @@ deregistration is completed. </p></td>
                   <td>cooldown_parameters</td>
                   <td><a href="#concordium.v2.CooldownParametersCpv1">CooldownParametersCpv1</a></td>
                   <td></td>
-                  <td><p>Extra number of epochs before reduction in stake, or baker
+                  <td><p>Extra number of epochs before reduction in stake, or validator
 deregistration is completed. </p></td>
                 </tr>
               
@@ -6127,7 +6183,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>pool_parameters</td>
                   <td><a href="#concordium.v2.PoolParametersCpv1">PoolParametersCpv1</a></td>
                   <td></td>
-                  <td><p>Parameters governing baking pools and their commissions. </p></td>
+                  <td><p>Parameters governing validator pools and their commissions. </p></td>
                 </tr>
               
                 <tr>
@@ -6193,7 +6249,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>cooldown_parameters</td>
                   <td><a href="#concordium.v2.CooldownParametersCpv1">CooldownParametersCpv1</a></td>
                   <td></td>
-                  <td><p>Extra number of epochs before reduction in stake, or baker
+                  <td><p>Extra number of epochs before reduction in stake, or validator
 deregistration is completed. </p></td>
                 </tr>
               
@@ -6245,7 +6301,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>pool_parameters</td>
                   <td><a href="#concordium.v2.PoolParametersCpv1">PoolParametersCpv1</a></td>
                   <td></td>
-                  <td><p>Parameters governing baking pools and their commissions. </p></td>
+                  <td><p>Parameters governing validator pools and their commissions. </p></td>
                 </tr>
               
                 <tr>
@@ -6318,7 +6374,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>cooldown_parameters</td>
                   <td><a href="#concordium.v2.CooldownParametersCpv1">CooldownParametersCpv1</a></td>
                   <td></td>
-                  <td><p>Extra number of epochs before reduction in stake, or baker
+                  <td><p>Extra number of epochs before reduction in stake, or validator
 deregistration is completed. </p></td>
                 </tr>
               
@@ -6370,7 +6426,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>pool_parameters</td>
                   <td><a href="#concordium.v2.PoolParametersCpv1">PoolParametersCpv1</a></td>
                   <td></td>
-                  <td><p>Parameters governing baking pools and their commissions. </p></td>
+                  <td><p>Parameters governing validator pools and their commissions. </p></td>
                 </tr>
               
                 <tr>
@@ -6436,7 +6492,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>baking</td>
                   <td><a href="#concordium.v2.InclusiveRangeAmountFraction">InclusiveRangeAmountFraction</a></td>
                   <td></td>
-                  <td><p>The range of allowed baker commissions. </p></td>
+                  <td><p>The range of allowed validator commissions. </p></td>
                 </tr>
               
                 <tr>
@@ -6474,7 +6530,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>baking</td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
-                  <td><p>Fraction of baking rewards charged by the pool owner. </p></td>
+                  <td><p>Fraction of block production rewards charged by the pool owner. </p></td>
                 </tr>
               
                 <tr>
@@ -6578,7 +6634,7 @@ reward period length, i.e. the time between paydays. </p></td>
                   <td>round_existing_blocks</td>
                   <td><a href="#concordium.v2.RoundExistingBlock">RoundExistingBlock</a></td>
                   <td>repeated</td>
-                  <td><p>Which bakers the node has seen legally-signed blocks with live parents from in
+                  <td><p>Which validators the node has seen legally-signed blocks with live parents from in
 non-finalized rounds. </p></td>
                 </tr>
               
@@ -6624,7 +6680,7 @@ to determine the epoch and round of the last finalized block. </p></td>
                   <td>epoch_bakers</td>
                   <td><a href="#concordium.v2.EpochBakers">EpochBakers</a></td>
                   <td></td>
-                  <td><p>The bakers and finalizers for the previous, current and next epoch, relative to the last
+                  <td><p>The validators and finalizers for the previous, current and next epoch, relative to the last
 finalized block. </p></td>
                 </tr>
               
@@ -7139,7 +7195,7 @@ Currently not used, so it is always 0. </p></td>
                   <td>transferred</td>
                   <td><a href="#concordium.v2.ContractTraceElement.Transferred">ContractTraceElement.Transferred</a></td>
                   <td></td>
-                  <td><p>A contract transferred an amount to an account. </p></td>
+                  <td><p>A contract transferred an amount of CCD to an account. </p></td>
                 </tr>
               
                 <tr>
@@ -7161,7 +7217,8 @@ This occurs when a contract invokes another contract or makes a transfer to an a
                   <td>upgraded</td>
                   <td><a href="#concordium.v2.ContractTraceElement.Upgraded">ContractTraceElement.Upgraded</a></td>
                   <td></td>
-                  <td><p>A contract was upgraded. </p></td>
+                  <td><p>A contract was upgraded.
+This trace element can occur starting from protocol version 5. </p></td>
                 </tr>
               
             </tbody>
@@ -7234,7 +7291,7 @@ This occurs when a contract invokes another contract or makes a transfer to an a
         
       
         <h3 id="concordium.v2.ContractTraceElement.Transferred">ContractTraceElement.Transferred</h3>
-        <p>A contract transferred an amount to an account.</p>
+        <p>A contract transferred an amount of CCD to an account.</p>
 
         
           <table class="field-table">
@@ -7272,7 +7329,7 @@ This occurs when a contract invokes another contract or makes a transfer to an a
         
       
         <h3 id="concordium.v2.ContractTraceElement.Upgraded">ContractTraceElement.Upgraded</h3>
-        <p>A previously interrupted contract was resumed.</p>
+        <p>A previously interrupted contract was resumed.</p><p>This message can occur starting from protocol version 5.</p>
 
         
           <table class="field-table">
@@ -7469,7 +7526,7 @@ anonymity revokers. </p></td>
         
       
         <h3 id="concordium.v2.CredentialDeployment">CredentialDeployment</h3>
-        <p>Credential deployments create new accounts. They are not paid for</p><p>directly by the sender. Instead, bakers are rewarded by the protocol for</p><p>including them.</p>
+        <p>Credential deployments create new accounts. They are not paid for</p><p>directly by the sender. Instead, validators are rewarded by the protocol for</p><p>including them.</p>
 
         
           <table class="field-table">
@@ -7676,7 +7733,7 @@ It is a serialized pair of group elements  in the G1 group of the BLS12-381 curv
         
       
         <h3 id="concordium.v2.DelegationEvent">DelegationEvent</h3>
-        <p></p>
+        <p>Events that may result from the `ConfigureDelegation` transaction which adds, modify, or removes a delegator starting in protocol version 4.</p><p>There was no delegation feature before protocol version 4.</p>
 
         
           <table class="field-table">
@@ -7710,28 +7767,40 @@ It is a serialized pair of group elements  in the G1 group of the BLS12-381 curv
                   <td>delegation_set_delegation_target</td>
                   <td><a href="#concordium.v2.DelegationEvent.DelegationSetDelegationTarget">DelegationEvent.DelegationSetDelegationTarget</a></td>
                   <td></td>
-                  <td><p>The delegator&#39;s delegation target was updated. </p></td>
+                  <td><p>The delegator&#39;s delegation target (either a validator pool or passive delegation) was updated by a transaction from the delegator. </p></td>
                 </tr>
               
                 <tr>
                   <td>delegation_added</td>
                   <td><a href="#concordium.v2.DelegatorId">DelegatorId</a></td>
                   <td></td>
-                  <td><p>A delegator was added. </p></td>
+                  <td><p>A delegator was added.
+This event is always accompanied by `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction. </p></td>
                 </tr>
               
                 <tr>
                   <td>delegation_removed</td>
                   <td><a href="#concordium.v2.DelegatorId">DelegatorId</a></td>
                   <td></td>
-                  <td><p>A delegator was removed. </p></td>
+                  <td><p>A delegator was removed by a transaction sent from the delegator that decreased the delegators&#39;s stake to 0.
+If the account is a delegator in the current payday, it will remain so until the
+next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
+If the cause of the delegation removal is a transaction sent from a delegator that switched its staking behavior to being a validator,
+the `BakerEvent::DelegationRemoved` is emitted instead of this event. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_removed</td>
                   <td><a href="#concordium.v2.DelegationEvent.BakerRemoved">DelegationEvent.BakerRemoved</a></td>
                   <td></td>
-                  <td><p>An existing baker was removed. </p></td>
+                  <td><p>An existing validator was removed by a transaction sent from an validator that switched its staking behavior to `delegation`.
+This event is always accompanied by `DelegationEvent::DelegationAdded`, `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
+When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
+The behavior of validators being removed changed in protocol version 7.
+(see https://proposals.concordium.com/updates/P7.html for more details).
+If the cause of the validator removal is a transaction that decreased the validator&#39;s own stake to 0, 
+the `BakerEvent::BakerRemoved` is emitted instead of this event.
+This event can occur starting from protocol version 7. </p></td>
                 </tr>
               
             </tbody>
@@ -7742,7 +7811,7 @@ It is a serialized pair of group elements  in the G1 group of the BLS12-381 curv
         
       
         <h3 id="concordium.v2.DelegationEvent.BakerRemoved">DelegationEvent.BakerRemoved</h3>
-        <p></p>
+        <p>This message can occur starting from protocol version 7.</p>
 
         
           <table class="field-table">
@@ -7755,7 +7824,7 @@ It is a serialized pair of group elements  in the G1 group of the BLS12-381 curv
                   <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker&#39;s id </p></td>
+                  <td><p>Validator&#39;s id </p></td>
                 </tr>
               
             </tbody>
@@ -7786,7 +7855,7 @@ It is a serialized pair of group elements  in the G1 group of the BLS12-381 curv
                   <td>delegation_target</td>
                   <td><a href="#concordium.v2.DelegationTarget">DelegationTarget</a></td>
                   <td></td>
-                  <td><p>New delegation target </p></td>
+                  <td><p>New delegation target (either to a validator pool or passive delegation) </p></td>
                 </tr>
               
             </tbody>
@@ -7903,14 +7972,14 @@ It is a serialized pair of group elements  in the G1 group of the BLS12-381 curv
                   <td>passive</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>Delegate passively, i.e., to no specific baker. </p></td>
+                  <td><p>Delegate passively, i.e., to no specific validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Delegate to a specific baker. </p></td>
+                  <td><p>Delegate to a specific validator. </p></td>
                 </tr>
               
             </tbody>
@@ -8947,7 +9016,7 @@ Requires a valid path. </p></td>
         
       
         <h3 id="concordium.v2.ElectionInfo">ElectionInfo</h3>
-        <p>Response type for GetElectionInfo.</p><p>Contains information related to baker election for a perticular block.</p>
+        <p>Response type for GetElectionInfo.</p><p>Contains information related to validator election for a perticular block.</p><p>The `ElectionInfo` will be the same for all blocks in the same epoch. </p><p>Moreover, from protocol version 4, it is the same for all blocks in the same payday.</p>
 
         
           <table class="field-table">
@@ -8960,7 +9029,7 @@ Requires a valid path. </p></td>
                   <td>election_difficulty</td>
                   <td><a href="#concordium.v2.ElectionDifficulty">ElectionDifficulty</a></td>
                   <td>optional</td>
-                  <td><p>Baking lottery election difficulty. Present only in protocol versions 1-5. </p></td>
+                  <td><p>Block production lottery election difficulty. Present only in protocol versions 1-5. </p></td>
                 </tr>
               
                 <tr>
@@ -8974,7 +9043,7 @@ Requires a valid path. </p></td>
                   <td>baker_election_info</td>
                   <td><a href="#concordium.v2.ElectionInfo.Baker">ElectionInfo.Baker</a></td>
                   <td>repeated</td>
-                  <td><p>List of the currently eligible bakers. </p></td>
+                  <td><p>List of the currently eligible validators. </p></td>
                 </tr>
               
             </tbody>
@@ -8998,21 +9067,21 @@ Requires a valid path. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The ID of the baker. </p></td>
+                  <td><p>The ID of the validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>account</td>
                   <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
                   <td></td>
-                  <td><p>The account address of the baker. </p></td>
+                  <td><p>The account address of the validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>lottery_power</td>
                   <td><a href="#double">double</a></td>
                   <td></td>
-                  <td><p>The lottery power of the baker, rounded to the nearest representable &#34;double&#34;. </p></td>
+                  <td><p>The lottery power of the validator, rounded to the nearest representable &#34;double&#34;. </p></td>
                 </tr>
               
             </tbody>
@@ -9290,24 +9359,24 @@ that aggregation kicks in. </p></td>
                   <td>previous_epoch_bakers</td>
                   <td><a href="#concordium.v2.BakersAndFinalizers">BakersAndFinalizers</a></td>
                   <td></td>
-                  <td><p>The bakers and finalizers for the previous epoch.
-If the current epoch is 0, then this is the same as the bakers for the current epoch. </p></td>
+                  <td><p>The validators and finalizers for the previous epoch.
+If the current epoch is 0, then this is the same as the validators for the current epoch. </p></td>
                 </tr>
               
                 <tr>
                   <td>current_epoch_bakers</td>
                   <td><a href="#concordium.v2.BakersAndFinalizers">BakersAndFinalizers</a></td>
                   <td>optional</td>
-                  <td><p>The bakers and finalizers for the current epoch.
-If this is absent, it should be treated as the same as the bakers for the previous epoch. </p></td>
+                  <td><p>The validators and finalizers for the current epoch.
+If this is absent, it should be treated as the same as the validators for the previous epoch. </p></td>
                 </tr>
               
                 <tr>
                   <td>next_epoch_bakers</td>
                   <td><a href="#concordium.v2.BakersAndFinalizers">BakersAndFinalizers</a></td>
                   <td>optional</td>
-                  <td><p>The bakers and finalizers for the next epoch.
-If this is absent, it should be treated as the same as the bakers for the current epoch. </p></td>
+                  <td><p>The validators and finalizers for the next epoch.
+If this is absent, it should be treated as the same as the validators for the current epoch. </p></td>
                 </tr>
               
                 <tr>
@@ -9598,7 +9667,7 @@ finalization record or not. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Baker ID. Every finalizer is in particular a baker. </p></td>
+                  <td><p>Validator ID. Every finalizer is in particular a validator. </p></td>
                 </tr>
               
                 <tr>
@@ -9678,7 +9747,7 @@ finalization record or not. </p></td>
         
       
         <h3 id="concordium.v2.FinalizerRound">FinalizerRound</h3>
-        <p>The finalizer round is a map from a 'Round'</p><p>to the list of finalizers (identified by their 'BakerId') that signed</p><p>off the round.</p>
+        <p>The finalizer round is a map from a 'Round'</p><p>to the list of finalizers (identified by their validator id) that signed</p><p>off the round.</p>
 
         
           <table class="field-table">
@@ -9698,7 +9767,7 @@ finalization record or not. </p></td>
                   <td>finalizers</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td>repeated</td>
-                  <td><p>The finalizers (identified by their &#39;BakerId&#39; that
+                  <td><p>The finalizers (identified by their validator id) that
 signed off the in &#39;round&#39;. </p></td>
                 </tr>
               
@@ -9710,7 +9779,7 @@ signed off the in &#39;round&#39;. </p></td>
         
       
         <h3 id="concordium.v2.FullBakerInfo">FullBakerInfo</h3>
-        <p>The keys an stake of a specific baker.</p>
+        <p>The keys and stake of a specific validator.</p>
 
         
           <table class="field-table">
@@ -9723,35 +9792,35 @@ signed off the in &#39;round&#39;. </p></td>
                   <td>baker_identity</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s identity. </p></td>
+                  <td><p>The validator&#39;s identity. </p></td>
                 </tr>
               
                 <tr>
                   <td>election_verify_key</td>
                   <td><a href="#concordium.v2.BakerElectionVerifyKey">BakerElectionVerifyKey</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s election verify key. </p></td>
+                  <td><p>The validator&#39;s election verify key. </p></td>
                 </tr>
               
                 <tr>
                   <td>signature_verify_key</td>
                   <td><a href="#concordium.v2.BakerSignatureVerifyKey">BakerSignatureVerifyKey</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s signature verify key. </p></td>
+                  <td><p>The validator&#39;s signature verify key. </p></td>
                 </tr>
               
                 <tr>
                   <td>aggregation_verify_key</td>
                   <td><a href="#concordium.v2.BakerAggregationVerifyKey">BakerAggregationVerifyKey</a></td>
                   <td></td>
-                  <td><p>The baker&#39;s aggregation verify key. </p></td>
+                  <td><p>The validator&#39;s aggregation verify key. </p></td>
                 </tr>
               
                 <tr>
                   <td>stake</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The stake of the baker. </p></td>
+                  <td><p>The stake of the validator. </p></td>
                 </tr>
               
             </tbody>
@@ -9775,7 +9844,7 @@ signed off the in &#39;round&#39;. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
-                  <td><p>The fraction paid to the baker. </p></td>
+                  <td><p>The fraction paid to the validator. </p></td>
                 </tr>
               
                 <tr>
@@ -9820,7 +9889,7 @@ signed off the in &#39;round&#39;. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
-                  <td><p>The fraction paid to the baker. </p></td>
+                  <td><p>The fraction paid to the validator. </p></td>
                 </tr>
               
                 <tr>
@@ -9889,7 +9958,7 @@ signed off the in &#39;round&#39;. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The &#39;BakerId&#39; of the pool owner. </p></td>
+                  <td><p>The validator id of the pool owner. </p></td>
                 </tr>
               
             </tbody>
@@ -10789,7 +10858,7 @@ value produced by the contract. </p></td>
         
       
         <h3 id="concordium.v2.LeadershipElectionNonce">LeadershipElectionNonce</h3>
-        <p>The leadership election nonce is an unpredictable value updated once an</p><p>epoch to make sure that bakers cannot predict too far in the future when</p><p>they will win the right to bake blocks.</p>
+        <p>The leadership election nonce is an unpredictable value updated once an</p><p>epoch to make sure that validators cannot predict too far in the future when</p><p>they will win the right to bake blocks.</p>
 
         
           <table class="field-table">
@@ -10851,7 +10920,7 @@ value produced by the contract. </p></td>
         
       
         <h3 id="concordium.v2.LeverageFactor">LeverageFactor</h3>
-        <p>A leverage factor.</p>
+        <p>The leverage factor (leverage bound) is a chain parameter that is set to guarantee that each validator </p><p>has skin in the game with respect to its delegators by providing some of the CCD staked at the validator's pool from the validator's funds.  </p><p>The leverage factor is required to be set to a value greater than or equal to 1 (1 <= leverage_factor).</p><p>The leverage factor is the maximum proportion of total stake of a validator (including the validator's own stake and the delegated </p><p>stake to the validator) to the validator's own stake (excluding delegated stake to the validator)</p><p>that a validator can achieve where the total stake of the validator is considered effective</p><p>(meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).</p><p>Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.</p><p>Delegators are prevented from increasing their delegation to the pool </p><p>(via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the leverage bound cap.</p><p>See the comment at the `delegated_capital_cap` type for the exact formula.</p>
 
         
           <table class="field-table">
@@ -10875,7 +10944,7 @@ value produced by the contract. </p></td>
         
       
         <h3 id="concordium.v2.Memo">Memo</h3>
-        <p>A memo which can be included as part of a transfer. Max size is 256 bytes.</p>
+        <p>A memo which can be included as part of a transfer. Max size is 256 bytes.</p><p>This message can occur starting from protocol version 2.</p>
 
         
           <table class="field-table">
@@ -10899,7 +10968,7 @@ value produced by the contract. </p></td>
         
       
         <h3 id="concordium.v2.MintDistributionCpv0">MintDistributionCpv0</h3>
-        <p>The minting rate and the distribution of newly-minted CCD among bakers,</p><p>finalizers, and the foundation account. It must be the case that</p><p>baking_reward + finalization_reward <= 1. The remaining amount is the</p><p>platform development charge.</p>
+        <p>The minting rate and the distribution of newly-minted CCD among validators,</p><p>finalizers, and the foundation account. It must be the case that</p><p>baking_reward + finalization_reward <= 1. The remaining amount is the</p><p>platform development charge.</p>
 
         
           <table class="field-table">
@@ -10919,7 +10988,7 @@ value produced by the contract. </p></td>
                   <td>baking_reward</td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
-                  <td><p>The fraction of newly created CCD allocated to baker rewards. </p></td>
+                  <td><p>The fraction of newly created CCD allocated to validator rewards. </p></td>
                 </tr>
               
                 <tr>
@@ -11379,7 +11448,7 @@ protocol. </p></td>
         
       
         <h3 id="concordium.v2.NodeInfo.BakerConsensusInfo">NodeInfo.BakerConsensusInfo</h3>
-        <p>Consensus info for a node configured with baker keys.</p>
+        <p>Consensus info for a node configured with validator keys.</p>
 
         
           <table class="field-table">
@@ -11406,16 +11475,16 @@ protocol. </p></td>
                   <td>active_baker_committee_info</td>
                   <td><a href="#concordium.v2.NodeInfo.BakerConsensusInfo.ActiveBakerCommitteeInfo">NodeInfo.BakerConsensusInfo.ActiveBakerCommitteeInfo</a></td>
                   <td></td>
-                  <td><p>The node is configured with baker keys and
-is member of the baking committee. </p></td>
+                  <td><p>The node is configured with validator keys and
+is member of the validation committee. </p></td>
                 </tr>
               
                 <tr>
                   <td>active_finalizer_committee_info</td>
                   <td><a href="#concordium.v2.NodeInfo.BakerConsensusInfo.ActiveFinalizerCommitteeInfo">NodeInfo.BakerConsensusInfo.ActiveFinalizerCommitteeInfo</a></td>
                   <td></td>
-                  <td><p>The node is configured with baker keys and
-is member of the baking and finalization committees. </p></td>
+                  <td><p>The node is configured with validator keys and
+is member of the validator and finalization committees. </p></td>
                 </tr>
               
             </tbody>
@@ -11426,14 +11495,14 @@ is member of the baking and finalization committees. </p></td>
         
       
         <h3 id="concordium.v2.NodeInfo.BakerConsensusInfo.ActiveBakerCommitteeInfo">NodeInfo.BakerConsensusInfo.ActiveBakerCommitteeInfo</h3>
-        <p>Tagging message type for a node that</p><p>is configured with baker keys and active in</p><p>the current baking committee</p>
+        <p>Tagging message type for a node that</p><p>is configured with validator keys and active in</p><p>the current validation committee</p>
 
         
 
         
       
         <h3 id="concordium.v2.NodeInfo.BakerConsensusInfo.ActiveFinalizerCommitteeInfo">NodeInfo.BakerConsensusInfo.ActiveFinalizerCommitteeInfo</h3>
-        <p>Tagging message type for a node that</p><p>is configured with baker keys and active in</p><p>the current finalizer committee (and also baking committee).</p>
+        <p>Tagging message type for a node that</p><p>is configured with validator keys and active in</p><p>the current finalizer committee (and also validation committee).</p>
 
         
 
@@ -11516,7 +11585,7 @@ The node does not process blocks. </p></td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
                   <td><p>Consensus info for a node that is
-not configured with baker keys.
+not configured with validator keys.
 The node is only processing blocks and
 relaying blocks and transactions and responding to
 catchup messages. </p></td>
@@ -11526,7 +11595,7 @@ catchup messages. </p></td>
                   <td>active</td>
                   <td><a href="#concordium.v2.NodeInfo.BakerConsensusInfo">NodeInfo.BakerConsensusInfo</a></td>
                   <td></td>
-                  <td><p>The node is configured with baker credentials and consensus is running. </p></td>
+                  <td><p>The node is configured with validator credentials and consensus is running. </p></td>
                 </tr>
               
             </tbody>
@@ -11992,7 +12061,7 @@ and network messages such as pings and peer requests. </p></td>
                   <td>pool_parameters_cpv_0</td>
                   <td><a href="#concordium.v2.BakerStakeThreshold">BakerStakeThreshold</a></td>
                   <td></td>
-                  <td><p>Updates baker stake threshold. Is only relevant prior to protocol version 4. </p></td>
+                  <td><p>Updates validator stake threshold. Is only relevant prior to protocol version 4. </p></td>
                 </tr>
               
                 <tr>
@@ -12199,7 +12268,7 @@ bytes in length. </p></td>
         
       
         <h3 id="concordium.v2.PoolCurrentPaydayInfo">PoolCurrentPaydayInfo</h3>
-        <p>Information about a baker pool in the current reward period.</p>
+        <p>Information about a validator pool in the current reward period.</p>
 
         
           <table class="field-table">
@@ -12219,7 +12288,7 @@ bytes in length. </p></td>
                   <td>finalization_live</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>Whether the baker has contributed a finalization proof in the current reward period. </p></td>
+                  <td><p>Whether the validator has contributed a finalization proof in the current reward period. </p></td>
                 </tr>
               
                 <tr>
@@ -12233,21 +12302,21 @@ bytes in length. </p></td>
                   <td>effective_stake</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The effective stake of the baker in the current reward period. </p></td>
+                  <td><p>The effective stake of the validator in the current reward period. </p></td>
                 </tr>
               
                 <tr>
                   <td>lottery_power</td>
                   <td><a href="#double">double</a></td>
                   <td></td>
-                  <td><p>The lottery power of the baker in the current reward period. </p></td>
+                  <td><p>The lottery power of the validator in the current reward period. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_equity_capital</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The effective equity capital of the baker for the current reward period. </p></td>
+                  <td><p>The effective equity capital of the validator for the current reward period. </p></td>
                 </tr>
               
                 <tr>
@@ -12308,7 +12377,7 @@ Absent if the protocol version does not support validator suspension. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The &#39;BakerId&#39; of the pool owner. </p></td>
+                  <td><p>The validator id of the pool owner. </p></td>
                 </tr>
               
             </tbody>
@@ -12332,7 +12401,7 @@ Absent if the protocol version does not support validator suspension. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The &#39;BakerId&#39; of the pool owner. </p></td>
+                  <td><p>The validator id of the pool owner. </p></td>
                 </tr>
               
                 <tr>
@@ -12360,8 +12429,21 @@ Absent if the protocol version does not support validator suspension. </p></td>
                   <td>delegated_capital_cap</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td>optional</td>
-                  <td><p>The maximum amount that may be delegated to the pool, accounting for leverage and stake limits.
-Absent if the pool is removed. </p></td>
+                  <td><p>The maximum amount that may be delegated to the pool, accounting for leverage and capital bounds.
+Absent if the pool is removed.
+
+leverage_bound_cap for pool p: Lₚ = λ * Cₚ - Cₚ = (λ - 1) * Cₚ
+capital_bound_cap for pool p: Bₚ = max (0, floor( (κ * (T - Dₚ) - Cₚ) / (1 - K) ))
+delegated_capital_cap for pool p = min (Lₚ, Bₚ)
+
+Where
+κ is the `CapitalBound`.
+λ is the `LeverageFactor`.
+T is the total staked capital on the whole chain (including passive
+delegation).
+Dₚ is the delegated capital of pool p.
+Cₚ is the equity capital (staked by the pool owner excluding delegated stake
+to the pool) of pool p. </p></td>
                 </tr>
               
                 <tr>
@@ -12399,7 +12481,7 @@ This is not used from protocol version 7 onwards, as stake changes are immediate
                   <td><a href="#bool">bool</a></td>
                   <td>optional</td>
                   <td><p>A flag indicating whether the pool owner is suspended.
-Absent if the protocol version does not support validator suspension or the pool is removed. </p></td>
+Absent if the protocol version does not support validator suspension (meaning prior protocol version 8) or the pool is removed. </p></td>
                 </tr>
               
             </tbody>
@@ -12430,7 +12512,7 @@ Absent if the protocol version does not support validator suspension or the pool
                   <td>passive_baking_commission</td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
-                  <td><p>Fraction of baking rewards charged by the passive delegation. </p></td>
+                  <td><p>Fraction of block production rewards charged by the passive delegation. </p></td>
                 </tr>
               
                 <tr>
@@ -12444,21 +12526,21 @@ Absent if the protocol version does not support validator suspension or the pool
                   <td>commission_bounds</td>
                   <td><a href="#concordium.v2.CommissionRanges">CommissionRanges</a></td>
                   <td></td>
-                  <td><p>Bounds on the commission rates that may be charged by bakers. </p></td>
+                  <td><p>Bounds on the commission rates that may be charged by validators. </p></td>
                 </tr>
               
                 <tr>
                   <td>minimum_equity_capital</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>Minimum equity capital required for a new baker. </p></td>
+                  <td><p>Minimum equity capital required for a new validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>capital_bound</td>
                   <td><a href="#concordium.v2.CapitalBound">CapitalBound</a></td>
                   <td></td>
-                  <td><p>Maximum fraction of the total staked capital of that a new baker can
+                  <td><p>Maximum fraction of the total staked capital of that a new validator can
 have. </p></td>
                 </tr>
               
@@ -12466,7 +12548,7 @@ have. </p></td>
                   <td>leverage_bound</td>
                   <td><a href="#concordium.v2.LeverageFactor">LeverageFactor</a></td>
                   <td></td>
-                  <td><p>The maximum leverage that a baker can have as a ratio of total stake
+                  <td><p>The maximum leverage that a validator can have as a ratio of total stake
 to equity capital. </p></td>
                 </tr>
               
@@ -12478,7 +12560,7 @@ to equity capital. </p></td>
         
       
         <h3 id="concordium.v2.PoolPendingChange">PoolPendingChange</h3>
-        <p>A pending change to a baker pool.</p>
+        <p>A pending change to a validator pool.</p>
 
         
           <table class="field-table">
@@ -12509,7 +12591,7 @@ to equity capital. </p></td>
         
       
         <h3 id="concordium.v2.PoolPendingChange.Reduce">PoolPendingChange.Reduce</h3>
-        <p>A reduction in baker equity capital is pending.</p>
+        <p>A reduction in validator equity capital is pending.</p>
 
         
           <table class="field-table">
@@ -12522,7 +12604,7 @@ to equity capital. </p></td>
                   <td>reduced_equity_capital</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>New baker equity capital. </p></td>
+                  <td><p>New validator equity capital. </p></td>
                 </tr>
               
                 <tr>
@@ -12707,7 +12789,7 @@ to equity capital. </p></td>
                   <td>repeated</td>
                   <td><p>A list of the finalizers that formed the quorum certificate
 i.e., the ones who have contributed to the &#39;aggregate_siganture&#39;.
-The finalizers are identified by their baker id as this is stable
+The finalizers are identified by their validator id as this is stable
 across protocols and epochs. </p></td>
                 </tr>
               
@@ -13196,21 +13278,21 @@ possible. The data are the from address and the amount to transfer. </p></td>
                   <td>invalid_proof</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>Proof that the baker owns relevant private keys is not valid. </p></td>
+                  <td><p>Proof that the validator owns relevant private keys is not valid. </p></td>
                 </tr>
               
                 <tr>
                   <td>already_a_baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Tried to add baker for an account that already has a baker. </p></td>
+                  <td><p>Tried to add validator for an account that already has a validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>not_a_baker</td>
                   <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
                   <td></td>
-                  <td><p>Tried to remove a baker for an account that has no baker. </p></td>
+                  <td><p>Tried to remove a validator for an account that has no validator. </p></td>
                 </tr>
               
                 <tr>
@@ -13224,14 +13306,14 @@ possible. The data are the from address and the amount to transfer. </p></td>
                   <td>stake_under_minimum_threshold_for_baking</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>The amount provided is under the threshold required for becoming a baker. </p></td>
+                  <td><p>The amount provided is under the threshold required for becoming a validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>baker_in_cooldown</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>The change could not be made because the baker is in cooldown for
+                  <td><p>The change could not be made because the validator is in cooldown for
 another change. </p></td>
                 </tr>
               
@@ -13239,7 +13321,7 @@ another change. </p></td>
                   <td>duplicate_aggregation_key</td>
                   <td><a href="#concordium.v2.BakerAggregationVerifyKey">BakerAggregationVerifyKey</a></td>
                   <td></td>
-                  <td><p>A baker with the given aggregation key already exists. </p></td>
+                  <td><p>A validator with the given aggregation key already exists. </p></td>
                 </tr>
               
                 <tr>
@@ -13397,36 +13479,36 @@ from/to public to/from encrypted). </p></td>
                   <td>missing_baker_add_parameters</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>A configure baker transaction is missing one or more arguments in order
-to add a baker. </p></td>
+                  <td><p>A `ConfigureBaker` transaction is missing one or more arguments in order
+to add a validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>finalization_reward_commission_not_in_range</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>Finalization reward commission is not in the valid range for a baker. </p></td>
+                  <td><p>Finalization reward commission is not in the valid range for a validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>baking_reward_commission_not_in_range</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>Baking reward commission is not in the valid range for a baker. </p></td>
+                  <td><p>Block production reward commission is not in the valid range for a validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>transaction_fee_commission_not_in_range</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>Transaction fee commission is not in the valid range for a baker. </p></td>
+                  <td><p>Transaction fee commission is not in the valid range for a validator. </p></td>
                 </tr>
               
                 <tr>
                   <td>already_a_delegator</td>
                   <td><a href="#concordium.v2.Empty">Empty</a></td>
                   <td></td>
-                  <td><p>Tried to add baker for an account that already has a delegator. </p></td>
+                  <td><p>Tried to add validator for an account that already has a delegator. </p></td>
                 </tr>
               
                 <tr>
@@ -13469,7 +13551,7 @@ order to add a delegator. </p></td>
                   <td>delegation_target_not_a_baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>Delegation target is not a baker </p></td>
+                  <td><p>Delegation target is not a validator </p></td>
                 </tr>
               
                 <tr>
@@ -13895,7 +13977,7 @@ capital. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The baker that baked the block. </p></td>
+                  <td><p>The validator that baked the block. </p></td>
                 </tr>
               
                 <tr>
@@ -14073,7 +14155,7 @@ finalized block. </p></td>
                   <td><a href="#concordium.v2.CredentialDeployment">CredentialDeployment</a></td>
                   <td></td>
                   <td><p>Credential deployments create new accounts. They are not paid for
-directly by the sender. Instead, bakers are rewarded by the protocol for
+directly by the sender. Instead, validators are rewarded by the protocol for
 including them. </p></td>
                 </tr>
               
@@ -14244,7 +14326,7 @@ to make future update instructions. </p></td>
         
       
         <h3 id="concordium.v2.Slot">Slot</h3>
-        <p>A number representing a slot for baking a block.</p>
+        <p>A number representing a slot for producing a block.</p>
 
         
           <table class="field-table">
@@ -14268,7 +14350,7 @@ to make future update instructions. </p></td>
         
       
         <h3 id="concordium.v2.StakePendingChange">StakePendingChange</h3>
-        <p>Pending change to the stake either of a baker or delegator.</p>
+        <p>Pending change to the stake either of a validator or delegator.</p>
 
         
           <table class="field-table">
@@ -14711,7 +14793,7 @@ The bytes have a fixed length of 48 bytes. </p></td>
                   <td>baking_reward_account</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The amount in the baking reward account. </p></td>
+                  <td><p>The amount in the block production reward account. </p></td>
                 </tr>
               
                 <tr>
@@ -14770,7 +14852,7 @@ The bytes have a fixed length of 48 bytes. </p></td>
                   <td>baking_reward_account</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The amount in the baking reward account. </p></td>
+                  <td><p>The amount in the block production reward account. </p></td>
                 </tr>
               
                 <tr>
@@ -14812,7 +14894,7 @@ The bytes have a fixed length of 48 bytes. </p></td>
                   <td>total_staked_capital</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The total capital put up as stake by bakers and delegators. </p></td>
+                  <td><p>The total capital put up as stake by validators and delegators. </p></td>
                 </tr>
               
                 <tr>
@@ -14843,7 +14925,7 @@ The bytes have a fixed length of 48 bytes. </p></td>
                   <td>baker</td>
                   <td><a href="#concordium.v2.AmountFraction">AmountFraction</a></td>
                   <td></td>
-                  <td><p>The fraction allocated to the baker. </p></td>
+                  <td><p>The fraction allocated to the validator. </p></td>
                 </tr>
               
                 <tr>
@@ -14940,7 +15022,7 @@ The bytes have a fixed length of 48 bytes. </p></td>
         
       
         <h3 id="concordium.v2.TransferWithMemoPayload">TransferWithMemoPayload</h3>
-        <p>Payload of a transfer between two accounts with a memo.</p>
+        <p>Payload of a transfer between two accounts with a memo.</p><p>This message can occur starting from protocol version 2.</p>
 
         
           <table class="field-table">
@@ -15272,7 +15354,7 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
                   <td>baker_stake_threshold_update</td>
                   <td><a href="#concordium.v2.BakerStakeThreshold">BakerStakeThreshold</a></td>
                   <td></td>
-                  <td><p>The minimum amount of CCD needed to be come a baker was updated. </p></td>
+                  <td><p>The minimum amount of CCD needed to be come a validator was updated. </p></td>
                 </tr>
               
                 <tr>
@@ -15532,7 +15614,7 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
         
       
         <h3 id="concordium.v2.WinningBaker">WinningBaker</h3>
-        <p>Details of which baker won the lottery in a given round in consensus version 1.</p>
+        <p>Details of which validator won the lottery in a given round in consensus version 1.</p>
 
         
           <table class="field-table">
@@ -15552,14 +15634,14 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
                   <td>winner</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
-                  <td><p>The baker that won the round. </p></td>
+                  <td><p>The validator that won the round. </p></td>
                 </tr>
               
                 <tr>
                   <td>present</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>True if the baker produced a block in this round on the finalized chain, and False otherwise. </p></td>
+                  <td><p>True if the validator produced a block in this round on the finalized chain, and False otherwise. </p></td>
                 </tr>
               
             </tbody>
@@ -15626,7 +15708,7 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
         </table>
       
         <h3 id="concordium.v2.Cooldown.CooldownStatus">Cooldown.CooldownStatus</h3>
-        <p>The status of a cooldown. When stake is removed from a baker or delegator</p><p>(from protocol version 7) it first enters the pre-pre-cooldown state.</p><p>The next time the stake snaphot is taken (at the epoch transition before</p><p>a payday) it enters the pre-cooldown state. At the subsequent payday, it</p><p>enters the cooldown state. At the payday after the end of the cooldown</p><p>period, the stake is finally released.</p>
+        <p>The status of a cooldown. When stake is removed from a validator or delegator</p><p>(from protocol version 7) it first enters the pre-pre-cooldown state.</p><p>The next time the stake snaphot is taken (at the epoch transition before</p><p>a payday) it enters the pre-cooldown state. At the subsequent payday, it</p><p>enters the cooldown state. At the payday after the end of the cooldown</p><p>period, the stake is finally released.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -15684,7 +15766,7 @@ end time is projected, but the actual end time will be determined later.</p></td
         </table>
       
         <h3 id="concordium.v2.NodeInfo.BakerConsensusInfo.PassiveCommitteeInfo">NodeInfo.BakerConsensusInfo.PassiveCommitteeInfo</h3>
-        <p>The committee information of a node configured with</p><p>baker keys but somehow the node is _not_ part of the</p><p>current baking committee.</p>
+        <p>The committee information of a node configured with</p><p>validator keys but somehow the node is _not_ part of the</p><p>current validation committee.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -15694,22 +15776,22 @@ end time is projected, but the actual end time will be determined later.</p></td
               <tr>
                 <td>NOT_IN_COMMITTEE</td>
                 <td>0</td>
-                <td><p>The node is started with baker keys however it is currently not in the baking committee.
+                <td><p>The node is started with validator keys however it is currently not in the validation committee.
 The node is __not__ baking.</p></td>
               </tr>
             
               <tr>
                 <td>ADDED_BUT_NOT_ACTIVE_IN_COMMITTEE</td>
                 <td>1</td>
-                <td><p>The account is registered as a baker but not in the current `Epoch`.
+                <td><p>The account is registered as a validator but not in the current `Epoch`.
 The node is __not__ baking.</p></td>
               </tr>
             
               <tr>
                 <td>ADDED_BUT_WRONG_KEYS</td>
                 <td>2</td>
-                <td><p>The node has configured invalid baker keys i.e., the configured
-baker keys do not match the current keys on the baker account.
+                <td><p>The node has configured invalid validator keys i.e., the configured
+validator keys do not match the current keys on the validator account.
 The node is __not__ baking.</p></td>
               </tr>
             
@@ -15838,6 +15920,12 @@ Once the peer has responded to the request, its status will be changed to:
                 <td><p></p></td>
               </tr>
             
+              <tr>
+                <td>PROTOCOL_VERSION_9</td>
+                <td>8</td>
+                <td><p></p></td>
+              </tr>
+            
           </tbody>
         </table>
       
@@ -15876,31 +15964,31 @@ Once the peer has responded to the request, its status will be changed to:
               <tr>
                 <td>ADD_BAKER</td>
                 <td>4</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 4.</p></td>
               </tr>
             
               <tr>
                 <td>REMOVE_BAKER</td>
                 <td>5</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 4.</p></td>
               </tr>
             
               <tr>
                 <td>UPDATE_BAKER_STAKE</td>
                 <td>6</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 4.</p></td>
               </tr>
             
               <tr>
                 <td>UPDATE_BAKER_RESTAKE_EARNINGS</td>
                 <td>7</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 4.</p></td>
               </tr>
             
               <tr>
                 <td>UPDATE_BAKER_KEYS</td>
                 <td>8</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 4.</p></td>
               </tr>
             
               <tr>
@@ -15912,13 +16000,13 @@ Once the peer has responded to the request, its status will be changed to:
               <tr>
                 <td>ENCRYPTED_AMOUNT_TRANSFER</td>
                 <td>10</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 7.</p></td>
               </tr>
             
               <tr>
                 <td>TRANSFER_TO_ENCRYPTED</td>
                 <td>11</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 7.</p></td>
               </tr>
             
               <tr>
@@ -15948,31 +16036,32 @@ Once the peer has responded to the request, its status will be changed to:
               <tr>
                 <td>TRANSFER_WITH_MEMO</td>
                 <td>16</td>
-                <td><p></p></td>
+                <td><p>Introduced in protocol version 2.</p></td>
               </tr>
             
               <tr>
                 <td>ENCRYPTED_AMOUNT_TRANSFER_WITH_MEMO</td>
                 <td>17</td>
-                <td><p></p></td>
+                <td><p>Deprecated in protocol version 7.
+Introduced in protocol version 2.</p></td>
               </tr>
             
               <tr>
                 <td>TRANSFER_WITH_SCHEDULE_AND_MEMO</td>
                 <td>18</td>
-                <td><p></p></td>
+                <td><p>Introduced in protocol version 2.</p></td>
               </tr>
             
               <tr>
                 <td>CONFIGURE_BAKER</td>
                 <td>19</td>
-                <td><p></p></td>
+                <td><p>Introduced in protocol version 4.</p></td>
               </tr>
             
               <tr>
                 <td>CONFIGURE_DELEGATION</td>
                 <td>20</td>
-                <td><p></p></td>
+                <td><p>Introduced in protocol version 4.</p></td>
               </tr>
             
           </tbody>
