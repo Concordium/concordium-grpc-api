@@ -1148,7 +1148,7 @@ message RegisteredData {
 // and `BakerKeysUpdated`) existed which emitted validator related events instead.
 message BakerEvent {
   // A validator was added.
-  // This message/event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+  // This message/event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
   // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.  
   message BakerAdded {
     // The keys with which the validator registered.
@@ -1234,7 +1234,7 @@ message BakerEvent {
     DelegatorId delegator_id = 1;
   }
 
-  // The validator's account has been suspended by a transaction sent from the validator itself.
+  // The validator has been suspended by a transaction sent from the validator itself.
   // If the validator is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
   // event is emitted instead of this event.
   // This message can occur starting from protocol version 8.
@@ -1252,7 +1252,7 @@ message BakerEvent {
 
   oneof event {
     // A validator was added.
-    // This event is always accommodated by a `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+    // This event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
     // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
     BakerAdded baker_added = 1;
     // A validator was removed by a transaction sent by the validator that decreased the validator's own stake to 0.
@@ -1283,7 +1283,7 @@ message BakerEvent {
     // The validator's finalization reward commission was updated.
     BakerSetFinalizationRewardCommission baker_set_finalization_reward_commission = 11;
     // An existing delegation was removed by a transaction sent from a delegator that switched its staking behavior to being a validator.
-    // This event is always accommodated by a `BakerEvent::BakerAdded`, `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
+    // This event is always accompanied by `BakerEvent::BakerAdded`, `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
     // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
     // If the account is a delegator in the current payday, it will remain so until the
     // next payday with respect to staking reward payouts, although the delegation record will be removed from the account immediately.
@@ -1291,12 +1291,12 @@ message BakerEvent {
     // the `DelegationEvent::DelegationRemoved` is emitted instead of this event.
     // This event was introduced in protocol version version 7.
     DelegationRemoved delegation_removed = 12;
-    // The validator's account has been suspended by a transaction sent from the validator itself.
+    // The validator has been suspended by a transaction sent from the validator itself.
     // If the validator is suspended by the protocol (e.g., due to inactivity), the `BlockSpecialEvent::ValidatorSuspended`
     // event is emitted instead of this event.
     // This event can occur starting from protocol version 8.
     BakerSuspended baker_suspended = 13;
-    // The validator's account has been resumed by a transaction sent from the validator itself.
+    // The validator has been resumed by a transaction sent from the validator itself.
     // This event can occur starting from protocol version 8.
     BakerResumed baker_resumed = 14;
   }
@@ -1349,7 +1349,7 @@ message DelegationEvent {
     // The delegator's delegation target (either a validator pool or passive delegation) was updated by a transaction from the delegator.
     DelegationSetDelegationTarget delegation_set_delegation_target = 4;
     // A delegator was added.
-    // This event is always accommodated by a `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
+    // This event is always accompanied by `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
     DelegatorId delegation_added = 5;
     // A delegator was removed by a transaction sent from the delegator that decreased the delegators's stake to 0.
     // If the account is a delegator in the current payday, it will remain so until the
@@ -1358,7 +1358,7 @@ message DelegationEvent {
     // the `BakerEvent::DelegationRemoved` is emitted instead of this event.
     DelegatorId delegation_removed = 6;
     // An existing validator was removed by a transaction sent from an validator that switched its staking behavior to `delegation`.
-    // This event is always accommodated by a `DelegationEvent::DelegationAdded`, `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
+    // This event is always accompanied by `DelegationEvent::DelegationAdded`, `DelegationEvent::DelegationSetDelegationTarget`, `DelegationEvent::DelegationSetRestakeEarnings `, and `DelegationEvent::DelegationStakeIncreased` events in the same transaction.
     // When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
     // The behavior of validators being removed changed in protocol version 7.
     // (see https://proposals.concordium.com/updates/P7.html for more details).
@@ -1397,7 +1397,7 @@ message AccountTransactionEffects {
     // This field can occur starting from protocol version 2.
     optional Memo memo = 3;
   }
-  // A validator got its stake reduced. This is the result of a
+  // A validator updated its stake. This is the result of a
   // successful `UpdateBakerStake` transaction.
   // The associated transaction type can no longer be created starting from protocol version 4.
   // Hence, this message does not occur anymore.
@@ -1743,7 +1743,9 @@ message CommissionRanges {
 // The value roughly describes the maximum proportion of the total stake in the protocol (from all validators including passive delegation) 
 // to the stake of a validator that a validator can achieve where the total stake of the validator is considered effective
 // (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
-// Once a validator passes this bound, some of the validator's total stake no longer contribute to the validator's effective stake.
+// Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.
+// Delegators are prevented from increasing their delegation to the pool 
+// (via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the capital bound cap.
 // See the comment at the `delegated_capital_cap` type for the exact formula.
 message CapitalBound {
   AmountFraction value = 1;
@@ -1751,12 +1753,14 @@ message CapitalBound {
 
 // The leverage factor (leverage bound) is a chain parameter that is set to guarantee that each validator 
 // has skin in the game with respect to its delegators by providing some of the CCD staked at the validator's pool from the validator's funds.  
-// The leverage factor is required to be set to a value greater or equal than 1 (1 <= leverage_factor).
+// The leverage factor is required to be set to a value greater than or equal to 1 (1 <= leverage_factor).
 // The leverage factor is the maximum proportion of total stake of a validator (including the validator's own stake and the delegated 
 // stake to the validator) to the validator's own stake (excluding delegated stake to the validator)
 // that a validator can achieve where the total stake of the validator is considered effective
 // (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
-// Once a validator passes this bound, some of the validator's total stake no longer contribute to the validator's effective stake.
+// Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.
+// Delegators are prevented from increasing their delegation to the pool 
+// (via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the leverage bound cap.
 // See the comment at the `delegated_capital_cap` type for the exact formula.
 message LeverageFactor {
   Ratio value = 1;
@@ -2558,11 +2562,9 @@ message LeadershipElectionNonce {
 
 // Response type for GetElectionInfo.
 // Contains information related to validator election for a perticular block.
-// Since the election info is recomputed only at payday? (or is it snapshot?) blocks, the `get_election_info` endpoint returns the same value
-// for the whole payday period.
+// The `ElectionInfo` will be the same for all blocks in the same epoch. 
+// Moreover, from protocol version 4, it is the same for all blocks in the same payday.
 message ElectionInfo {
-  // Since the election info is recomputed only at payday? (or is it snapshot?) blocks, the `get_election_info` endpoint returns the same value
-  // for the whole payday period.
   message Baker {
     // The ID of the validator.
     BakerId baker = 1;
@@ -2596,8 +2598,9 @@ message BlockSpecialEvent {
     repeated Entry entries = 1;
   }
 
-  // Rewards issued to all the validators at the end of an epoch for producing blocks in the epoch,
-  // in proportion to the number of blocks they contributed.
+  // Rewards issued to each validator at the end of an epoch for producing blocks in the epoch,
+  // in proportion to the number of blocks they contributed. This only occurs in protocol versions
+  // 1 to 3. From protocol version 4, it is replaced by `PaydayPoolReward` and `PaydayAccountReward` messages.
   message BakingRewards {
     // The amount awarded to each validator.
     AccountAmounts baker_rewards = 1;
@@ -2744,7 +2747,9 @@ message BlockSpecialEvent {
   }
 
   oneof event {
-    // Reward issued to all the validators at the end of an epoch for producing blocks in the epoch.
+    // Rewards issued to each validator at the end of an epoch for producing blocks in the epoch,
+    // in proportion to the number of blocks they contributed. This only occurs in protocol versions
+    // 1 to 3. From protocol version 4, it is replaced by `PaydayPoolReward` and `PaydayAccountReward` messages.
     BakingRewards baking_rewards = 1;
     // Minting of new CCDs.
     // Starting from protocol version 4, this event occurs in each payday block.
