@@ -59,7 +59,7 @@ message TokenState {
   uint32 nr_of_decimals = 3;
   // The total available token supply.
   TokenAmount total_supply = 4;
-  // Token module specific state, such as token name, feature flags, meta data. 
+  // Token module specific state, such as token name, feature flags, meta data.
   CBor module_state = 5;
 }
 
@@ -77,7 +77,7 @@ message TokenAccountState {
   optional bool member_deny_list = 3;
 }
 
-// Token events originating from governance transactions.
+// Single token event originating as part of a token governance transaction.
 message TokenGovernanceEvent {
   // The unique token symbol.
   TokenId token_symbol = 1;
@@ -87,7 +87,13 @@ message TokenGovernanceEvent {
   CBor details = 3;
 }
 
-//Token events originating from account transactions.
+// Token events originating from token governance transactions.
+message TokenGovernanceEffect {
+  // Events emitted by the token.
+  repeated TokenGovernanceEvent events = 1;
+}
+
+// Single token event originating as part of a token holder transaction.
 message TokenHolderEvent {
   // The unique token symbol.
   TokenId token_symbol = 1;
@@ -95,4 +101,10 @@ message TokenHolderEvent {
   string type  = 2;
   // The CBOR encoded event details.
   CBor details = 3;
+}
+
+// Token events originating from token holder transactions.
+message TokenHolderEffect {
+  // Events emitted by the token.
+  repeated TokenHolderEvent events = 1;
 }

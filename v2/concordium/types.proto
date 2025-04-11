@@ -1445,10 +1445,10 @@ message AccountTransactionEffects {
     BakerConfigured baker_configured = 18;
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
-    // A token holder event.
-    plt.TokenHolderEvent token_holder_event = 20;
-    // Events originating from token governance.
-    plt.TokenGovernanceEvent token_governance_event = 21;
+    // Token holder transaction effect.
+    plt.TokenHolderEffect token_holder_effect = 20;
+    // Token governance transaction effect.
+    plt.TokenGovernanceEffect token_governance_effect = 21;
   }
 }
 
@@ -3826,8 +3826,7 @@ message RawTimeoutCertificate {
     // The aggregated signature by the finalization committee that witnessed
     // the 'round' timed out.
     TimeoutSignature aggregate_signature = 5;
-  }
-  
+}
 
 message PersistentRoundStatus {
     // The last signed quorum message by the node.
