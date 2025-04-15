@@ -989,6 +989,8 @@ message RejectReason {
     Empty pool_would_become_over_delegated = 53;
     // The pool is not open to delegators.
     Empty pool_closed = 54;
+    // The provided identifier does not match a token currently on chain.
+    plt.TokenId non_existent_token_id = 55;
   }
 }
 
@@ -1999,6 +2001,8 @@ enum TransactionType {
   TRANSFER_WITH_SCHEDULE_AND_MEMO = 18;
   CONFIGURE_BAKER = 19;
   CONFIGURE_DELEGATION = 20;
+  // Introduced in protocol version 9.
+  TOKEN_HOLDER = 21;
 }
 
 // The different versions of the protocol.
