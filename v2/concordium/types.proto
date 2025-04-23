@@ -2005,6 +2005,7 @@ enum TransactionType {
   CONFIGURE_DELEGATION = 20;
   // Introduced in protocol version 9.
   TOKEN_HOLDER = 21;
+  // Introduced in protocol version 9.
   TOKEN_GOVERNANCE = 22;
 }
 
