@@ -4,11 +4,13 @@
 
 - Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
 - Support for protocol level tokens.
-  - Added account / block level token state.
-  - Token identifiers.
-  - Token governance / holder events.
-  - Endpoint to query token block level state.
-  - Endpoint to query list of existing protocol level tokens.
+  - Extend `AccountInfo` with `tokens` field for account state per token.
+  - Extend enum `TransactionType` with values `TOKEN_HOLDER`/`TOKEN_GOVERNANCE` representing token holder/governance transactions.
+  - Extend enum `UpdateType` with value `UPDATE_CREATE_PLT` representing chain updates creating protocol level tokens.
+  - Extend `effect` oneof in `AccountTransactionEffects` with `token_holder_effect` and `token_governance_effect`.
+  - Extend `reason` oneof in `RejectReason` with `non_existent_token_id` and `unauthorized_token_governance`.
+  - Add rpc endpoint `GetTokenInfo` for accessing state of each token for some block.
+  - Add rpc endpoint `GetTokenList` to query list of existing protocol level tokens for some block.
 
 ## Node 8.0 API
 
