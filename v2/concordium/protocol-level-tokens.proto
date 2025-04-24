@@ -108,3 +108,13 @@ message TokenHolderEffect {
   // Events emitted by the token.
   repeated TokenHolderEvent events = 1;
 }
+
+// Details provided by the token module in the event of rejecting a transaction.
+message TokenModuleRejectReason {
+    // The token symbol.
+    TokenId token_symbol = 1;
+    // The type of the reject reason.
+    string type = 2;
+    // (Optional) CBOR-encoded details.
+    optional CBor details = 3;
+}

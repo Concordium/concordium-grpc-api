@@ -989,6 +989,12 @@ message RejectReason {
     Empty pool_would_become_over_delegated = 53;
     // The pool is not open to delegators.
     Empty pool_closed = 54;
+    // Tried to create a protocol-level token where a token with the same `TokenId` exists.
+    plt.TokenId token_exists = 55;
+    // Tried to create a protocol-level token but the specified token module is invalid.
+    plt.TokenModuleRef token_module_invalid = 56;
+    // Tried to create a protocol-level token, but the token module's initializer failed.
+    plt.TokenModuleRejectReason token_module_initialize_failed = 57;
   }
 }
 
