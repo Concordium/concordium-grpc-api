@@ -2721,6 +2721,8 @@ message NextUpdateSequenceNumbers {
   SequenceNumber finalization_committee_parameters = 20;
   // Updates to the validator score parameters for chain parameters version 3.
   SequenceNumber validator_score_parameters = 21;
+  // Updates to the protocol level tokens. Introduced in protocol version 9.
+  SequenceNumber protocol_level_tokens = 22;
 }
 
 // A request to send a new block item to the chain.
