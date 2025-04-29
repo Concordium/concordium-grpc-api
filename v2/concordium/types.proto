@@ -991,6 +991,8 @@ message RejectReason {
     Empty pool_closed = 54;
     // The provided identifier does not match a token currently on chain.
     plt.TokenId non_existent_token_id = 55;
+    // The token-holder transaction failed.
+    plt.TokenModuleRejectReason token_holder_transaction_failed = 56;
   }
 }
 
