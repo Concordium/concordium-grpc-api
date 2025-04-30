@@ -2,6 +2,7 @@
 
 ## Unreleased changes
 
+- Extend `NextUpdateSequenceNumbers` with sequence number for updates to protocol level tokens (field `protocol_level_tokens`).
 - Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
 - Support for protocol level tokens.
   - Added account / block level token state.
