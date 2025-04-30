@@ -108,3 +108,29 @@ message TokenHolderEffect {
   // Events emitted by the token.
   repeated TokenHolderEvent events = 1;
 }
+
+// Details provided by the token module in the event of rejecting a transaction.
+message TokenModuleRejectReason {
+    // The token symbol.
+    TokenId token_symbol = 1;
+    // The type of the reject reason.
+    string type = 2;
+    // (Optional) CBOR-encoded details.
+    optional CBor details = 3;
+}
+
+// Update payload for creating a new protocol-level token
+message CreatePLT {
+    // The token symbol.
+    TokenId token_symbol = 1;
+    // The hash that identifies the token module implementation.
+    TokenModuleRef token_module = 2;
+    // The address of the account that will govern the token.
+    AccountAddress governance_account = 3;
+    // The number of decimal places used in the representation of amounts of this token.
+    // This determines the smallest representable fraction of the token.
+    // This can be at most 255.
+    uint32 decimals = 4;
+    // The initialization parameters of the token, encoded in CBOR.
+    CBor initialization_parameters = 5;
+}

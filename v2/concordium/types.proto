@@ -990,9 +990,13 @@ message RejectReason {
     // The pool is not open to delegators.
     Empty pool_closed = 54;
     // The provided identifier does not match a token currently on chain.
+    // Introduced in protocol version 9.
     plt.TokenId non_existent_token_id = 55;
+    // The token-holder transaction failed.
+    // Introduced in protocol version 9.
+    plt.TokenModuleRejectReason token_holder_transaction_failed = 56;
     // Account sending the transaction is not authorized for governing the token.
-    plt.TokenId unauthorized_token_governance = 56;
+    plt.TokenId unauthorized_token_governance = 57;
   }
 }
 
@@ -1882,6 +1886,8 @@ message UpdatePayload {
     FinalizationCommitteeParameters finalization_committee_parameters_update = 22;
     // Validator score parameters (chain parameters version 3)
     ValidatorScoreParameters validator_score_parameters_update = 23;
+    // Create a new protocol-level token.
+    plt.CreatePLT create_plt_update = 24;
   }
 }
 
@@ -1920,13 +1926,13 @@ message TransactionTime {
   uint64 value = 1;
 }
 
-// Details of an update instruction. These are free, and we only ever get a
+// Details of an successful update instruction. These are free, and we only ever get a
 // response for them if the update is successfully enqueued, hence no failure
 // cases.
 message UpdateDetails {
   // The time at which the update will be effective.
   TransactionTime effective_time = 1;
-  // The paylaod for the update.
+  // The payload for the update.
   UpdatePayload payload = 2;
 }
 
@@ -1949,7 +1955,7 @@ message BlockItemSummary {
     AccountTransactionDetails account_transaction = 4;
     // Details about an account creation.
     AccountCreationDetails account_creation = 5;
-    // Details about a chain update.
+    // Details about a successful chain update.
     UpdateDetails update = 6;
   }
 }
@@ -2723,6 +2729,8 @@ message NextUpdateSequenceNumbers {
   SequenceNumber finalization_committee_parameters = 20;
   // Updates to the validator score parameters for chain parameters version 3.
   SequenceNumber validator_score_parameters = 21;
+  // Updates to the protocol level tokens. Introduced in protocol version 9.
+  SequenceNumber protocol_level_tokens = 22;
 }
 
 // A request to send a new block item to the chain.
