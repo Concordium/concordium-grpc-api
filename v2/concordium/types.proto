@@ -990,7 +990,11 @@ message RejectReason {
     // The pool is not open to delegators.
     Empty pool_closed = 54;
     // The provided identifier does not match a token currently on chain.
+    // Introduced in protocol version 9.
     plt.TokenId non_existent_token_id = 55;
+    // The token-holder transaction failed.
+    // Introduced in protocol version 9.
+    plt.TokenModuleRejectReason token_holder_transaction_failed = 56;
   }
 }
 

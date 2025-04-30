@@ -10,6 +10,10 @@
   - Token governance / holder events.
   - Endpoint to query token block level state.
   - Endpoint to query list of existing protocol level tokens.
+  - New reject reasons:
+    -  `non_existent_token_id`: the transaction referred to a protocol-level token that
+       does not exist.
+    - `token_holder_transction_failed`: the token-holder transaction failed.
 
 ## Node 8.0 API
 
