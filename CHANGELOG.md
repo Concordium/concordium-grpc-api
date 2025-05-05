@@ -14,7 +14,8 @@
   - Extend `reason` oneof in `RejectReason` with:
     - `non_existent_token_id`: the transaction referred to a protocol-level token that
        does not exist.
-    - `token_holder_transction_failed`: the token-holder transaction failed.
+    - `token_holder_transaction_failed`: the token-holder transaction failed.
+    - `token_governance_transaction_failed`: the token-governance transaction failed.
     - `unauthorized_token_governance`: Sender account is not authorized for governing the provided protocol level token.
 
 ## Node 8.0 API

@@ -995,8 +995,11 @@ message RejectReason {
     // The token-holder transaction failed.
     // Introduced in protocol version 9.
     plt.TokenModuleRejectReason token_holder_transaction_failed = 56;
+    // The token-governance transaction failed.
+    // Introduced in protocol version 9.
+    plt.TokenModuleRejectReason token_governance_transaction_failed = 57;
     // Account sending the transaction is not authorized for governing the token.
-    plt.TokenId unauthorized_token_governance = 57;
+    plt.TokenId unauthorized_token_governance = 58;
   }
 }
 
