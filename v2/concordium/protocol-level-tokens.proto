@@ -10,9 +10,11 @@ option go_package = "./pb";
 // Has no effect on code generated on other languages.
 option java_package = "com.concordium.grpc.v2.plt";
 
-// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations,
-// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc.
-// If not generating Java code, this option has no effect.
+// This specifies that separate .java files will be generated for each of the
+// Java classes/enums/etc. generated for the top-level messages, services, and
+// enumerations, and the wrapper Java class generated for this .proto file won't
+// contain any nested classes/enums/etc. If not generating Java code, this
+// option has no effect.
 option java_multiple_files = true;
 
 // This specifies the package we want to use for our generated C# classes.
@@ -35,9 +37,7 @@ message TokenId {
 }
 
 // A token module reference. This is always 32 bytes long.
-message TokenModuleRef {
-  bytes value = 1;
-}
+message TokenModuleRef { bytes value = 1; }
 
 // PLT amount representation. The actual amount is computed as `digits *
 // 10^(-nr_of_decimals)`.
@@ -77,30 +77,83 @@ message TokenAccountState {
   optional bool member_deny_list = 3;
 }
 
-// Single token event originating as part of a token governance transaction.
+// Single token event originating from a token module as part of a token
+// transaction.
+message TokenModuleEvent {
+  // The type of the event.
+  string type = 1;
+  // The CBOR encoded event details.
+  CBor details = 2;
+}
+
+// A token holder is an entity that can hold tokens. Currently, this is limited
+// to accounts, but in the future it may be extended to other entities.
+message TokenHolder {
+  // The holder address
+  oneof address {
+    // The account address of the holder.
+    AccountAddress account = 1;
+  }
+}
+
+// An event emitted when a transfer of tokens from `from` to `to` is performed.
+message TokenTransferEvent {
+  // The token holder from which the tokens are transferred.
+  TokenHolder from = 1;
+  // The token holder to which the tokens are transferred.
+  TokenHolder to = 2;
+  // The amount of tokens transferred.
+  TokenAmount amount = 3;
+  // An optional memo field that can be used to attach a message to the token
+  // transfer.
+  optional Memo memo = 4;
+}
+
+// An event emitted when the token supply is updated, i.e. by minting/burning
+// tokens to/from the balance of the `target`.
+message TokenSupplyUpdateEvent {
+  // The token holder the balance update is performed on.
+  TokenHolder target = 1;
+  // The balance difference to be applied to the target.
+  TokenAmount amount = 2;
+}
+
+// Token events originating from token holder transactions.
+message TokenHolderEvent {
+  // The unique token symbol.
+  TokenId token_symbol = 1;
+  // The type of the event.
+  oneof event {
+    // An event emitted by the token module.
+    TokenModuleEvent module_event = 2;
+    // An event emitted when a transfer of tokens is performed.
+    TokenTransferEvent transfer_event = 3;
+  }
+}
+
+// Token events originating from token governance transactions.
 message TokenGovernanceEvent {
   // The unique token symbol.
   TokenId token_symbol = 1;
   // The type of the event.
-  string type  = 2;
-  // The CBOR encoded event details.
-  CBor details = 3;
+  oneof event {
+    // An event emitted by the token module.
+    TokenModuleEvent module_event = 2;
+    // An event emitted when a transfer of tokens is performed.
+    TokenTransferEvent transfer_event = 3;
+    // An event emitted when the token supply is updated by minting tokens to a
+    // token holder.
+    TokenSupplyUpdateEvent mint_event = 4;
+    // An event emitted when the token supply is updated by burning tokens from
+    // the balance of a token holder.
+    TokenSupplyUpdateEvent burn_event = 5;
+  }
 }
 
 // Token events originating from token governance transactions.
 message TokenGovernanceEffect {
   // Events emitted by the token.
   repeated TokenGovernanceEvent events = 1;
-}
-
-// Single token event originating as part of a token holder transaction.
-message TokenHolderEvent {
-  // The unique token symbol.
-  TokenId token_symbol = 1;
-  // The type of the event.
-  string type  = 2;
-  // The CBOR encoded event details.
-  CBor details = 3;
 }
 
 // Token events originating from token holder transactions.
@@ -111,26 +164,26 @@ message TokenHolderEffect {
 
 // Details provided by the token module in the event of rejecting a transaction.
 message TokenModuleRejectReason {
-    // The token symbol.
-    TokenId token_symbol = 1;
-    // The type of the reject reason.
-    string type = 2;
-    // (Optional) CBOR-encoded details.
-    optional CBor details = 3;
+  // The token symbol.
+  TokenId token_symbol = 1;
+  // The type of the reject reason.
+  string type = 2;
+  // (Optional) CBOR-encoded details.
+  optional CBor details = 3;
 }
 
 // Update payload for creating a new protocol-level token
 message CreatePLT {
-    // The token symbol.
-    TokenId token_symbol = 1;
-    // The hash that identifies the token module implementation.
-    TokenModuleRef token_module = 2;
-    // The address of the account that will govern the token.
-    AccountAddress governance_account = 3;
-    // The number of decimal places used in the representation of amounts of this token.
-    // This determines the smallest representable fraction of the token.
-    // This can be at most 255.
-    uint32 decimals = 4;
-    // The initialization parameters of the token, encoded in CBOR.
-    CBor initialization_parameters = 5;
+  // The token symbol.
+  TokenId token_symbol = 1;
+  // The hash that identifies the token module implementation.
+  TokenModuleRef token_module = 2;
+  // The address of the account that will govern the token.
+  AccountAddress governance_account = 3;
+  // The number of decimal places used in the representation of amounts of this
+  // token. This determines the smallest representable fraction of the token.
+  // This can be at most 255.
+  uint32 decimals = 4;
+  // The initialization parameters of the token, encoded in CBOR.
+  CBor initialization_parameters = 5;
 }
