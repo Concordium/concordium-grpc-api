@@ -77,30 +77,83 @@ message TokenAccountState {
   optional bool member_deny_list = 3;
 }
 
-// Single token event originating as part of a token governance transaction.
+// Single token event originating from a token module as part of a token
+// transaction.
+message TokenModuleEvent {
+  // The type of the event.
+  string type = 1;
+  // The CBOR encoded event details.
+  CBor details = 2;
+}
+
+// A token holder is an entity that can hold tokens. Currently, this is limited
+// to accounts, but in the future it may be extended to other entities.
+message TokenHolder {
+  // The holder address
+  oneof address {
+    // The account address of the holder.
+    AccountAddress account = 1;
+  }
+}
+
+// An event emitted when a transfer of tokens from `from` to `to` is performed.
+message TokenTransferEvent {
+  // The token holder from which the tokens are transferred.
+  TokenHolder from = 1;
+  // The token holder to which the tokens are transferred.
+  TokenHolder to = 2;
+  // The amount of tokens transferred.
+  TokenAmount amount = 3;
+  // An optional memo field that can be used to attach a message to the token
+  // transfer.
+  optional Memo memo = 4;
+}
+
+// An event emitted when the token supply is updated, i.e. by minting/burning
+// tokens to/from the balance of the `target`.
+message TokenSupplyUpdateEvent {
+  // The token holder the balance update is performed on.
+  TokenHolder target = 1;
+  // The balance difference to be applied to the target.
+  TokenAmount amount = 2;
+}
+
+// Token events originating from token holder transactions.
+message TokenHolderEvent {
+  // The unique token symbol.
+  TokenId token_symbol = 1;
+  // The type of the event.
+  oneof event {
+    // An event emitted by the token module.
+    TokenModuleEvent module_event = 1;
+    // An event emitted when a transfer of tokens is performed.
+    TokenTransferEvent transfer_event = 2;
+  }
+}
+
+// Token events originating from token governance transactions.
 message TokenGovernanceEvent {
   // The unique token symbol.
   TokenId token_symbol = 1;
   // The type of the event.
-  string type  = 2;
-  // The CBOR encoded event details.
-  CBor details = 3;
+  oneof event {
+    // An event emitted by the token module.
+    TokenModuleEvent module_event = 1;
+    // An event emitted when a transfer of tokens is performed.
+    TokenTransferEvent transfer_event = 2;
+    // An event emitted when the token supply is updated by minting tokens to a
+    // token holder.
+    TokenSupplyUpdateEvent mint_event = 3;
+    // An event emitted when the token supply is updated by burning tokens from
+    // the balance of a token holder.
+    TokenSupplyUpdateEvent burn_event = 4;
+  }
 }
 
 // Token events originating from token governance transactions.
 message TokenGovernanceEffect {
   // Events emitted by the token.
   repeated TokenGovernanceEvent events = 1;
-}
-
-// Single token event originating as part of a token holder transaction.
-message TokenHolderEvent {
-  // The unique token symbol.
-  TokenId token_symbol = 1;
-  // The type of the event.
-  string type  = 2;
-  // The CBOR encoded event details.
-  CBor details = 3;
 }
 
 // Token events originating from token holder transactions.
