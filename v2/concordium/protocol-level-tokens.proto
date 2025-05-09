@@ -125,9 +125,9 @@ message TokenHolderEvent {
   // The type of the event.
   oneof event {
     // An event emitted by the token module.
-    TokenModuleEvent module_event = 1;
+    TokenModuleEvent module_event = 2;
     // An event emitted when a transfer of tokens is performed.
-    TokenTransferEvent transfer_event = 2;
+    TokenTransferEvent transfer_event = 3;
   }
 }
 
@@ -138,15 +138,15 @@ message TokenGovernanceEvent {
   // The type of the event.
   oneof event {
     // An event emitted by the token module.
-    TokenModuleEvent module_event = 1;
+    TokenModuleEvent module_event = 2;
     // An event emitted when a transfer of tokens is performed.
-    TokenTransferEvent transfer_event = 2;
+    TokenTransferEvent transfer_event = 3;
     // An event emitted when the token supply is updated by minting tokens to a
     // token holder.
-    TokenSupplyUpdateEvent mint_event = 3;
+    TokenSupplyUpdateEvent mint_event = 4;
     // An event emitted when the token supply is updated by burning tokens from
     // the balance of a token holder.
-    TokenSupplyUpdateEvent burn_event = 4;
+    TokenSupplyUpdateEvent burn_event = 5;
   }
 }
 
