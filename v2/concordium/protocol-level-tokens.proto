@@ -10,9 +10,11 @@ option go_package = "./pb";
 // Has no effect on code generated on other languages.
 option java_package = "com.concordium.grpc.v2.plt";
 
-// This specifies that separate .java files will be generated for each of the Java classes/enums/etc. generated for the top-level messages, services, and enumerations,
-// and the wrapper Java class generated for this .proto file won't contain any nested classes/enums/etc.
-// If not generating Java code, this option has no effect.
+// This specifies that separate .java files will be generated for each of the
+// Java classes/enums/etc. generated for the top-level messages, services, and
+// enumerations, and the wrapper Java class generated for this .proto file won't
+// contain any nested classes/enums/etc. If not generating Java code, this
+// option has no effect.
 option java_multiple_files = true;
 
 // This specifies the package we want to use for our generated C# classes.
@@ -35,9 +37,7 @@ message TokenId {
 }
 
 // A token module reference. This is always 32 bytes long.
-message TokenModuleRef {
-  bytes value = 1;
-}
+message TokenModuleRef { bytes value = 1; }
 
 // PLT amount representation. The actual amount is computed as `digits *
 // 10^(-nr_of_decimals)`.
@@ -164,26 +164,26 @@ message TokenHolderEffect {
 
 // Details provided by the token module in the event of rejecting a transaction.
 message TokenModuleRejectReason {
-    // The token symbol.
-    TokenId token_symbol = 1;
-    // The type of the reject reason.
-    string type = 2;
-    // (Optional) CBOR-encoded details.
-    optional CBor details = 3;
+  // The token symbol.
+  TokenId token_symbol = 1;
+  // The type of the reject reason.
+  string type = 2;
+  // (Optional) CBOR-encoded details.
+  optional CBor details = 3;
 }
 
 // Update payload for creating a new protocol-level token
 message CreatePLT {
-    // The token symbol.
-    TokenId token_symbol = 1;
-    // The hash that identifies the token module implementation.
-    TokenModuleRef token_module = 2;
-    // The address of the account that will govern the token.
-    AccountAddress governance_account = 3;
-    // The number of decimal places used in the representation of amounts of this token.
-    // This determines the smallest representable fraction of the token.
-    // This can be at most 255.
-    uint32 decimals = 4;
-    // The initialization parameters of the token, encoded in CBOR.
-    CBor initialization_parameters = 5;
+  // The token symbol.
+  TokenId token_symbol = 1;
+  // The hash that identifies the token module implementation.
+  TokenModuleRef token_module = 2;
+  // The address of the account that will govern the token.
+  AccountAddress governance_account = 3;
+  // The number of decimal places used in the representation of amounts of this
+  // token. This determines the smallest representable fraction of the token.
+  // This can be at most 255.
+  uint32 decimals = 4;
+  // The initialization parameters of the token, encoded in CBOR.
+  CBor initialization_parameters = 5;
 }
