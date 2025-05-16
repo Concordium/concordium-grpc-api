@@ -118,7 +118,7 @@ message TokenSupplyUpdateEvent {
   TokenAmount amount = 2;
 }
 
-// Token events originating from token transactions.
+// Token event originating from token transactions.
 message TokenEvent {
   // The unique token symbol.
   TokenId token_symbol = 1;
@@ -137,14 +137,8 @@ message TokenEvent {
   }
 }
 
-// Token events originating from token governance transactions.
-message TokenGovernanceEffect {
-  // Events emitted by the token.
-  repeated TokenEvent events = 1;
-}
-
-// Token events originating from token holder transactions.
-message TokenHolderEffect {
+// Token events originating from token transactions.
+message TokenEffect {
   // Events emitted by the token.
   repeated TokenEvent events = 1;
 }
