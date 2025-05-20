@@ -118,21 +118,8 @@ message TokenSupplyUpdateEvent {
   TokenAmount amount = 2;
 }
 
-// Token events originating from token holder transactions.
-message TokenHolderEvent {
-  // The unique token symbol.
-  TokenId token_symbol = 1;
-  // The type of the event.
-  oneof event {
-    // An event emitted by the token module.
-    TokenModuleEvent module_event = 2;
-    // An event emitted when a transfer of tokens is performed.
-    TokenTransferEvent transfer_event = 3;
-  }
-}
-
-// Token events originating from token governance transactions.
-message TokenGovernanceEvent {
+// Token event originating from token transactions.
+message TokenEvent {
   // The unique token symbol.
   TokenId token_symbol = 1;
   // The type of the event.
@@ -150,16 +137,10 @@ message TokenGovernanceEvent {
   }
 }
 
-// Token events originating from token governance transactions.
-message TokenGovernanceEffect {
+// Token events originating from token transactions.
+message TokenEffect {
   // Events emitted by the token.
-  repeated TokenGovernanceEvent events = 1;
-}
-
-// Token events originating from token holder transactions.
-message TokenHolderEffect {
-  // Events emitted by the token.
-  repeated TokenHolderEvent events = 1;
+  repeated TokenEvent events = 1;
 }
 
 // Details provided by the token module in the event of rejecting a transaction.
