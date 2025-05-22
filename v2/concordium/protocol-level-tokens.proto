@@ -33,7 +33,7 @@ message CBor {
 message TokenId {
   // Unique identifier for the token, guaranteed to be distinct across the
   // entire concordium blockchain.
-  string symbol = 1;
+  string value = 1;
 }
 
 // A token module reference. This is always 32 bytes long.
@@ -121,7 +121,7 @@ message TokenSupplyUpdateEvent {
 // Token event originating from token transactions.
 message TokenEvent {
   // The unique token symbol.
-  TokenId token_symbol = 1;
+  TokenId token_id = 1;
   // The type of the event.
   oneof event {
     // An event emitted by the token module.
@@ -145,8 +145,8 @@ message TokenEffect {
 
 // Details provided by the token module in the event of rejecting a transaction.
 message TokenModuleRejectReason {
-  // The token symbol.
-  TokenId token_symbol = 1;
+  // The identifier of the protocol-level token.
+  TokenId token_id = 1;
   // The type of the reject reason.
   string type = 2;
   // (Optional) CBOR-encoded details.
@@ -155,8 +155,8 @@ message TokenModuleRejectReason {
 
 // Update payload for creating a new protocol-level token
 message CreatePLT {
-  // The token symbol.
-  TokenId token_symbol = 1;
+  // The identifier of the protocol-level token.
+  TokenId token_id = 1;
   // The hash that identifies the token module implementation.
   TokenModuleRef token_module = 2;
   // The address of the account that will govern the token.
