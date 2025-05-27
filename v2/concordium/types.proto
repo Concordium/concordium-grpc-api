@@ -1960,6 +1960,8 @@ message BlockItemSummary {
     AccountCreationDetails account_creation = 5;
     // Details about a successful chain update.
     UpdateDetails update = 6;
+    // Details about the creation of a protocol-level token.
+    plt.TokenCreationDetails token_creation = 7;
   }
 }
 
