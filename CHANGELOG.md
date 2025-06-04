@@ -17,6 +17,8 @@
     - `token_holder_transaction_failed`: the token-holder transaction failed.
     - `token_governance_transaction_failed`: the token-governance transaction failed.
     - `unauthorized_token_governance`: Sender account is not authorized for governing the provided protocol level token.
+  - Extend `details` oneof in `BlockItemSummary` with `token_creation`: this is the
+    result of a chain-update that creates a protocol-level token.
 
 ## Node 8.0 API
 
