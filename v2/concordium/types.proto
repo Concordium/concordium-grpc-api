@@ -1594,6 +1594,8 @@ message AuthorizationsV1 {
   AccessStructure parameter_cooldown = 2;
   // Access structure for updating the length of the reward period.
   AccessStructure parameter_time = 3;
+  // Access structure for creating a protocol level token
+  optional AccessStructure create_plt = 4;
 }
 
 // Description either of an anonymity revoker or identity provider.
