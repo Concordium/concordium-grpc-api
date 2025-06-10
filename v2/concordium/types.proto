@@ -1457,9 +1457,9 @@ message AccountTransactionEffects {
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
     // Token holder transaction effect.
-    plt.TokenHolderEffect token_holder_effect = 20;
+    plt.TokenEffect token_holder_effect = 20;
     // Token governance transaction effect.
-    plt.TokenGovernanceEffect token_governance_effect = 21;
+    plt.TokenEffect token_governance_effect = 21;
   }
 }
 
@@ -1962,6 +1962,8 @@ message BlockItemSummary {
     AccountCreationDetails account_creation = 5;
     // Details about a successful chain update.
     UpdateDetails update = 6;
+    // Details about the creation of a protocol-level token.
+    plt.TokenCreationDetails token_creation = 7;
   }
 }
 
