@@ -67,14 +67,10 @@ message TokenState {
 message TokenAccountState {
   // The available balance.
   TokenAmount balance = 1;
-  // Whether the account is a member of the allow list of the token.
-  // If present, tokens can be transferred only, if both sender and receiver are
-  // members of the allow list of the token.
-  optional bool member_allow_list = 2;
-  // Whether the account is a member of the deny list of the token.
-  // If present, tokens can be transferred only, if neither sender or receiver
-  // are members of the deny list.
-  optional bool member_deny_list = 3;
+  reserved 2, 3;
+  // Token module specific account state, such as whether the account is on
+  // the allow or deny list.
+  optional CBor module_state = 4;
 }
 
 // Single token event originating from a token module as part of a token
