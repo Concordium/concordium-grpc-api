@@ -155,14 +155,12 @@ message CreatePLT {
   TokenId token_id = 1;
   // The hash that identifies the token module implementation.
   TokenModuleRef token_module = 2;
-  // The address of the account that will govern the token.
-  AccountAddress governance_account = 3;
   // The number of decimal places used in the representation of amounts of this
   // token. This determines the smallest representable fraction of the token.
   // This can be at most 255.
-  uint32 decimals = 4;
+  uint32 decimals = 3;
   // The initialization parameters of the token, encoded in CBOR.
-  CBor initialization_parameters = 5;
+  CBor initialization_parameters = 4;
 }
 
 // Details about the creation of a protocol-level token.
