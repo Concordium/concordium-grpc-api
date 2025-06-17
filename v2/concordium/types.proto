@@ -1452,9 +1452,7 @@ message AccountTransactionEffects {
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
     // Token holder transaction effect.
-    plt.TokenEffect token_holder_effect = 20;
-    // Token governance transaction effect.
-    plt.TokenEffect token_governance_effect = 21;
+    plt.TokenEffect token_effect = 20;
   }
 }
 
