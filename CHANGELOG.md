@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Unify token holder/governance transaction types to a single type and remove
+  governance account from the `CreatePLT` message.
 - Extend `NextUpdateSequenceNumbers` with sequence number for updates to protocol level tokens (field `protocol_level_tokens`).
 - Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
 - Support for protocol level tokens.
