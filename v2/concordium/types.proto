@@ -992,7 +992,7 @@ message RejectReason {
     // The provided identifier does not match a token currently on chain.
     // Introduced in protocol version 9.
     plt.TokenId non_existent_token_id = 55;
-    // The token-holder transaction failed.
+    // The token update transaction failed.
     // Introduced in protocol version 9.
     plt.TokenModuleRejectReason token_transaction_failed = 56;
   }
