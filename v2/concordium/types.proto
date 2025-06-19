@@ -992,14 +992,9 @@ message RejectReason {
     // The provided identifier does not match a token currently on chain.
     // Introduced in protocol version 9.
     plt.TokenId non_existent_token_id = 55;
-    // The token-holder transaction failed.
+    // The token update transaction failed.
     // Introduced in protocol version 9.
-    plt.TokenModuleRejectReason token_holder_transaction_failed = 56;
-    // The token-governance transaction failed.
-    // Introduced in protocol version 9.
-    plt.TokenModuleRejectReason token_governance_transaction_failed = 57;
-    // Account sending the transaction is not authorized for governing the token.
-    plt.TokenId unauthorized_token_governance = 58;
+    plt.TokenModuleRejectReason token_update_transaction_failed = 56;
   }
 }
 
@@ -1456,10 +1451,8 @@ message AccountTransactionEffects {
     BakerConfigured baker_configured = 18;
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
-    // Token holder transaction effect.
-    plt.TokenEffect token_holder_effect = 20;
-    // Token governance transaction effect.
-    plt.TokenEffect token_governance_effect = 21;
+    // Token update transaction effect.
+    plt.TokenEffect token_update_effect = 20;
   }
 }
 
@@ -2018,9 +2011,7 @@ enum TransactionType {
   CONFIGURE_BAKER = 19;
   CONFIGURE_DELEGATION = 20;
   // Introduced in protocol version 9.
-  TOKEN_HOLDER = 21;
-  // Introduced in protocol version 9.
-  TOKEN_GOVERNANCE = 22;
+  TOKEN_UPDATE = 21;
 }
 
 // The different versions of the protocol.

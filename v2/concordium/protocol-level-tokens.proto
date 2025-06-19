@@ -50,11 +50,9 @@ message TokenAmount {
 
 // Token state at the block level
 message TokenState {
+  reserved 2;
   // The reference of the module implementing this token.
   TokenModuleRef token_module_ref = 1;
-  // Account address of the issuer. The issuer is the holder of the nominated
-  // account which can perform token-governance operations.
-  concordium.v2.AccountAddress issuer = 2;
   // Number of decimals in the decimal number representation of amounts.
   uint32 decimals = 3;
   // The total available token supply.
@@ -151,12 +149,11 @@ message TokenModuleRejectReason {
 
 // Update payload for creating a new protocol-level token
 message CreatePLT {
+  reserved 3;
   // The identifier of the protocol-level token.
   TokenId token_id = 1;
   // The hash that identifies the token module implementation.
   TokenModuleRef token_module = 2;
-  // The address of the account that will govern the token.
-  AccountAddress governance_account = 3;
   // The number of decimal places used in the representation of amounts of this
   // token. This determines the smallest representable fraction of the token.
   // This can be at most 255.

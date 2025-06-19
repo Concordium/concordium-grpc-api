@@ -6,9 +6,9 @@
 - Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
 - Support for protocol level tokens.
   - Extend `AccountInfo` with `tokens` field for account state per token.
-  - Extend enum `TransactionType` with values `TOKEN_HOLDER`/`TOKEN_GOVERNANCE` representing token holder/governance transactions.
+  - Extend enum `TransactionType` with value `TOKEN_UPDATE` representing a token update transaction.
   - Extend enum `UpdateType` with value `UPDATE_CREATE_PLT` representing chain updates creating protocol level tokens.
-  - Extend `effect` oneof in `AccountTransactionEffects` with `token_holder_effect` and `token_governance_effect`.
+  - Extend `effect` oneof in `AccountTransactionEffects` with `token_update_effect`.
   - Add rpc endpoint `GetTokenInfo` for accessing state of each token for some block.
   - Add rpc endpoint `GetTokenList` to query list of existing protocol level tokens for some block.
   - Extend `reason` oneof in `RejectReason` with:
