@@ -50,14 +50,15 @@ message TokenAmount {
 
 // Token state at the block level
 message TokenState {
+  reserved 2;
   // The reference of the module implementing this token.
   TokenModuleRef token_module_ref = 1;
   // Number of decimals in the decimal number representation of amounts.
-  uint32 decimals = 2;
+  uint32 decimals = 3;
   // The total available token supply.
-  TokenAmount total_supply = 3;
+  TokenAmount total_supply = 4;
   // Token module specific state, such as token name, feature flags, meta data.
-  CBor module_state = 4;
+  CBor module_state = 5;
 }
 
 // Token state at the account level
@@ -148,6 +149,7 @@ message TokenModuleRejectReason {
 
 // Update payload for creating a new protocol-level token
 message CreatePLT {
+  reserved 3;
   // The identifier of the protocol-level token.
   TokenId token_id = 1;
   // The hash that identifies the token module implementation.
@@ -155,9 +157,9 @@ message CreatePLT {
   // The number of decimal places used in the representation of amounts of this
   // token. This determines the smallest representable fraction of the token.
   // This can be at most 255.
-  uint32 decimals = 3;
+  uint32 decimals = 4;
   // The initialization parameters of the token, encoded in CBOR.
-  CBor initialization_parameters = 4;
+  CBor initialization_parameters = 5;
 }
 
 // Details about the creation of a protocol-level token.
