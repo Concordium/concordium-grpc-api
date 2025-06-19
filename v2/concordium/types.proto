@@ -994,7 +994,7 @@ message RejectReason {
     plt.TokenId non_existent_token_id = 55;
     // The token update transaction failed.
     // Introduced in protocol version 9.
-    plt.TokenModuleRejectReason token_transaction_failed = 56;
+    plt.TokenModuleRejectReason token_update_transaction_failed = 56;
   }
 }
 
@@ -1452,7 +1452,7 @@ message AccountTransactionEffects {
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
     // Token update transaction effect.
-    plt.TokenEffect token_effect = 20;
+    plt.TokenEffect token_update_effect = 20;
   }
 }
 
