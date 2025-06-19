@@ -1451,7 +1451,7 @@ message AccountTransactionEffects {
     BakerConfigured baker_configured = 18;
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     DelegationConfigured delegation_configured = 19;
-    // Token holder transaction effect.
+    // Token update transaction effect.
     plt.TokenEffect token_effect = 20;
   }
 }
