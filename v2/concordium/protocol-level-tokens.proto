@@ -32,7 +32,8 @@ message CBor {
 // The unique symbol and identifier of a protocol level token.
 message TokenId {
   // Unique identifier for the token, guaranteed to be distinct across the
-  // entire concordium blockchain.
+  // entire concordium blockchain. The token id must be between 1 and 128 bytes long and consist of
+  // only a-z, A-Z, 0-9, `.`, `%` and `-`.
   string value = 1;
 }
 
