@@ -19,6 +19,7 @@
     - `unauthorized_token_governance`: Sender account is not authorized for governing the provided protocol level token.
   - Extend `details` oneof in `BlockItemSummary` with `token_creation`: this is the
     result of a chain-update that creates a protocol-level token.
+- Rename the `bakerId` fields of `ValidatorSuspended` and `ValidatorPrimedForSuspension` to `baker_id`.
 
 ## Node 8.0 API
 

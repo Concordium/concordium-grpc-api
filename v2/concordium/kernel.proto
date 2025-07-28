@@ -30,6 +30,7 @@ message AccountAddress {
 }
 
 // A memo which can be included as part of a transfer. Max size is 256 bytes.
+// This message can occur starting from protocol version 2.
 message Memo {
   bytes value = 1;
 }
