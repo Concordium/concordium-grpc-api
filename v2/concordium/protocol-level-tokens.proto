@@ -23,13 +23,13 @@ option csharp_namespace = "Concordium.Grpc.V2.Plt";
 
 import "v2/concordium/kernel.proto";
 
-// A Cbor encoded bytestring
-message CBor {
+// A CBOR encoded bytestring
+message Cbor {
   // A CBOR encoded byte string.
   bytes value = 1;
 }
 
-// The unique symbol and identifier of a protocol level token.
+// Token ID: a unique symbol and identifier of a protocol level token.
 message TokenId {
   // Unique identifier for the token, guaranteed to be distinct across the
   // entire concordium blockchain. The token id must be between 1 and 128 bytes long and consist of
@@ -59,7 +59,7 @@ message TokenState {
   // The total available token supply.
   TokenAmount total_supply = 4;
   // Token module specific state, such as token name, feature flags, meta data.
-  CBor module_state = 5;
+  Cbor module_state = 5;
 }
 
 // Token state at the account level
@@ -69,7 +69,7 @@ message TokenAccountState {
   reserved 2, 3;
   // Token module specific account state, such as whether the account is on
   // the allow or deny list.
-  optional CBor module_state = 4;
+  optional Cbor module_state = 4;
 }
 
 // Single token event originating from a token module as part of a token
@@ -78,7 +78,7 @@ message TokenModuleEvent {
   // The type of the event.
   string type = 1;
   // The CBOR encoded event details.
-  CBor details = 2;
+  Cbor details = 2;
 }
 
 // A token holder is an entity that can hold tokens. Currently, this is limited
@@ -115,7 +115,7 @@ message TokenSupplyUpdateEvent {
 
 // Token event originating from token transactions.
 message TokenEvent {
-  // The unique token symbol.
+  // The Token ID.
   TokenId token_id = 1;
   // The type of the event.
   oneof event {
@@ -140,18 +140,18 @@ message TokenEffect {
 
 // Details provided by the token module in the event of rejecting a transaction.
 message TokenModuleRejectReason {
-  // The identifier of the protocol-level token.
+  // The Token ID of the protocol-level token.
   TokenId token_id = 1;
   // The type of the reject reason.
   string type = 2;
   // (Optional) CBOR-encoded details.
-  optional CBor details = 3;
+  optional Cbor details = 3;
 }
 
 // Update payload for creating a new protocol-level token
 message CreatePLT {
   reserved 3;
-  // The identifier of the protocol-level token.
+  // The Token ID of the protocol-level token.
   TokenId token_id = 1;
   // The hash that identifies the token module implementation.
   TokenModuleRef token_module = 2;
@@ -160,7 +160,7 @@ message CreatePLT {
   // This can be at most 255.
   uint32 decimals = 4;
   // The initialization parameters of the token, encoded in CBOR.
-  CBor initialization_parameters = 5;
+  Cbor initialization_parameters = 5;
 }
 
 // Details about the creation of a protocol-level token.

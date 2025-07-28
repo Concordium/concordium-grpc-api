@@ -2597,7 +2597,7 @@ message BlockSpecialEvent {
   // The id of a validator that got suspended due to too many missed rounds.
   message ValidatorSuspended {
     // The id of the suspended validator.
-    BakerId bakerId = 1;
+    BakerId baker_id = 1;
     // The account of the suspended validator.
     AccountAddress account = 2;
   }
@@ -2606,7 +2606,7 @@ message BlockSpecialEvent {
   // epoch due to too many missed rounds.
   message ValidatorPrimedForSuspension {
     // The id of the primed validator.
-    BakerId bakerId = 1;
+    BakerId baker_id = 1;
     // The account of the primed validator.
     AccountAddress account = 2;
   }
