@@ -4143,7 +4143,7 @@ message FinalizationCommitteeHash {
 
 message BakersAndFinalizers {
     // The set of validators.
-    repeated FullBakerInfo validators = 1;
+    repeated FullBakerInfo bakers = 1;
     // The IDs of the validators that are finalizers.
     // The order determines the finalizer index.
     repeated BakerId finalizers = 2;
