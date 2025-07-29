@@ -2,7 +2,24 @@
 
 ## Unreleased changes
 
+- Extend `NextUpdateSequenceNumbers` with sequence number for updates to protocol level tokens (field `protocol_level_tokens`).
 - Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
+- Support for protocol level tokens.
+  - Extend `AccountInfo` with `tokens` field for account state per token.
+  - Extend enum `TransactionType` with value `TOKEN_UPDATE` representing a token update transaction.
+  - Extend enum `UpdateType` with value `UPDATE_CREATE_PLT` representing chain updates creating protocol level tokens.
+  - Extend `effect` oneof in `AccountTransactionEffects` with `token_update_effect`.
+  - Add rpc endpoint `GetTokenInfo` for accessing state of each token for some block.
+  - Add rpc endpoint `GetTokenList` to query list of existing protocol level tokens for some block.
+  - Extend `reason` oneof in `RejectReason` with:
+    - `non_existent_token_id`: the transaction referred to a protocol-level token that
+       does not exist.
+    - `token_holder_transaction_failed`: the token-holder transaction failed.
+    - `token_governance_transaction_failed`: the token-governance transaction failed.
+    - `unauthorized_token_governance`: Sender account is not authorized for governing the provided protocol level token.
+  - Extend `details` oneof in `BlockItemSummary` with `token_creation`: this is the
+    result of a chain-update that creates a protocol-level token.
+- Rename the `bakerId` fields of `ValidatorSuspended` and `ValidatorPrimedForSuspension` to `baker_id`.
 
 ## Node 8.0 API
 

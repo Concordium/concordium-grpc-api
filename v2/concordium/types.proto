@@ -19,6 +19,9 @@ option java_multiple_files = true;
 // Has no effect on code generated on other languages.
 option csharp_namespace = "Concordium.Grpc.V2";
 
+import "v2/concordium/kernel.proto";
+import "v2/concordium/protocol-level-tokens.proto";
+
 // A message that contains no information.
 message Empty {
 }
@@ -337,11 +340,6 @@ message EncryptionKey {
   bytes value = 1;
 }
 
-// An address of an account. Always 32 bytes.
-message AccountAddress {
-  bytes value = 1;
-}
-
 // An address of either a contract or an account.
 message Address {
   oneof type {
@@ -503,8 +501,24 @@ message Cooldown {
   CooldownStatus status = 3;
 }
 
+// The token state at the block level.
+message TokenInfo {
+  // The unique token id.
+  plt.TokenId token_id = 1;
+  // The associated block level state.
+  plt.TokenState token_state = 2;
+}
+
 // Information about the account at a particular point in time.
 message AccountInfo {
+  // Protocol level token (PLT).
+  message Token {
+    // The unique token id
+    plt.TokenId token_id = 1;
+    // The associated token account level state
+    plt.TokenAccountState token_account_state = 2;
+  }
+
   // Next sequence number to be used for transactions signed from this account.
   SequenceNumber sequence_number = 1;
   // Current (unencrypted) balance of the account.
@@ -541,12 +555,15 @@ message AccountInfo {
   // This was introduced in protocol version 7, and so is not present in
   // earlier protocol versions.
   repeated Cooldown cooldowns = 11;
-  // The available (unencrypted) balance of the account (i.e. that can be transferred
-  // or used to pay for transactions). This is the balance minus the locked amount.
-  // The locked amount is the maximum of the amount in the release schedule and
-  // the total amount that is actively staked or in cooldown (inactive stake).
-  // This was introduced in node version 7.0.
+  // The available (unencrypted) balance of CCD's of the account (i.e. that
+  // can be transferred or used to pay for transactions). This is the balance
+  // minus the locked amount. The locked amount is the maximum of the amount
+  // in the release schedule and the total amount that is actively staked or in
+  // cooldown (inactive stake). This was introduced in node version 7.0.
   Amount available_balance = 12;
+
+  // The protocol level tokens (PLT) held by the account.
+  repeated Token tokens = 13;
 }
 
 // Input to queries which take a block as a parameter.
@@ -611,6 +628,14 @@ message AccountInfoRequest {
   BlockHashInput block_hash = 1;
   // Specification of the account.
   AccountIdentifierInput account_identifier = 2;
+}
+
+// Request for token information.
+message TokenInfoRequest {
+  // Block in which to query the token information.
+  BlockHashInput block_hash = 1;
+  // Specification of the token identifier.
+  plt.TokenId token_id = 2;
 }
 
 // Information about a finalized block that is part of the streaming response.
@@ -964,6 +989,12 @@ message RejectReason {
     Empty pool_would_become_over_delegated = 53;
     // The pool is not open to delegators.
     Empty pool_closed = 54;
+    // The provided identifier does not match a token currently on chain.
+    // Introduced in protocol version 9.
+    plt.TokenId non_existent_token_id = 55;
+    // The token update transaction failed.
+    // Introduced in protocol version 9.
+    plt.TokenModuleRejectReason token_update_transaction_failed = 56;
   }
 }
 
@@ -1086,12 +1117,6 @@ message BakerKeysEvent {
     BakerElectionVerifyKey election_key = 4;
     // The new public key for verifying finalization records.
     BakerAggregationVerifyKey aggregation_key = 5;
-}
-
-// A memo which can be included as part of a transfer. Max size is 256 bytes.
-// This message can occur starting from protocol version 2.
-message Memo {
-  bytes value = 1;
 }
 
 // The associated transaction type can no longer be created starting from protocol version 4.
@@ -1522,6 +1547,8 @@ message AccountTransactionEffects {
     // A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
     // This transaction type is available starting from protocol version 4.
     DelegationConfigured delegation_configured = 19;
+    // Token update transaction effect.
+    plt.TokenEffect token_update_effect = 20;
   }
 }
 
@@ -1656,6 +1683,9 @@ message AuthorizationsV1 {
   AccessStructure parameter_cooldown = 2;
   // Access structure for updating the length of the reward period.
   AccessStructure parameter_time = 3;
+  // Access structure for creating a protocol level token.
+  // This is present from protocol version 9.
+  optional AccessStructure create_plt = 4;
 }
 
 // Description either of an anonymity revoker or identity provider.
@@ -1968,6 +1998,8 @@ message UpdatePayload {
     FinalizationCommitteeParameters finalization_committee_parameters_update = 22;
     // Validator score parameters (chain parameters version 3)
     ValidatorScoreParameters validator_score_parameters_update = 23;
+    // Create a new protocol-level token.
+    plt.CreatePLT create_plt_update = 24;
   }
 }
 
@@ -2006,13 +2038,13 @@ message TransactionTime {
   uint64 value = 1;
 }
 
-// Details of an update instruction. These are free, and we only ever get a
+// Details of an successful update instruction. These are free, and we only ever get a
 // response for them if the update is successfully enqueued, hence no failure
 // cases.
 message UpdateDetails {
   // The time at which the update will be effective.
   TransactionTime effective_time = 1;
-  // The paylaod for the update.
+  // The payload for the update.
   UpdatePayload payload = 2;
 }
 
@@ -2035,8 +2067,10 @@ message BlockItemSummary {
     AccountTransactionDetails account_transaction = 4;
     // Details about an account creation.
     AccountCreationDetails account_creation = 5;
-    // Details about a chain update.
+    // Details about a successful chain update.
     UpdateDetails update = 6;
+    // Details about the creation of a protocol-level token.
+    plt.TokenCreationDetails token_creation = 7;
   }
 }
 
@@ -2063,6 +2097,7 @@ enum UpdateType {
     UPDATE_BLOCK_ENERGY_LIMIT = 18;
     UPDATE_FINALIZATION_COMMITTEE_PARAMETERS = 19;
     UPDATE_VALIDATOR_SCORE_PARAMETERS = 20;
+    UPDATE_CREATE_PLT = 21;
 }
 
 // The type of transaction.
@@ -2101,6 +2136,8 @@ enum TransactionType {
   CONFIGURE_BAKER = 19;
   // Introduced in protocol version 4.
   CONFIGURE_DELEGATION = 20;
+  // Introduced in protocol version 9.
+  TOKEN_UPDATE = 21;
 }
 
 // The different versions of the protocol.
@@ -2731,7 +2768,7 @@ message BlockSpecialEvent {
   // The message can occur starting from protocol version 8.
   message ValidatorSuspended {
     // The id of the suspended validator.
-    BakerId bakerId = 1;
+    BakerId baker_id = 1;
     // The account of the suspended validator.
     AccountAddress account = 2;
   }
@@ -2741,7 +2778,7 @@ message BlockSpecialEvent {
   // The message can occur starting from protocol version 8.
   message ValidatorPrimedForSuspension {
     // The id of the primed validator.
-    BakerId bakerId = 1;
+    BakerId baker_id = 1;
     // The account of the primed validator.
     AccountAddress account = 2;
   }
@@ -2882,6 +2919,8 @@ message NextUpdateSequenceNumbers {
   SequenceNumber finalization_committee_parameters = 20;
   // Updates to the validator score parameters for chain parameters version 3.
   SequenceNumber validator_score_parameters = 21;
+  // Updates to the protocol level tokens. Introduced in protocol version 9.
+  SequenceNumber protocol_level_tokens = 22;
 }
 
 // A request to send a new block item to the chain.
@@ -3992,8 +4031,7 @@ message RawTimeoutCertificate {
     // The aggregated signature by the finalization committee that witnessed
     // the 'round' timed out.
     TimeoutSignature aggregate_signature = 5;
-  }
-  
+}
 
 message PersistentRoundStatus {
     // The last signed quorum message by the node.
@@ -4105,7 +4143,7 @@ message FinalizationCommitteeHash {
 
 message BakersAndFinalizers {
     // The set of validators.
-    repeated FullBakerInfo validators = 1;
+    repeated FullBakerInfo bakers = 1;
     // The IDs of the validators that are finalizers.
     // The order determines the finalizer index.
     repeated BakerId finalizers = 2;
