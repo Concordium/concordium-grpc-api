@@ -25,6 +25,8 @@ jobs:
           mkdir -p docs
           protoc --doc_opt=:concordium_p2p.proto,google/protobuf/wrappers.proto \
           --doc_out=./docs \
+          v2/concordium/kernel.proto \
+          v2/concordium/protocol-level-tokens.proto \
           v2/concordium/types.proto \
           v2/concordium/service.proto \
           v2/concordium/health.proto
