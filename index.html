@@ -175,6 +175,96 @@
         
           
           <li>
+            <a href="#v2%2fconcordium%2fkernel.proto">v2/concordium/kernel.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#concordium.v2.AccountAddress"><span class="badge">M</span>AccountAddress</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.Memo"><span class="badge">M</span>Memo</a>
+                </li>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#v2%2fconcordium%2fprotocol-level-tokens.proto">v2/concordium/protocol-level-tokens.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#concordium.v2.plt.Cbor"><span class="badge">M</span>Cbor</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.CreatePLT"><span class="badge">M</span>CreatePLT</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenAccountState"><span class="badge">M</span>TokenAccountState</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenAmount"><span class="badge">M</span>TokenAmount</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenCreationDetails"><span class="badge">M</span>TokenCreationDetails</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenEffect"><span class="badge">M</span>TokenEffect</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenEvent"><span class="badge">M</span>TokenEvent</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenHolder"><span class="badge">M</span>TokenHolder</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenId"><span class="badge">M</span>TokenId</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenModuleEvent"><span class="badge">M</span>TokenModuleEvent</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenModuleRef"><span class="badge">M</span>TokenModuleRef</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenModuleRejectReason"><span class="badge">M</span>TokenModuleRejectReason</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenState"><span class="badge">M</span>TokenState</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenSupplyUpdateEvent"><span class="badge">M</span>TokenSupplyUpdateEvent</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.plt.TokenTransferEvent"><span class="badge">M</span>TokenTransferEvent</a>
+                </li>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
             <a href="#v2%2fconcordium%2ftypes.proto">v2/concordium/types.proto</a>
             <ul>
               
@@ -1650,6 +1740,590 @@
       </ul>
     </div>
 
+    
+      
+      <div class="file-heading">
+        <h2 id="v2/concordium/kernel.proto">v2/concordium/kernel.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="concordium.v2.AccountAddress">AccountAddress</h3>
+        <p>An address of an account. Always 32 bytes.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.Memo">Memo</h3>
+        <p>A memo which can be included as part of a transfer. Max size is 256 bytes.</p><p>This message can occur starting from protocol version 2.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="v2/concordium/protocol-level-tokens.proto">v2/concordium/protocol-level-tokens.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="concordium.v2.plt.Cbor">Cbor</h3>
+        <p>A CBOR encoded bytestring</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>A CBOR encoded byte string. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.CreatePLT">CreatePLT</h3>
+        <p>Update payload for creating a new protocol-level token</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_id</td>
+                  <td><a href="#concordium.v2.plt.TokenId">TokenId</a></td>
+                  <td></td>
+                  <td><p>The Token ID of the protocol-level token. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_module</td>
+                  <td><a href="#concordium.v2.plt.TokenModuleRef">TokenModuleRef</a></td>
+                  <td></td>
+                  <td><p>The hash that identifies the token module implementation. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>decimals</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>The number of decimal places used in the representation of amounts of this
+token. This determines the smallest representable fraction of the token.
+This can be at most 255. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>initialization_parameters</td>
+                  <td><a href="#concordium.v2.plt.Cbor">Cbor</a></td>
+                  <td></td>
+                  <td><p>The initialization parameters of the token, encoded in CBOR. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenAccountState">TokenAccountState</h3>
+        <p>Token state at the account level</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>balance</td>
+                  <td><a href="#concordium.v2.plt.TokenAmount">TokenAmount</a></td>
+                  <td></td>
+                  <td><p>The available balance. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>module_state</td>
+                  <td><a href="#concordium.v2.plt.Cbor">Cbor</a></td>
+                  <td>optional</td>
+                  <td><p>Token module specific account state, such as whether the account is on
+the allow or deny list. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenAmount">TokenAmount</h3>
+        <p>PLT amount representation. The actual amount is computed as</p><p>`value * 10^(-decimals)`.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>The digits of the amount. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>decimals</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>Number of decimals in the representation </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenCreationDetails">TokenCreationDetails</h3>
+        <p>Details about the creation of a protocol-level token.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>create_plt</td>
+                  <td><a href="#concordium.v2.plt.CreatePLT">CreatePLT</a></td>
+                  <td></td>
+                  <td><p>The update payload used to create the token. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>events</td>
+                  <td><a href="#concordium.v2.plt.TokenEvent">TokenEvent</a></td>
+                  <td>repeated</td>
+                  <td><p>The events generated by the token module during the creation of the token. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenEffect">TokenEffect</h3>
+        <p>Token events originating from token transactions.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>events</td>
+                  <td><a href="#concordium.v2.plt.TokenEvent">TokenEvent</a></td>
+                  <td>repeated</td>
+                  <td><p>Events emitted by the token. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenEvent">TokenEvent</h3>
+        <p>Token event originating from token transactions.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_id</td>
+                  <td><a href="#concordium.v2.plt.TokenId">TokenId</a></td>
+                  <td></td>
+                  <td><p>The Token ID. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>module_event</td>
+                  <td><a href="#concordium.v2.plt.TokenModuleEvent">TokenModuleEvent</a></td>
+                  <td></td>
+                  <td><p>An event emitted by the token module. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transfer_event</td>
+                  <td><a href="#concordium.v2.plt.TokenTransferEvent">TokenTransferEvent</a></td>
+                  <td></td>
+                  <td><p>An event emitted when a transfer of tokens is performed. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mint_event</td>
+                  <td><a href="#concordium.v2.plt.TokenSupplyUpdateEvent">TokenSupplyUpdateEvent</a></td>
+                  <td></td>
+                  <td><p>An event emitted when the token supply is updated by minting tokens to a
+token holder. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>burn_event</td>
+                  <td><a href="#concordium.v2.plt.TokenSupplyUpdateEvent">TokenSupplyUpdateEvent</a></td>
+                  <td></td>
+                  <td><p>An event emitted when the token supply is updated by burning tokens from
+the balance of a token holder. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenHolder">TokenHolder</h3>
+        <p>A token holder is an entity that can hold tokens. Currently, this is limited</p><p>to accounts, but in the future it may be extended to other entities.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>account</td>
+                  <td><a href="#concordium.v2.AccountAddress">concordium.v2.AccountAddress</a></td>
+                  <td></td>
+                  <td><p>The account address of the holder. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenId">TokenId</h3>
+        <p>Token ID: a unique symbol and identifier of a protocol level token.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Unique identifier for the token, guaranteed to be distinct across the
+entire concordium blockchain. The token id must be between 1 and 128 bytes long and consist of
+only a-z, A-Z, 0-9, `.`, `%` and `-`. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenModuleEvent">TokenModuleEvent</h3>
+        <p>Single token event originating from a token module as part of a token</p><p>transaction.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The type of the event. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>details</td>
+                  <td><a href="#concordium.v2.plt.Cbor">Cbor</a></td>
+                  <td></td>
+                  <td><p>The CBOR encoded event details. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenModuleRef">TokenModuleRef</h3>
+        <p>A token module reference. This is always 32 bytes long.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenModuleRejectReason">TokenModuleRejectReason</h3>
+        <p>Details provided by the token module in the event of rejecting a transaction.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_id</td>
+                  <td><a href="#concordium.v2.plt.TokenId">TokenId</a></td>
+                  <td></td>
+                  <td><p>The Token ID of the protocol-level token. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The type of the reject reason. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>details</td>
+                  <td><a href="#concordium.v2.plt.Cbor">Cbor</a></td>
+                  <td>optional</td>
+                  <td><p>(Optional) CBOR-encoded details. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenState">TokenState</h3>
+        <p>Token state at the block level</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_module_ref</td>
+                  <td><a href="#concordium.v2.plt.TokenModuleRef">TokenModuleRef</a></td>
+                  <td></td>
+                  <td><p>The reference of the module implementing this token. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>decimals</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>Number of decimals in the decimal number representation of amounts. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>total_supply</td>
+                  <td><a href="#concordium.v2.plt.TokenAmount">TokenAmount</a></td>
+                  <td></td>
+                  <td><p>The total available token supply. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>module_state</td>
+                  <td><a href="#concordium.v2.plt.Cbor">Cbor</a></td>
+                  <td></td>
+                  <td><p>Token module specific state, such as token name, feature flags, meta data. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenSupplyUpdateEvent">TokenSupplyUpdateEvent</h3>
+        <p>An event emitted when the token supply is updated, i.e. by minting/burning</p><p>tokens to/from the balance of the `target`.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>target</td>
+                  <td><a href="#concordium.v2.plt.TokenHolder">TokenHolder</a></td>
+                  <td></td>
+                  <td><p>The token holder the balance update is performed on. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amount</td>
+                  <td><a href="#concordium.v2.plt.TokenAmount">TokenAmount</a></td>
+                  <td></td>
+                  <td><p>The balance difference to be applied to the target. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.plt.TokenTransferEvent">TokenTransferEvent</h3>
+        <p>An event emitted when a transfer of tokens from `from` to `to` is performed.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#concordium.v2.plt.TokenHolder">TokenHolder</a></td>
+                  <td></td>
+                  <td><p>The token holder from which the tokens are transferred. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#concordium.v2.plt.TokenHolder">TokenHolder</a></td>
+                  <td></td>
+                  <td><p>The token holder to which the tokens are transferred. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amount</td>
+                  <td><a href="#concordium.v2.plt.TokenAmount">TokenAmount</a></td>
+                  <td></td>
+                  <td><p>The amount of tokens transferred. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>memo</td>
+                  <td><a href="#concordium.v2.Memo">concordium.v2.Memo</a></td>
+                  <td>optional</td>
+                  <td><p>An optional memo field that can be used to attach a message to the token
+transfer. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
     
       
       <div class="file-heading">
