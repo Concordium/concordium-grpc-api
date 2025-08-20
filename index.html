@@ -187,10 +187,6 @@
                 </li>
               
                 <li>
-                  <a href="#concordium.v2.AccountAddress"><span class="badge">M</span>AccountAddress</a>
-                </li>
-              
-                <li>
                   <a href="#concordium.v2.AccountCreationDetails"><span class="badge">M</span>AccountCreationDetails</a>
                 </li>
               
@@ -212,6 +208,10 @@
               
                 <li>
                   <a href="#concordium.v2.AccountInfo.CredsEntry"><span class="badge">M</span>AccountInfo.CredsEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.AccountInfo.Token"><span class="badge">M</span>AccountInfo.Token</a>
                 </li>
               
                 <li>
@@ -1123,10 +1123,6 @@
                 </li>
               
                 <li>
-                  <a href="#concordium.v2.Memo"><span class="badge">M</span>Memo</a>
-                </li>
-              
-                <li>
                   <a href="#concordium.v2.MintDistributionCpv0"><span class="badge">M</span>MintDistributionCpv0</a>
                 </li>
               
@@ -1467,6 +1463,14 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.TokenInfo"><span class="badge">M</span>TokenInfo</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.TokenInfoRequest"><span class="badge">M</span>TokenInfoRequest</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.TokenomicsInfo"><span class="badge">M</span>TokenomicsInfo</a>
                 </li>
               
@@ -1700,30 +1704,6 @@
                   <td><a href="#concordium.v2.UpdateKeysThreshold">UpdateKeysThreshold</a></td>
                   <td></td>
                   <td><p>Number of keys requred to authorize an update. </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="concordium.v2.AccountAddress">AccountAddress</h3>
-        <p>An address of an account. Always 32 bytes.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -1969,11 +1949,18 @@ earlier protocol versions. </p></td>
                   <td>available_balance</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The available (unencrypted) balance of the account (i.e. that can be transferred
-or used to pay for transactions). This is the balance minus the locked amount.
-The locked amount is the maximum of the amount in the release schedule and
-the total amount that is actively staked or in cooldown (inactive stake).
-This was introduced in node version 7.0. </p></td>
+                  <td><p>The available (unencrypted) balance of CCD&#39;s of the account (i.e. that
+can be transferred or used to pay for transactions). This is the balance
+minus the locked amount. The locked amount is the maximum of the amount
+in the release schedule and the total amount that is actively staked or in
+cooldown (inactive stake). This was introduced in node version 7.0. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>tokens</td>
+                  <td><a href="#concordium.v2.AccountInfo.Token">AccountInfo.Token</a></td>
+                  <td>repeated</td>
+                  <td><p>The protocol level tokens (PLT) held by the account. </p></td>
                 </tr>
               
             </tbody>
@@ -2005,6 +1992,37 @@ This was introduced in node version 7.0. </p></td>
                   <td><a href="#concordium.v2.AccountCredential">AccountCredential</a></td>
                   <td></td>
                   <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.AccountInfo.Token">AccountInfo.Token</h3>
+        <p>Protocol level token (PLT).</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_id</td>
+                  <td><a href="#concordium.v2.plt.TokenId">plt.TokenId</a></td>
+                  <td></td>
+                  <td><p>The unique token id </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_account_state</td>
+                  <td><a href="#concordium.v2.plt.TokenAccountState">plt.TokenAccountState</a></td>
+                  <td></td>
+                  <td><p>The associated token account level state </p></td>
                 </tr>
               
             </tbody>
@@ -2537,6 +2555,13 @@ The associated transaction type is available starting from protocol version 4 an
                   <td></td>
                   <td><p>A delegator was configured. The details of what happened are contained in a list of DelegatorEvents.
 This transaction type is available starting from protocol version 4. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_update_effect</td>
+                  <td><a href="#concordium.v2.plt.TokenEffect">plt.TokenEffect</a></td>
+                  <td></td>
+                  <td><p>Token update transaction effect. </p></td>
                 </tr>
               
             </tbody>
@@ -3514,6 +3539,14 @@ the validator stake threshold, for V1 there are more. </p></td>
                   <td><p>Access structure for updating the length of the reward period. </p></td>
                 </tr>
               
+                <tr>
+                  <td>create_plt</td>
+                  <td><a href="#concordium.v2.AccessStructure">AccessStructure</a></td>
+                  <td>optional</td>
+                  <td><p>Access structure for creating a protocol level token.
+This is present from protocol version 9. </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -4386,7 +4419,7 @@ The returned amount accounts for delegation, capital bounds and leverage bounds.
             <tbody>
               
                 <tr>
-                  <td>validators</td>
+                  <td>bakers</td>
                   <td><a href="#concordium.v2.FullBakerInfo">FullBakerInfo</a></td>
                   <td>repeated</td>
                   <td><p>The set of validators. </p></td>
@@ -5025,7 +5058,14 @@ can in principle happen. </p></td>
                   <td>update</td>
                   <td><a href="#concordium.v2.UpdateDetails">UpdateDetails</a></td>
                   <td></td>
-                  <td><p>Details about a chain update. </p></td>
+                  <td><p>Details about a successful chain update. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_creation</td>
+                  <td><a href="#concordium.v2.plt.TokenCreationDetails">plt.TokenCreationDetails</a></td>
+                  <td></td>
+                  <td><p>Details about the creation of a protocol-level token. </p></td>
                 </tr>
               
             </tbody>
@@ -5639,7 +5679,7 @@ The event can occur starting from protocol version 8. </p></td>
             <tbody>
               
                 <tr>
-                  <td>bakerId</td>
+                  <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
                   <td><p>The id of the primed validator. </p></td>
@@ -5670,7 +5710,7 @@ The event can occur starting from protocol version 8. </p></td>
             <tbody>
               
                 <tr>
-                  <td>bakerId</td>
+                  <td>baker_id</td>
                   <td><a href="#concordium.v2.BakerId">BakerId</a></td>
                   <td></td>
                   <td><p>The id of the suspended validator. </p></td>
@@ -10943,30 +10983,6 @@ value produced by the contract. </p></td>
 
         
       
-        <h3 id="concordium.v2.Memo">Memo</h3>
-        <p>A memo which can be included as part of a transfer. Max size is 256 bytes.</p><p>This message can occur starting from protocol version 2.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="concordium.v2.MintDistributionCpv0">MintDistributionCpv0</h3>
         <p>The minting rate and the distribution of newly-minted CCD among validators,</p><p>finalizers, and the foundation account. It must be the case that</p><p>baking_reward + finalization_reward <= 1. The remaining amount is the</p><p>platform development charge.</p>
 
@@ -11377,6 +11393,13 @@ value produced by the contract. </p></td>
                   <td><a href="#concordium.v2.SequenceNumber">SequenceNumber</a></td>
                   <td></td>
                   <td><p>Updates to the validator score parameters for chain parameters version 3. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>protocol_level_tokens</td>
+                  <td><a href="#concordium.v2.SequenceNumber">SequenceNumber</a></td>
+                  <td></td>
+                  <td><p>Updates to the protocol level tokens. Introduced in protocol version 9. </p></td>
                 </tr>
               
             </tbody>
@@ -13577,6 +13600,22 @@ capital. </p></td>
                   <td><p>The pool is not open to delegators. </p></td>
                 </tr>
               
+                <tr>
+                  <td>non_existent_token_id</td>
+                  <td><a href="#concordium.v2.plt.TokenId">plt.TokenId</a></td>
+                  <td></td>
+                  <td><p>The provided identifier does not match a token currently on chain.
+Introduced in protocol version 9. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_update_transaction_failed</td>
+                  <td><a href="#concordium.v2.plt.TokenModuleRejectReason">plt.TokenModuleRejectReason</a></td>
+                  <td></td>
+                  <td><p>The token update transaction failed.
+Introduced in protocol version 9. </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -14734,6 +14773,68 @@ The bytes have a fixed length of 48 bytes. </p></td>
 
         
       
+        <h3 id="concordium.v2.TokenInfo">TokenInfo</h3>
+        <p>The token state at the block level.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_id</td>
+                  <td><a href="#concordium.v2.plt.TokenId">plt.TokenId</a></td>
+                  <td></td>
+                  <td><p>The unique token id. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_state</td>
+                  <td><a href="#concordium.v2.plt.TokenState">plt.TokenState</a></td>
+                  <td></td>
+                  <td><p>The associated block level state. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.TokenInfoRequest">TokenInfoRequest</h3>
+        <p>Request for token information.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block_hash</td>
+                  <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
+                  <td></td>
+                  <td><p>Block in which to query the token information. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_id</td>
+                  <td><a href="#concordium.v2.plt.TokenId">plt.TokenId</a></td>
+                  <td></td>
+                  <td><p>Specification of the token identifier. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.TokenomicsInfo">TokenomicsInfo</h3>
         <p>Type for the response of GetTokenomicsInfo.</p><p>Contains information related to tokenomics at the end of a given block.</p>
 
@@ -15106,7 +15207,7 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
         
       
         <h3 id="concordium.v2.UpdateDetails">UpdateDetails</h3>
-        <p>Details of an update instruction. These are free, and we only ever get a</p><p>response for them if the update is successfully enqueued, hence no failure</p><p>cases.</p>
+        <p>Details of an successful update instruction. These are free, and we only ever get a</p><p>response for them if the update is successfully enqueued, hence no failure</p><p>cases.</p>
 
         
           <table class="field-table">
@@ -15126,7 +15227,7 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
                   <td>payload</td>
                   <td><a href="#concordium.v2.UpdatePayload">UpdatePayload</a></td>
                   <td></td>
-                  <td><p>The paylaod for the update. </p></td>
+                  <td><p>The payload for the update. </p></td>
                 </tr>
               
             </tbody>
@@ -15453,6 +15554,13 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
                   <td><a href="#concordium.v2.ValidatorScoreParameters">ValidatorScoreParameters</a></td>
                   <td></td>
                   <td><p>Validator score parameters (chain parameters version 3) </p></td>
+                </tr>
+              
+                <tr>
+                  <td>create_plt_update</td>
+                  <td><a href="#concordium.v2.plt.CreatePLT">plt.CreatePLT</a></td>
+                  <td></td>
+                  <td><p>Create a new protocol-level token. </p></td>
                 </tr>
               
             </tbody>
@@ -16064,6 +16172,12 @@ Introduced in protocol version 2.</p></td>
                 <td><p>Introduced in protocol version 4.</p></td>
               </tr>
             
+              <tr>
+                <td>TOKEN_UPDATE</td>
+                <td>21</td>
+                <td><p>Introduced in protocol version 9.</p></td>
+              </tr>
+            
           </tbody>
         </table>
       
@@ -16201,6 +16315,12 @@ Introduced in protocol version 2.</p></td>
                 <td><p></p></td>
               </tr>
             
+              <tr>
+                <td>UPDATE_CREATE_PLT</td>
+                <td>21</td>
+                <td><p></p></td>
+              </tr>
+            
           </tbody>
         </table>
       
@@ -16257,10 +16377,25 @@ increasing block height.</p></td>
               </tr>
             
               <tr>
+                <td>GetTokenInfo</td>
+                <td><a href="#concordium.v2.TokenInfoRequest">TokenInfoRequest</a></td>
+                <td><a href="#concordium.v2.TokenInfo">TokenInfo</a></td>
+                <td><p>Retrieve the information about the given token in the given block.</p></td>
+              </tr>
+            
+              <tr>
                 <td>GetAccountList</td>
                 <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
                 <td><a href="#concordium.v2.AccountAddress">AccountAddress</a> stream</td>
                 <td><p>Retrieve the list of accounts that exist at the end of the given block.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetTokenList</td>
+                <td><a href="#concordium.v2.BlockHashInput">BlockHashInput</a></td>
+                <td><a href="#concordium.v2.plt.TokenId">plt.TokenId</a> stream</td>
+                <td><p>Retrieve the list of protocol level tokens that exist at the end of the
+given block.</p></td>
               </tr>
             
               <tr>
