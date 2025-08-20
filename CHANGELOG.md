@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## Node 9.0 API
+
 - Extend `NextUpdateSequenceNumbers` with sequence number for updates to protocol level tokens (field `protocol_level_tokens`).
 - Extend `ProtocolVersion` enum with a protocol version 9 variant `PROTOCOL_VERSION_9`.
 - Support for protocol level tokens.
