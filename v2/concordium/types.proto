@@ -88,7 +88,7 @@ message VersionedModuleSource {
   }
 
   // This field will not be extended in future versions of the API, instead new data versions will
-  // be using optional fields next to this field.
+  // use optional fields next to this field.
   oneof module {
     ModuleSourceV0 v0 = 1;
     ModuleSourceV1 v1 = 2;
@@ -219,7 +219,7 @@ message StakePendingChange {
   }
 
   // This field will not be extended in future versions of the API, since it is not used starting
-  // from Concordium Protocol Version 7 and upwards.
+  // from Concordium Protocol Version 7.
   oneof change {
     Reduce reduce = 1;
     // Remove the stake. The value is a Unix timestamp of the effective time in
@@ -352,8 +352,7 @@ message EncryptionKey {
 
 // An address of either a contract or an account.
 message Address {
-  // This field will not be extended in future versions of the API, instead new data versions will
-  // be using optional fields next to this field.
+  // This field will not be extended in future versions of the API.
   oneof type {
     AccountAddress account = 1;
     ContractAddress contract = 2;
@@ -734,7 +733,7 @@ message InstanceInfo {
   // The information depends on the smart contract version used by the instance.
   //
   // This field will not be extended in future versions of the API, instead new data versions will
-  // be using optional fields next to this field.
+  // use optional fields next to this field.
   oneof version {
     V0 v0 = 1;
     V1 v1 = 2;
@@ -1956,7 +1955,7 @@ message BakerStakeThreshold {
 // even themselves. They can only be performed by Root level keys.
 message RootUpdate {
   // This field will not be extended in future versions of the API, instead new data versions will
-  // be using optional fields next to this field.
+  // use optional fields next to this field.
   oneof update_type {
     // The root keys were updated.
     HigherLevelKeys root_keys_update = 1;
@@ -1972,7 +1971,7 @@ message RootUpdate {
 // They can update themselves or level 2 keys. They can only be performed by level 1 keys.
 message Level1Update {
   // This field will not be extended in future versions of the API, instead new data versions will
-  // be using optional fields next to this field.
+  // use optional fields next to this field.
   oneof update_type {
     // The level 1 keys were updated.
     HigherLevelKeys level_1_keys_update = 1;
@@ -2373,7 +2372,7 @@ message PoolPendingChange {
   }
 
   // This field will not be extended in future versions of the API, since it is not used starting
-  // from Concordium Protocol Version 7 and upwards.
+  // from Concordium Protocol Version 7.
   oneof change {
     Reduce reduce = 1;
     Remove remove = 2;
@@ -2544,7 +2543,7 @@ message TokenomicsInfo {
   }
 
   // This field will not be extended in future versions of the API, instead new data versions will
-  // be using optional fields next to this field.
+  // use optional fields next to this field.
   oneof tokenomics {
     V0 v0 = 1;
     V1 v1 = 2;
@@ -3530,7 +3529,7 @@ message ChainParametersV3 {
 // Chain parameters.
 message ChainParameters {
   // This field will not be extended in future versions of the API, instead new data versions will
-  // be using optional fields next to this field.
+  // use optional fields next to this field.
   oneof parameters {
     // Chain parameters that apply when the block is a protocol version 1-3 block.
     ChainParametersV0 v0 = 1;
