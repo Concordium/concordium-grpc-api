@@ -87,6 +87,8 @@ message VersionedModuleSource {
     bytes value = 1;
   }
 
+  // This field will not be extended in future versions of the API, instead new data versions will
+  // use optional fields in `ModuleSourceV1`.
   oneof module {
     ModuleSourceV0 v0 = 1;
     ModuleSourceV1 v1 = 2;
@@ -165,6 +167,7 @@ message EncryptedBalance {
 
 // Entity to which the account delegates a portion of its stake.
 message DelegationTarget {
+  // This field might be extended in future versions of the API.
   oneof target {
     // Delegate passively, i.e., to no specific validator.
     Empty passive = 1;
@@ -215,6 +218,8 @@ message StakePendingChange {
     Timestamp effective_time = 2;
   }
 
+  // This field will not be extended in future versions of the API, since it is not used starting
+  // from Concordium Protocol Version 7.
   oneof change {
     Reduce reduce = 1;
     // Remove the stake. The value is a Unix timestamp of the effective time in
@@ -224,6 +229,8 @@ message StakePendingChange {
 }
 
 // Information about how open the pool is to new delegators.
+//
+// This type might be extended in future versions of the API.
 enum OpenStatus {
   OPEN_STATUS_OPEN_FOR_ALL = 0;
   OPEN_STATUS_CLOSED_FOR_NEW = 1;
@@ -269,6 +276,8 @@ message AccountStakingInfo {
     // Information about the validator that is staking.
     BakerInfo baker_info = 3;
     // If present, any pending change to the delegated stake.
+    // Starting from Concordium Protocol Version 7 this will never be present, due to changes for
+    // the staking cooldown.
     optional StakePendingChange pending_change = 4;
     // Present if the account is currently a validator, i.e., it is in the validator
     // committee of the current epoch.
@@ -292,6 +301,7 @@ message AccountStakingInfo {
     optional StakePendingChange pending_change = 4;
   }
 
+  // This field might be extended in future versions of the API.
   oneof staking_info {
     // The account is a validator.
     Baker baker = 1;
@@ -342,6 +352,7 @@ message EncryptionKey {
 
 // An address of either a contract or an account.
 message Address {
+  // This field will not be extended in future versions of the API.
   oneof type {
     AccountAddress account = 1;
     ContractAddress contract = 2;
@@ -350,6 +361,7 @@ message Address {
 
 // A public key used to verify transaction signatures from an account.
 message AccountVerifyKey {
+  // This field might be extended in future versions of the API.
   oneof key {
     bytes ed25519_key = 1;
   }
@@ -464,6 +476,7 @@ message NormalCredentialValues {
 
 // Credential that is part of an account.
 message AccountCredential {
+  // This field might be extended in future versions of the API.
   oneof credential_values {
     InitialCredentialValues initial = 1;
     NormalCredentialValues normal = 2;
@@ -477,6 +490,8 @@ message Cooldown {
   // a payday) it enters the pre-cooldown state. At the subsequent payday, it
   // enters the cooldown state. At the payday after the end of the cooldown
   // period, the stake is finally released.
+  //
+  // This type might be extended in future versions of the API.
   enum CooldownStatus {
       // The amount is in cooldown and will expire at the specified time, becoming available
       // at the subsequent pay day.
@@ -578,6 +593,7 @@ message BlockHashInput {
     // or allow results from more recent genesis indices as well (`false`).
     bool restrict = 3;
   }
+  // This field might be extended in future versions of the API.
   oneof block_hash_input {
     // Query for the best block.
     Empty best = 1;
@@ -602,6 +618,7 @@ message EpochRequest {
         // The epoch number to query at.
         Epoch epoch = 2;
     }
+    // This field might be extended in future versions of the API.
     oneof epoch_request_input {
         // Query by genesis index and epoch number.
         RelativeEpoch relative_epoch = 1;
@@ -612,6 +629,7 @@ message EpochRequest {
 
 // Input to queries which take an account as a parameter.
 message AccountIdentifierInput {
+  // This field might be extended in future versions of the API.
   oneof account_identifier_input {
     // Identify the account by the address of the account.
     AccountAddress address = 1;
@@ -713,6 +731,9 @@ message InstanceInfo {
   }
 
   // The information depends on the smart contract version used by the instance.
+  //
+  // This field will not be extended in future versions of the API, instead new data versions will
+  // use optional fields in `InstanceInfo.V1`.
   oneof version {
     V0 v0 = 1;
     V1 v1 = 2;
@@ -777,6 +798,7 @@ message BlockItemStatus {
     BlockItemSummaryInBlock outcome = 1;
   }
 
+  // This field might be extended in future versions of the API.
   oneof status {
     // Block item is received, but not yet in any blocks.
     Empty received = 1;
@@ -861,6 +883,7 @@ message RejectReason {
     repeated CredentialRegistrationId ids = 1;
   }
 
+  // This field might be extended in future versions of the API.
   oneof reason {
     // Raised while validating a Wasm module that is not well formed.
     Empty module_not_wf = 1;
@@ -999,6 +1022,8 @@ message RejectReason {
 }
 
 // Version of smart contract.
+//
+// This type might be extended in future versions of the API.
 enum ContractVersion {
   V0 = 0;
   V1 = 1;
@@ -1088,6 +1113,7 @@ message ContractTraceElement {
     ModuleRef to = 3;
   }
 
+  // This field might be extended in future versions of the API.
   oneof element {
     // A contract instance was updated.
     InstanceUpdatedEvent updated = 1;
@@ -1169,12 +1195,12 @@ message RegisteredData {
 }
 
 // Events that may result from the `ConfigureBaker` transaction which adds, modify, or removes a validator pool starting in protocol version 4.
-// Before protocol version 4, distinct transaction types (`BakerAdded`, `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, 
+// Before protocol version 4, distinct transaction types (`BakerAdded`, `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`,
 // and `BakerKeysUpdated`) existed which emitted validator related events instead.
 message BakerEvent {
   // A validator was added.
   // This message/event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
-  // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.  
+  // `BakerEvent::BakerSetMetadataURL`, `BakerEvent::BakerSetTransactionFeeCommission`, `BakerEvent::BakerSetBakingRewardCommission` and `BakerEvent::BakerSetFinalizationRewardCommission` events in the same transaction.
   message BakerAdded {
     // The keys with which the validator registered.
     BakerKeysEvent keys_event = 1;
@@ -1193,7 +1219,7 @@ message BakerEvent {
     Amount new_stake = 2;
   }
   // The validator's stake was decreased.
-  // The behavior of decreasing the stake of validators changed in protocol version 7 
+  // The behavior of decreasing the stake of validators changed in protocol version 7
   // (see https://proposals.concordium.com/updates/P7.html for more details).
   message BakerStakeDecreased {
     // Validator's id.
@@ -1275,6 +1301,7 @@ message BakerEvent {
     BakerId baker_id = 1;
   }
 
+  // This field might be extended in future versions of the API.
   oneof event {
     // A validator was added.
     // This event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and starting from protocol version 4 also `BakerEvent::BakerSetOpenStatus`,
@@ -1282,7 +1309,7 @@ message BakerEvent {
     BakerAdded baker_added = 1;
     // A validator was removed by a transaction sent by the validator that decreased the validator's own stake to 0.
     // When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
-    // The behavior of validators being removed changed in protocol version 7 
+    // The behavior of validators being removed changed in protocol version 7
     // (see https://proposals.concordium.com/updates/P7.html for more details).
     // If the cause of the validator removal is a transaction from an existing validator that switched its staking behavior to `delegation`,
     // the `DelegationEvent::BakerRemoved` is emitted instead of this event.
@@ -1290,7 +1317,7 @@ message BakerEvent {
     // The validator's stake was increased.
     BakerStakeIncreased baker_stake_increased = 3;
     // The validator's stake was decreased.
-    // The behavior of decreasing the stake of validators changed in protocol version 7 
+    // The behavior of decreasing the stake of validators changed in protocol version 7
     // (see https://proposals.concordium.com/updates/P7.html for more details).
     BakerStakeDecreased baker_stake_decreased = 4;
     // The validator's setting for restaking earnings was updated.
@@ -1364,6 +1391,7 @@ message DelegationEvent {
     // Validator's id
     BakerId baker_id = 1;
   }
+  // This field might be extended in future versions of the API.
   oneof event {
     // The delegator's stake increased.
     DelegationStakeIncreased delegation_stake_increased = 1;
@@ -1387,7 +1415,7 @@ message DelegationEvent {
     // When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
     // The behavior of validators being removed changed in protocol version 7.
     // (see https://proposals.concordium.com/updates/P7.html for more details).
-    // If the cause of the validator removal is a transaction that decreased the validator's own stake to 0, 
+    // If the cause of the validator removal is a transaction that decreased the validator's own stake to 0,
     // the `BakerEvent::BakerRemoved` is emitted instead of this event.
     // This event can occur starting from protocol version 7.
     BakerRemoved baker_removed = 7;
@@ -1483,7 +1511,8 @@ message AccountTransactionEffects {
   message DelegationConfigured {
     repeated DelegationEvent events = 1;
   }
- 
+
+  // This field might be extended in future versions of the API.
   oneof effect {
     // No effects other than payment from this transaction.
     // The rejection reason indicates why the transaction failed.
@@ -1925,6 +1954,8 @@ message BakerStakeThreshold {
 // Root updates are the highest kind of key updates. They can update every other set of keys,
 // even themselves. They can only be performed by Root level keys.
 message RootUpdate {
+  // This field will not be extended in future versions of the API, instead new data versions will
+  // use optional fields in either `HigherLevelKeys` or `AuthorizationsV1`.
   oneof update_type {
     // The root keys were updated.
     HigherLevelKeys root_keys_update = 1;
@@ -1939,6 +1970,8 @@ message RootUpdate {
 // Level 1 updates are the intermediate update kind.
 // They can update themselves or level 2 keys. They can only be performed by level 1 keys.
 message Level1Update {
+  // This field will not be extended in future versions of the API, instead new data versions will
+  // use optional fields in either `HigherLevelKeys` or `AuthorizationsV1`.
   oneof update_type {
     // The level 1 keys were updated.
     HigherLevelKeys level_1_keys_update = 1;
@@ -1951,6 +1984,7 @@ message Level1Update {
 
 // The payload of a chain update.
 message UpdatePayload {
+  // This field might be extended in future versions of the API.
   oneof payload {
     // The protocol version was updated.
     ProtocolUpdate protocol_update = 1;
@@ -2026,6 +2060,8 @@ message AccountCreationDetails {
 }
 
 // The type of a credential.
+//
+// This type might be extended in future versions of the API.
 enum CredentialType {
   // An initial credential created by the identity provider.
   CREDENTIAL_TYPE_INITIAL = 0;
@@ -2062,6 +2098,8 @@ message BlockItemSummary {
   // Hash of the transaction.
   TransactionHash hash = 3;
   // Details that are specific to different transaction types.
+  //
+  // This field might be extended in future versions of the API.
   oneof details {
     // Details about an account transaction.
     AccountTransactionDetails account_transaction = 4;
@@ -2075,6 +2113,8 @@ message BlockItemSummary {
 }
 
 // The type of chain update.
+//
+// This type might be extended in future versions of the API.
 enum UpdateType {
     UPDATE_PROTOCOL = 0;
     UPDATE_ELECTION_DIFFICULTY = 1;
@@ -2101,6 +2141,8 @@ enum UpdateType {
 }
 
 // The type of transaction.
+//
+// This type might be extended in future versions of the API.
 enum TransactionType {
   DEPLOY_MODULE = 0;
   INIT_CONTRACT = 1;
@@ -2141,6 +2183,8 @@ enum TransactionType {
 }
 
 // The different versions of the protocol.
+//
+// This type might be extended in future versions of the API.
 enum ProtocolVersion {
   PROTOCOL_VERSION_1 = 0;
   PROTOCOL_VERSION_2 = 1;
@@ -2327,6 +2371,8 @@ message PoolPendingChange {
     Timestamp effective_time = 1;
   }
 
+  // This field will not be extended in future versions of the API, since it is not used starting
+  // from Concordium Protocol Version 7.
   oneof change {
     Reduce reduce = 1;
     Remove remove = 2;
@@ -2441,6 +2487,7 @@ message BlocksAtHeightRequest {
     bool restrict = 3;
   }
 
+  // This field might be extended in future versions of the API.
   oneof blocks_at_height {
     Absolute absolute = 1;
     Relative relative = 2;
@@ -2495,6 +2542,8 @@ message TokenomicsInfo {
     ProtocolVersion protocol_version = 10;
   }
 
+  // This field will not be extended in future versions of the API, instead new data versions will
+  // use optional fields in `TokenomicsInfo.V1`.
   oneof tokenomics {
     V0 v0 = 1;
     V1 v1 = 2;
@@ -2550,6 +2599,7 @@ message InvokeInstanceResponse {
     repeated ContractTraceElement effects = 3;
   }
 
+  // This field might be extended in future versions of the API.
   oneof result {
     Success success = 1;
     Failure failure = 2;
@@ -2783,6 +2833,7 @@ message BlockSpecialEvent {
     AccountAddress account = 2;
   }
 
+  // This field might be extended in future versions of the API.
   oneof event {
     // Rewards issued to each validator at the end of an epoch for producing blocks in the epoch,
     // in proportion to the number of blocks they contributed. This only occurs in protocol versions
@@ -2821,6 +2872,8 @@ message PendingUpdate {
   // The effective time of the update.
   TransactionTime effective_time = 1;
   // The effect of the update.
+  //
+  // This field might be extended in future versions of the API.
   oneof effect {
     // Updates to the root keys.
     HigherLevelKeys root_keys = 2;
@@ -2985,6 +3038,7 @@ message DumpRequest {
 message PeersInfo {
   // A peer that the node is connected to.
   message Peer {
+      // This type might be extended in future versions of the API.
       enum CatchupStatus {
           // The peer does not have any data unknown to us. If we receive a message from the
           // peer that refers to unknown data (e.g., an unknown block) the peer is marked as pending.
@@ -3024,7 +3078,9 @@ message PeersInfo {
       IpSocketAddress socket_address = 2;
       // Network related statistics for the peer.
       NetworkStats network_stats = 3;
-      // consensus related information of the peer.
+      // Consensus related information of the peer.
+      //
+      // This field might be extended in future versions of the API.
       oneof consensus_info {
         // The peer is of type `Bootstrapper` is not participating in consensus
         // and thus has no catchup status.
@@ -3061,6 +3117,8 @@ message NodeInfo {
     // The committee information of a node configured with
     // validator keys but somehow the node is _not_ part of the
     // current validation committee.
+    //
+    // This type might be extended in future versions of the API.
     enum PassiveCommitteeInfo {
       // The node is started with validator keys however it is currently not in the validation committee.
       // The node is __not__ baking.
@@ -3089,6 +3147,8 @@ message NodeInfo {
     BakerId baker_id = 1;
 
     // Status of the validator configured node.
+    //
+    // This field might be extended in future versions of the API.
     oneof status {
       // The node is currently not baking.
       PassiveCommitteeInfo passive_committee_info = 2;
@@ -3103,6 +3163,7 @@ message NodeInfo {
 
   // The node is a regular node.
   message Node {
+    // This field might be extended in future versions of the API.
     oneof consensus_status {
       // The node is not running consensus.
       // This is the case only when the node is
@@ -3130,6 +3191,8 @@ message NodeInfo {
   // Information related to the p2p protocol.
   NetworkInfo network_info = 5;
   // Details of the node.
+  //
+  // This field might be extended in future versions of the API.
   oneof details {
     // The node is a bootstrapper and is not running consensus.
     Empty bootstrapper = 6;
@@ -3140,6 +3203,7 @@ message NodeInfo {
 }
 
 message SendBlockItemRequest {
+  // This field might be extended in future versions of the API.
   oneof block_item {
     // Account transactions are messages which are signed and paid for by an account.
     AccountTransaction account_transaction = 1;
@@ -3159,6 +3223,9 @@ message SendBlockItemRequest {
 message CredentialDeployment {
   TransactionTime message_expiry = 1;
   // The credential to be added.
+  //
+  // This field will not be extended in future versions of the API and the Concordium Node API will
+  // always output the `raw_payload` in queries.
   oneof payload {
     // A raw payload, which is just the encoded payload.
     // A typed variant might be added in the future.
@@ -3252,6 +3319,8 @@ message TransferWithMemoPayload {
 
 // The payload for an account transaction.
 message AccountTransactionPayload {
+  // This field will not be extended in future versions of the API and the Concordium Node API will
+  // always output the `raw_payload` in queries.
   oneof payload {
     // A pre-serialized payload in the binary serialization format defined
     // by the protocol.
@@ -3289,6 +3358,7 @@ message UpdateInstructionHeader {
 
 // The payload for an UpdateInstruction.
 message UpdateInstructionPayload {
+  // This field might be extended in future versions of the API.
   oneof payload {
     // A raw payload encoded according to the format defined by the protocol.
     bytes raw_payload = 3;
@@ -3458,6 +3528,8 @@ message ChainParametersV3 {
 
 // Chain parameters.
 message ChainParameters {
+  // This field will not be extended in future versions of the API, instead new data versions will
+  // use optional fields in `ChainParametersV3`.
   oneof parameters {
     // Chain parameters that apply when the block is a protocol version 1-3 block.
     ChainParametersV0 v0 = 1;
@@ -3501,6 +3573,7 @@ message FinalizationSummary {
 
 // Finalization summary that may or may not be part of the block.
 message BlockFinalizationSummary {
+  // This field will not be extended in future versions of the API.
   oneof summary {
     // There is no finalization data in the block.
     Empty none = 1;
@@ -3513,6 +3586,7 @@ message BlockItem {
   // The hash of the block item that identifies it to the chain.
   TransactionHash hash = 1;
 
+  // This field might be extended in future versions of the API.
   oneof block_item {
     // Account transactions are messages which are signed and paid for by an account.
     AccountTransaction account_transaction = 2;
@@ -3662,6 +3736,7 @@ message WinningBaker {
 // `load_block_state`: any other operation will be met with `NoState` until a
 // state is successfully loaded.
 message DryRunRequest {
+    // This field might be extended in future versions of the API.
     oneof request {
         // Load the state of the specified block to use for subsequent requests.
         // The state is taken at the end of execution of the block, and the block’s
@@ -3678,6 +3753,7 @@ message DryRunRequest {
 
 // Run a query as part of a dry run. Queries do not update the block state.
 message DryRunStateQuery {
+    // This field might be extended in future versions of the API.
     oneof query {
         // Look up information on a particular account.
         //
@@ -3718,6 +3794,7 @@ message DryRunInvokeInstance {
 
 // An operation that can update the state as part of a dry run.
 message DryRunStateOperation {
+    // This field might be extended in future versions of the API.
     oneof operation {
         // Sets the current block time to the given timestamp for the purposes of future
         // transactions.
@@ -3780,6 +3857,7 @@ message DryRunSignature {
 
 // A response to a `DryRunRequest`.
 message DryRunResponse {
+    // This field might be extended in future versions of the API.
     oneof response {
         // The request produced an error. The request otherwise has no effect on the state.
         DryRunErrorResponse error = 1;
@@ -3847,6 +3925,7 @@ message DryRunErrorResponse {
         RejectReason reason = 3;
     }
 
+    // This field might be extended in future versions of the API.
     oneof error {
         // The current block state is undefined. It should be initialized with
         // a 'load_block_state' request before any other operations.
@@ -3921,6 +4000,7 @@ message DryRunSuccessResponse {
         repeated ContractTraceElement effects = 3;
     }
 
+    // This field might be extended in future versions of the API.
     oneof response {
         // The state from the specified block was successfully loaded.
         // Response to 'load_block_state'.

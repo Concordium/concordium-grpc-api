@@ -85,6 +85,8 @@ message TokenModuleEvent {
 // to accounts, but in the future it may be extended to other entities.
 message TokenHolder {
   // The holder address
+  //
+  // This field might be extended in future versions of the API.
   oneof address {
     // The account address of the holder.
     AccountAddress account = 1;
@@ -118,6 +120,8 @@ message TokenEvent {
   // The Token ID.
   TokenId token_id = 1;
   // The type of the event.
+  //
+  // This field might be extended in future versions of the API.
   oneof event {
     // An event emitted by the token module.
     TokenModuleEvent module_event = 2;
