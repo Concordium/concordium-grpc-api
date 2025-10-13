@@ -88,7 +88,7 @@ message VersionedModuleSource {
   }
 
   // This field will not be extended in future versions of the API, instead new data versions will
-  // use optional fields next to this field.
+  // use optional fields in `ModuleSourceV1`.
   oneof module {
     ModuleSourceV0 v0 = 1;
     ModuleSourceV1 v1 = 2;
@@ -733,7 +733,7 @@ message InstanceInfo {
   // The information depends on the smart contract version used by the instance.
   //
   // This field will not be extended in future versions of the API, instead new data versions will
-  // use optional fields next to this field.
+  // use optional fields in `InstanceInfo.V1`.
   oneof version {
     V0 v0 = 1;
     V1 v1 = 2;
@@ -1955,7 +1955,7 @@ message BakerStakeThreshold {
 // even themselves. They can only be performed by Root level keys.
 message RootUpdate {
   // This field will not be extended in future versions of the API, instead new data versions will
-  // use optional fields next to this field.
+  // use optional fields in either `HigherLevelKeys` or `AuthorizationsV1`.
   oneof update_type {
     // The root keys were updated.
     HigherLevelKeys root_keys_update = 1;
@@ -1971,7 +1971,7 @@ message RootUpdate {
 // They can update themselves or level 2 keys. They can only be performed by level 1 keys.
 message Level1Update {
   // This field will not be extended in future versions of the API, instead new data versions will
-  // use optional fields next to this field.
+  // use optional fields in either `HigherLevelKeys` or `AuthorizationsV1`.
   oneof update_type {
     // The level 1 keys were updated.
     HigherLevelKeys level_1_keys_update = 1;
@@ -2543,7 +2543,7 @@ message TokenomicsInfo {
   }
 
   // This field will not be extended in future versions of the API, instead new data versions will
-  // use optional fields next to this field.
+  // use optional fields in `TokenomicsInfo.V1`.
   oneof tokenomics {
     V0 v0 = 1;
     V1 v1 = 2;
@@ -3529,7 +3529,7 @@ message ChainParametersV3 {
 // Chain parameters.
 message ChainParameters {
   // This field will not be extended in future versions of the API, instead new data versions will
-  // use optional fields next to this field.
+  // use optional fields in `ChainParametersV3`.
   oneof parameters {
     // Chain parameters that apply when the block is a protocol version 1-3 block.
     ChainParametersV0 v0 = 1;
