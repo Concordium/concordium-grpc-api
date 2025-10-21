@@ -3266,7 +3266,7 @@ message AccountTransactionSignature {
 
 // Account transaction signatures from the sender and optionally the sponsor of
 // the transaction.
-message AccountTransactionSignatures {
+message AccountTransactionV1Signatures {
   // Signatures from the sender of the transaction.
   AccountTransactionSignature sender_signatures = 1;
   // The optional signature of the sponsor of the transaction.
