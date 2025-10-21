@@ -3383,8 +3383,8 @@ message AccountTransaction {
 // account or by the sponsor.
 message AccountTransactionV1 {
   // The signatures on the transaction by the source account and other
-  // relevant parties.
-  AccountTransactionSignatures signatures = 1;
+  // relevant parties such as sponsors.
+  AccountTransactionV1Signatures signatures = 1;
   // The transaction header data.
   AccountTransactionHeaderV1 header = 2;
   // The account transaction payload.
