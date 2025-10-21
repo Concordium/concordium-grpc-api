@@ -3217,7 +3217,7 @@ message SendBlockItemRequest {
     // Account transactions v1 are messages which are signed and paid for by
     // either an account or a sponsor.
     AccountTransactionV1 account_transaction_v1 = 4;
-    // A raw block item.
+    // A block item which has already been serialized to the format expected by the node.
     bytes  raw_block_item = 5;
   }
 }
