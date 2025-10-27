@@ -6,6 +6,7 @@
   - Introduce `AccountTransactionV1`
   - Introduce `AccountTransactionHeaderV1`
   - Extend `BlockItem`/`SendBlockItemRequest` messages with `account_transaction_v1` and `raw_block_item` fields
+  - Extend `AccountTransactionDetails` with sponsor details.
 
 ## Node 9.0 API
 

@@ -2037,6 +2037,14 @@ message UpdatePayload {
   }
 }
 
+// Details about the sponsor of a transaction.
+message SponsorDetails {
+  // The cost of the transaction. Paid by the sponsor.
+  Amount cost = 1;
+  // The sponsor of the transaction.
+  AccountAddress sponsor = 2;
+}
+
 // Details about an account transaction.
 message AccountTransactionDetails {
   // The cost of the transaction. Paid by the sender.
@@ -2045,6 +2053,8 @@ message AccountTransactionDetails {
   AccountAddress sender = 2;
   // The effects of the transaction.
   AccountTransactionEffects effects = 3;
+  // The optional sponsor details of the transaction.
+  optional SponsorDetails sponsor = 4;
 }
 
 // Details of an account creation. These transactions are free, and we only
