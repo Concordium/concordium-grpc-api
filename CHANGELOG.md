@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Extend `ProtocolVersion` enum with a protocol version 10 variant `PROTOCOL_VERSION_10`.
+
 ## Node 9.0 API
 
 - Extend `NextUpdateSequenceNumbers` with sequence number for updates to protocol level tokens (field `protocol_level_tokens`).
