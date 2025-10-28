@@ -3371,6 +3371,13 @@ message PreAccountTransaction {
   AccountTransactionPayload payload = 2;
 }
 
+// An unsigned account transaction v1. This is used with the
+// `GetTransactionSignHash` endpoint to obtain the message to sign.
+message PreAccountTransactionV1 {
+  AccountTransactionHeaderV1 header = 1;
+  AccountTransactionPayload payload = 2;
+}
+
 // Account transactions are messages which are signed and paid for by the sender
 // account.
 message AccountTransaction {
