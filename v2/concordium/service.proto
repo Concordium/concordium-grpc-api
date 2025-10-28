@@ -298,7 +298,7 @@ service Queries {
   // strongly recommended to compute this hash off-line using it. That reduces
   // the trust in the node, removes networking failure modes, and will perform
   // better.
-  rpc GetAccountTransactionSignHashV1 (PreAccountTransactionV1) returns (AccountTransactionSignHash);
+  rpc GetAccountTransactionV1SignHash (PreAccountTransactionV1) returns (AccountTransactionSignHash);
 
   // Get the values of chain parameters in effect in the given block.
   rpc GetBlockChainParameters(BlockHashInput) returns (ChainParameters);
