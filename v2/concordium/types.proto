@@ -2047,7 +2047,8 @@ message SponsorDetails {
 
 // Details about an account transaction.
 message AccountTransactionDetails {
-  // The cost of the transaction. Paid by the sender.
+  // The cost of the transaction. Paid by the sender. This will be zero if the
+  // transaction is sponsored.
   Amount cost = 1;
   // The sender of the transaction.
   AccountAddress sender = 2;
