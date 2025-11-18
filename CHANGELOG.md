@@ -2,6 +2,7 @@
 
 ## Unreleased changes
 
+- Extend `ProtocolVersion` enum with a protocol version 10 variant `PROTOCOL_VERSION_10`.
 - Support for sponsored transactions.
   - Introduce `AccountTransactionV1`, `AccountTransactionHeaderV1`, `PreAccountTransactionV1`
   - Extend `BlockItem`/`SendBlockItemRequest` messages with `account_transaction_v1` and `raw_block_item` fields
