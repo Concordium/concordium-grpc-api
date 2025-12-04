@@ -2037,14 +2037,25 @@ message UpdatePayload {
   }
 }
 
+// Details about the sponsor of a transaction.
+message SponsorDetails {
+  // The cost of the transaction. Paid by the sponsor.
+  Amount cost = 1;
+  // The sponsor of the transaction.
+  AccountAddress sponsor = 2;
+}
+
 // Details about an account transaction.
 message AccountTransactionDetails {
-  // The cost of the transaction. Paid by the sender.
+  // The cost of the transaction. Paid by the sender. This will be zero if the
+  // transaction is sponsored.
   Amount cost = 1;
   // The sender of the transaction.
   AccountAddress sender = 2;
   // The effects of the transaction.
   AccountTransactionEffects effects = 3;
+  // The optional sponsor details of the transaction.
+  optional SponsorDetails sponsor = 4;
 }
 
 // Details of an account creation. These transactions are free, and we only
@@ -2195,6 +2206,7 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_7 = 6;
   PROTOCOL_VERSION_8 = 7;
   PROTOCOL_VERSION_9 = 8;
+  PROTOCOL_VERSION_10 = 9;
 }
 
 // The number of chain restarts via a protocol update. An effected
@@ -3214,6 +3226,11 @@ message SendBlockItemRequest {
     // Update instructions are messages which can update the chain parameters. Including which keys are allowed
     // to make future update instructions.
     UpdateInstruction update_instruction = 3;
+    // Account transactions v1 are messages which are signed and paid for by
+    // either an account or a sponsor.
+    AccountTransactionV1 account_transaction_v1 = 4;
+    // A block item which has already been serialized to the format expected by the node.
+    bytes  raw_block_item = 5;
   }
 }
 
@@ -3259,6 +3276,15 @@ message AccountTransactionSignature {
   map<uint32, AccountSignatureMap> signatures = 1;
 }
 
+// Account transaction signatures from the sender and optionally the sponsor of
+// the transaction.
+message AccountTransactionV1Signatures {
+  // Signatures from the sender of the transaction.
+  AccountTransactionSignature sender_signatures = 1;
+  // The optional signature of the sponsor of the transaction.
+  optional AccountTransactionSignature sponsor_signatures = 2;
+}
+
 // Header of an account transaction that contains basic data to check whether
 // the sender and the transaction are valid. The header is shared by all transaction types.
 message AccountTransactionHeader {
@@ -3270,6 +3296,21 @@ message AccountTransactionHeader {
   Energy energy_amount = 3;
   // Latest time the transaction can included in a block.
   TransactionTime expiry = 5;
+}
+
+// Header v1 of an account transaction with support for sponsored transactions.
+message AccountTransactionHeaderV1 {
+  // Sender of the transaction.
+  AccountAddress sender = 1;
+  // Sequence number of the transaction.
+  SequenceNumber sequence_number = 2;
+  // Maximum amount of energy the transaction can take to execute.
+  Energy energy_amount = 3;
+  // Latest time the transaction can included in a block.
+  TransactionTime expiry = 5;
+  // The optional address of the account that sponsors the transaction, i.e.
+  // pays the transaction fees associated with the execution.
+  optional AccountAddress sponsor = 6;
 }
 
 // Data required to initialize a new contract instance.
@@ -3342,11 +3383,30 @@ message PreAccountTransaction {
   AccountTransactionPayload payload = 2;
 }
 
+// An unsigned account transaction v1. This is used with the
+// `GetTransactionSignHash` endpoint to obtain the message to sign.
+message PreAccountTransactionV1 {
+  AccountTransactionHeaderV1 header = 1;
+  AccountTransactionPayload payload = 2;
+}
+
 // Account transactions are messages which are signed and paid for by the sender
 // account.
 message AccountTransaction {
   AccountTransactionSignature signature = 1;
   AccountTransactionHeader header = 2;
+  AccountTransactionPayload payload = 3;
+}
+
+// Account transactions v1 are messages which are signed and paid for by the sender
+// account or by the sponsor.
+message AccountTransactionV1 {
+  // The signatures on the transaction by the source account and other
+  // relevant parties such as sponsors.
+  AccountTransactionV1Signatures signatures = 1;
+  // The transaction header data.
+  AccountTransactionHeaderV1 header = 2;
+  // The account transaction payload.
   AccountTransactionPayload payload = 3;
 }
 
@@ -3597,6 +3657,11 @@ message BlockItem {
     // Update instructions are messages which can update the chain parameters. Including which keys are allowed
     // to make future update instructions.
     UpdateInstruction update_instruction = 4;
+    // Account transactions v1 are messages which are signed and paid for by
+    // either an account or a sponsor.
+    AccountTransactionV1 account_transaction_v1 = 5;
+    // A block item which has already been serialized to the format expected by the node.
+    bytes  raw_block_item = 6;
   }
 }
 
