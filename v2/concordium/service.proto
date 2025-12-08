@@ -290,6 +290,16 @@ service Queries {
   // in the node, removes networking failure modes, and will perform better.
   rpc GetAccountTransactionSignHash (PreAccountTransaction) returns (AccountTransactionSignHash);
 
+  // Get the hash to be signed for an account transaction v1. The
+  // hash returned should be signed and the signatures included as an
+  // AccountTransactionV1Signatures when calling `SendBlockItem`. This is
+  // provided as a convenience to support cases where the right SDK is not
+  // available for interacting with the node. If an SDK is available then it is
+  // strongly recommended to compute this hash off-line using it. That reduces
+  // the trust in the node, removes networking failure modes, and will perform
+  // better.
+  rpc GetAccountTransactionV1SignHash (PreAccountTransactionV1) returns (AccountTransactionSignHash);
+
   // Get the values of chain parameters in effect in the given block.
   rpc GetBlockChainParameters(BlockHashInput) returns (ChainParameters);
 
