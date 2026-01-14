@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## Node 10.0 API
+
 - Extend `ProtocolVersion` enum with a protocol version 10 variant `PROTOCOL_VERSION_10`.
 - Support for sponsored transactions.
   - Introduce `AccountTransactionV1`, `AccountTransactionHeaderV1`, `PreAccountTransactionV1`
