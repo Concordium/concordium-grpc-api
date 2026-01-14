@@ -393,6 +393,10 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.AccountTransactionHeaderV1"><span class="badge">M</span>AccountTransactionHeaderV1</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.AccountTransactionPayload"><span class="badge">M</span>AccountTransactionPayload</a>
                 </li>
               
@@ -406,6 +410,14 @@
               
                 <li>
                   <a href="#concordium.v2.AccountTransactionSignature.SignaturesEntry"><span class="badge">M</span>AccountTransactionSignature.SignaturesEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.AccountTransactionV1"><span class="badge">M</span>AccountTransactionV1</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.AccountTransactionV1Signatures"><span class="badge">M</span>AccountTransactionV1Signatures</a>
                 </li>
               
                 <li>
@@ -1361,6 +1373,10 @@
                 </li>
               
                 <li>
+                  <a href="#concordium.v2.PreAccountTransactionV1"><span class="badge">M</span>PreAccountTransactionV1</a>
+                </li>
+              
+                <li>
                   <a href="#concordium.v2.ProtocolUpdate"><span class="badge">M</span>ProtocolUpdate</a>
                 </li>
               
@@ -1506,6 +1522,10 @@
               
                 <li>
                   <a href="#concordium.v2.Slot"><span class="badge">M</span>Slot</a>
+                </li>
+              
+                <li>
+                  <a href="#concordium.v2.SponsorDetails"><span class="badge">M</span>SponsorDetails</a>
                 </li>
               
                 <li>
@@ -2890,7 +2910,9 @@ restaked or not. </p></td>
                   <td>pending_change</td>
                   <td><a href="#concordium.v2.StakePendingChange">StakePendingChange</a></td>
                   <td>optional</td>
-                  <td><p>If present, any pending change to the delegated stake. </p></td>
+                  <td><p>If present, any pending change to the delegated stake.
+Starting from Concordium Protocol Version 7 this will never be present, due to changes for
+the staking cooldown. </p></td>
                 </tr>
               
                 <tr>
@@ -3040,7 +3062,8 @@ be set to false. </p></td>
                   <td>cost</td>
                   <td><a href="#concordium.v2.Amount">Amount</a></td>
                   <td></td>
-                  <td><p>The cost of the transaction. Paid by the sender. </p></td>
+                  <td><p>The cost of the transaction. Paid by the sender. This will be zero if the
+transaction is sponsored. </p></td>
                 </tr>
               
                 <tr>
@@ -3055,6 +3078,13 @@ be set to false. </p></td>
                   <td><a href="#concordium.v2.AccountTransactionEffects">AccountTransactionEffects</a></td>
                   <td></td>
                   <td><p>The effects of the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sponsor</td>
+                  <td><a href="#concordium.v2.SponsorDetails">SponsorDetails</a></td>
+                  <td>optional</td>
+                  <td><p>The optional sponsor details of the transaction. </p></td>
                 </tr>
               
             </tbody>
@@ -3604,6 +3634,59 @@ This field can occur starting from protocol version 2. </p></td>
 
         
       
+        <h3 id="concordium.v2.AccountTransactionHeaderV1">AccountTransactionHeaderV1</h3>
+        <p>Header v1 of an account transaction with support for sponsored transactions.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sender</td>
+                  <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
+                  <td></td>
+                  <td><p>Sender of the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sequence_number</td>
+                  <td><a href="#concordium.v2.SequenceNumber">SequenceNumber</a></td>
+                  <td></td>
+                  <td><p>Sequence number of the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>energy_amount</td>
+                  <td><a href="#concordium.v2.Energy">Energy</a></td>
+                  <td></td>
+                  <td><p>Maximum amount of energy the transaction can take to execute. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>expiry</td>
+                  <td><a href="#concordium.v2.TransactionTime">TransactionTime</a></td>
+                  <td></td>
+                  <td><p>Latest time the transaction can included in a block. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sponsor</td>
+                  <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
+                  <td>optional</td>
+                  <td><p>The optional address of the account that sponsors the transaction, i.e.
+pays the transaction fees associated with the execution. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.AccountTransactionPayload">AccountTransactionPayload</h3>
         <p>The payload for an account transaction.</p>
 
@@ -3743,6 +3826,76 @@ The map cannot contain more than 2^8 signatures. </p></td>
                   <td><a href="#concordium.v2.AccountSignatureMap">AccountSignatureMap</a></td>
                   <td></td>
                   <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.AccountTransactionV1">AccountTransactionV1</h3>
+        <p>Account transactions v1 are messages which are signed and paid for by the sender</p><p>account or by the sponsor.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>signatures</td>
+                  <td><a href="#concordium.v2.AccountTransactionV1Signatures">AccountTransactionV1Signatures</a></td>
+                  <td></td>
+                  <td><p>The signatures on the transaction by the source account and other
+relevant parties such as sponsors. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>header</td>
+                  <td><a href="#concordium.v2.AccountTransactionHeaderV1">AccountTransactionHeaderV1</a></td>
+                  <td></td>
+                  <td><p>The transaction header data. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>payload</td>
+                  <td><a href="#concordium.v2.AccountTransactionPayload">AccountTransactionPayload</a></td>
+                  <td></td>
+                  <td><p>The account transaction payload. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.AccountTransactionV1Signatures">AccountTransactionV1Signatures</h3>
+        <p>Account transaction signatures from the sender and optionally the sponsor of</p><p>the transaction.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sender_signatures</td>
+                  <td><a href="#concordium.v2.AccountTransactionSignature">AccountTransactionSignature</a></td>
+                  <td></td>
+                  <td><p>Signatures from the sender of the transaction. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sponsor_signatures</td>
+                  <td><a href="#concordium.v2.AccountTransactionSignature">AccountTransactionSignature</a></td>
+                  <td>optional</td>
+                  <td><p>The optional signature of the sponsor of the transaction. </p></td>
                 </tr>
               
             </tbody>
@@ -4277,7 +4430,7 @@ This is present from protocol version 9. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent">BakerEvent</h3>
-        <p>Events that may result from the `ConfigureBaker` transaction which adds, modify, or removes a validator pool starting in protocol version 4.</p><p>Before protocol version 4, distinct transaction types (`BakerAdded`, `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`, </p><p>and `BakerKeysUpdated`) existed which emitted validator related events instead.</p>
+        <p>Events that may result from the `ConfigureBaker` transaction which adds, modify, or removes a validator pool starting in protocol version 4.</p><p>Before protocol version 4, distinct transaction types (`BakerAdded`, `BakerRemoved`, `BakerStakeUpdated`, `BakerRestakeEarningsUpdated`,</p><p>and `BakerKeysUpdated`) existed which emitted validator related events instead.</p>
 
         
           <table class="field-table">
@@ -4301,7 +4454,7 @@ This event is always accompanied by `BakerEvent::BakerSetRestakeEarnings`, and s
                   <td></td>
                   <td><p>A validator was removed by a transaction sent by the validator that decreased the validator&#39;s own stake to 0.
 When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
-The behavior of validators being removed changed in protocol version 7 
+The behavior of validators being removed changed in protocol version 7
 (see https://proposals.concordium.com/updates/P7.html for more details).
 If the cause of the validator removal is a transaction from an existing validator that switched its staking behavior to `delegation`,
 the `DelegationEvent::BakerRemoved` is emitted instead of this event. </p></td>
@@ -4319,7 +4472,7 @@ the `DelegationEvent::BakerRemoved` is emitted instead of this event. </p></td>
                   <td><a href="#concordium.v2.BakerEvent.BakerStakeDecreased">BakerEvent.BakerStakeDecreased</a></td>
                   <td></td>
                   <td><p>The validator&#39;s stake was decreased.
-The behavior of decreasing the stake of validators changed in protocol version 7 
+The behavior of decreasing the stake of validators changed in protocol version 7
 (see https://proposals.concordium.com/updates/P7.html for more details). </p></td>
                 </tr>
               
@@ -4662,7 +4815,7 @@ not. </p></td>
         
       
         <h3 id="concordium.v2.BakerEvent.BakerStakeDecreased">BakerEvent.BakerStakeDecreased</h3>
-        <p>The validator's stake was decreased.</p><p>The behavior of decreasing the stake of validators changed in protocol version 7 </p><p>(see https://proposals.concordium.com/updates/P7.html for more details).</p>
+        <p>The validator's stake was decreased.</p><p>The behavior of decreasing the stake of validators changed in protocol version 7</p><p>(see https://proposals.concordium.com/updates/P7.html for more details).</p>
 
         
           <table class="field-table">
@@ -5585,6 +5738,21 @@ including them. </p></td>
                   <td></td>
                   <td><p>Update instructions are messages which can update the chain parameters. Including which keys are allowed
 to make future update instructions. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>account_transaction_v1</td>
+                  <td><a href="#concordium.v2.AccountTransactionV1">AccountTransactionV1</a></td>
+                  <td></td>
+                  <td><p>Account transactions v1 are messages which are signed and paid for by
+either an account or a sponsor. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>raw_block_item</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>A block item which has already been serialized to the format expected by the node. </p></td>
                 </tr>
               
             </tbody>
@@ -8512,7 +8680,7 @@ This event is always accompanied by `DelegationEvent::DelegationAdded`, `Delegat
 When a validator is removed, it results in its delegators targeting the pool to be moved to the passive delegation.
 The behavior of validators being removed changed in protocol version 7.
 (see https://proposals.concordium.com/updates/P7.html for more details).
-If the cause of the validator removal is a transaction that decreased the validator&#39;s own stake to 0, 
+If the cause of the validator removal is a transaction that decreased the validator&#39;s own stake to 0,
 the `BakerEvent::BakerRemoved` is emitted instead of this event.
 This event can occur starting from protocol version 7. </p></td>
                 </tr>
@@ -13397,6 +13565,37 @@ to equity capital. </p></td>
 
         
       
+        <h3 id="concordium.v2.PreAccountTransactionV1">PreAccountTransactionV1</h3>
+        <p>An unsigned account transaction v1. This is used with the</p><p>`GetTransactionSignHash` endpoint to obtain the message to sign.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>header</td>
+                  <td><a href="#concordium.v2.AccountTransactionHeaderV1">AccountTransactionHeaderV1</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>payload</td>
+                  <td><a href="#concordium.v2.AccountTransactionPayload">AccountTransactionPayload</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="concordium.v2.ProtocolUpdate">ProtocolUpdate</h3>
         <p></p>
 
@@ -14880,6 +15079,21 @@ including them. </p></td>
 to make future update instructions. </p></td>
                 </tr>
               
+                <tr>
+                  <td>account_transaction_v1</td>
+                  <td><a href="#concordium.v2.AccountTransactionV1">AccountTransactionV1</a></td>
+                  <td></td>
+                  <td><p>Account transactions v1 are messages which are signed and paid for by
+either an account or a sponsor. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>raw_block_item</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>A block item which has already been serialized to the format expected by the node. </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -15053,6 +15267,37 @@ to make future update instructions. </p></td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
                   <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="concordium.v2.SponsorDetails">SponsorDetails</h3>
+        <p>Details about the sponsor of a transaction.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>cost</td>
+                  <td><a href="#concordium.v2.Amount">Amount</a></td>
+                  <td></td>
+                  <td><p>The cost of the transaction. Paid by the sponsor. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sponsor</td>
+                  <td><a href="#concordium.v2.AccountAddress">AccountAddress</a></td>
+                  <td></td>
+                  <td><p>The sponsor of the transaction. </p></td>
                 </tr>
               
             </tbody>
@@ -16467,7 +16712,7 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
 
       
         <h3 id="concordium.v2.ContractVersion">ContractVersion</h3>
-        <p>Version of smart contract.</p>
+        <p>Version of smart contract.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16490,7 +16735,7 @@ This is expected to be in the format `contractName.entrypointName`. </p></td>
         </table>
       
         <h3 id="concordium.v2.Cooldown.CooldownStatus">Cooldown.CooldownStatus</h3>
-        <p>The status of a cooldown. When stake is removed from a validator or delegator</p><p>(from protocol version 7) it first enters the pre-pre-cooldown state.</p><p>The next time the stake snaphot is taken (at the epoch transition before</p><p>a payday) it enters the pre-cooldown state. At the subsequent payday, it</p><p>enters the cooldown state. At the payday after the end of the cooldown</p><p>period, the stake is finally released.</p>
+        <p>The status of a cooldown. When stake is removed from a validator or delegator</p><p>(from protocol version 7) it first enters the pre-pre-cooldown state.</p><p>The next time the stake snaphot is taken (at the epoch transition before</p><p>a payday) it enters the pre-cooldown state. At the subsequent payday, it</p><p>enters the cooldown state. At the payday after the end of the cooldown</p><p>period, the stake is finally released.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16525,7 +16770,7 @@ end time is projected, but the actual end time will be determined later.</p></td
         </table>
       
         <h3 id="concordium.v2.CredentialType">CredentialType</h3>
-        <p>The type of a credential.</p>
+        <p>The type of a credential.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16548,7 +16793,7 @@ end time is projected, but the actual end time will be determined later.</p></td
         </table>
       
         <h3 id="concordium.v2.NodeInfo.BakerConsensusInfo.PassiveCommitteeInfo">NodeInfo.BakerConsensusInfo.PassiveCommitteeInfo</h3>
-        <p>The committee information of a node configured with</p><p>validator keys but somehow the node is _not_ part of the</p><p>current validation committee.</p>
+        <p>The committee information of a node configured with</p><p>validator keys but somehow the node is _not_ part of the</p><p>current validation committee.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16581,7 +16826,7 @@ The node is __not__ baking.</p></td>
         </table>
       
         <h3 id="concordium.v2.OpenStatus">OpenStatus</h3>
-        <p>Information about how open the pool is to new delegators.</p>
+        <p>Information about how open the pool is to new delegators.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16610,7 +16855,7 @@ The node is __not__ baking.</p></td>
         </table>
       
         <h3 id="concordium.v2.PeersInfo.Peer.CatchupStatus">PeersInfo.Peer.CatchupStatus</h3>
-        <p></p>
+        <p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16647,7 +16892,7 @@ Once the peer has responded to the request, its status will be changed to:
         </table>
       
         <h3 id="concordium.v2.ProtocolVersion">ProtocolVersion</h3>
-        <p>The different versions of the protocol.</p>
+        <p>The different versions of the protocol.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16708,11 +16953,17 @@ Once the peer has responded to the request, its status will be changed to:
                 <td><p></p></td>
               </tr>
             
+              <tr>
+                <td>PROTOCOL_VERSION_10</td>
+                <td>9</td>
+                <td><p></p></td>
+              </tr>
+            
           </tbody>
         </table>
       
         <h3 id="concordium.v2.TransactionType">TransactionType</h3>
-        <p>The type of transaction.</p>
+        <p>The type of transaction.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -16856,7 +17107,7 @@ Introduced in protocol version 2.</p></td>
         </table>
       
         <h3 id="concordium.v2.UpdateType">UpdateType</h3>
-        <p>The type of chain update.</p>
+        <p>The type of chain update.</p><p>This type might be extended in future versions of the API.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -17504,6 +17755,20 @@ a convenience to support cases where the right SDK is not available for
 interacting with the node. If an SDK is available then it is strongly
 recommended to compute this hash off-line using it. That reduces the trust
 in the node, removes networking failure modes, and will perform better.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetAccountTransactionV1SignHash</td>
+                <td><a href="#concordium.v2.PreAccountTransactionV1">PreAccountTransactionV1</a></td>
+                <td><a href="#concordium.v2.AccountTransactionSignHash">AccountTransactionSignHash</a></td>
+                <td><p>Get the hash to be signed for an account transaction v1. The
+hash returned should be signed and the signatures included as an
+AccountTransactionV1Signatures when calling `SendBlockItem`. This is
+provided as a convenience to support cases where the right SDK is not
+available for interacting with the node. If an SDK is available then it is
+strongly recommended to compute this hash off-line using it. That reduces
+the trust in the node, removes networking failure modes, and will perform
+better.</p></td>
               </tr>
             
               <tr>
