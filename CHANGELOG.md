@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Extend `ProtocolVersion` enum with a protocol version 11 variant `PROTOCOL_VERSION_11`.
+
 ## Node 10.0 API
 
 - Extend `ProtocolVersion` enum with a protocol version 10 variant `PROTOCOL_VERSION_10`.
