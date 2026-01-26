@@ -1530,7 +1530,7 @@ message AccountTransactionEffects {
     // Hence, this effect does not occur anymore.
     // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
     BakerEvent.BakerAdded baker_added = 6;
-    // A validator was removed. 
+    // A validator was removed.
     // The associated transaction type can no longer be created starting from protocol version 4.
     // Hence, this effect does not occur anymore.
     // The functionality was replaced in protocol version 4 by the `BakerConfigured` transaction type.
@@ -1796,29 +1796,29 @@ message CommissionRanges {
   InclusiveRangeAmountFraction transaction = 3;
 }
 
-// The capital bound is a chain parameter that is set to guarantee network decentralization by preventing 
+// The capital bound is a chain parameter that is set to guarantee network decentralization by preventing
 // a single validator from gaining excessive power in the consensus protocol.
 // The capital bound is required to be set to a value greater than 0 (capital_bound > 0).
-// The value roughly describes the maximum proportion of the total stake in the protocol (from all validators including passive delegation) 
+// The value roughly describes the maximum proportion of the total stake in the protocol (from all validators including passive delegation)
 // to the stake of a validator that a validator can achieve where the total stake of the validator is considered effective
 // (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
 // Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.
-// Delegators are prevented from increasing their delegation to the pool 
+// Delegators are prevented from increasing their delegation to the pool
 // (via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the capital bound cap.
 // See the comment at the `delegated_capital_cap` type for the exact formula.
 message CapitalBound {
   AmountFraction value = 1;
 }
 
-// The leverage factor (leverage bound) is a chain parameter that is set to guarantee that each validator 
-// has skin in the game with respect to its delegators by providing some of the CCD staked at the validator's pool from the validator's funds.  
+// The leverage factor (leverage bound) is a chain parameter that is set to guarantee that each validator
+// has skin in the game with respect to its delegators by providing some of the CCD staked at the validator's pool from the validator's funds.
 // The leverage factor is required to be set to a value greater than or equal to 1 (1 <= leverage_factor).
-// The leverage factor is the maximum proportion of total stake of a validator (including the validator's own stake and the delegated 
+// The leverage factor is the maximum proportion of total stake of a validator (including the validator's own stake and the delegated
 // stake to the validator) to the validator's own stake (excluding delegated stake to the validator)
 // that a validator can achieve where the total stake of the validator is considered effective
 // (meaning the validator's total stake is used for caculating the lottery power or finalizer weight in the consensus).
 // Once a validator passes this bound, some of the validator's total stake no longer contributes to the validator's effective stake.
-// Delegators are prevented from increasing their delegation to the pool 
+// Delegators are prevented from increasing their delegation to the pool
 // (via sending a `ConfigureDelegation` transaction) if that would cause the pool to exceed the leverage bound cap.
 // See the comment at the `delegated_capital_cap` type for the exact formula.
 message LeverageFactor {
@@ -2207,6 +2207,7 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_8 = 7;
   PROTOCOL_VERSION_9 = 8;
   PROTOCOL_VERSION_10 = 9;
+  PROTOCOL_VERSION_11 = 10;
 }
 
 // The number of chain restarts via a protocol update. An effected
@@ -2436,7 +2437,7 @@ message PoolInfoResponse {
   optional Amount delegated_capital = 4;
   // The maximum amount that may be delegated to the pool, accounting for leverage and capital bounds.
   // Absent if the pool is removed.
-  // 
+  //
   // leverage_bound_cap for pool p: Lₚ = λ * Cₚ - Cₚ = (λ - 1) * Cₚ
   // capital_bound_cap for pool p: Bₚ = max (0, floor( (κ * (T - Dₚ) - Cₚ) / (1 - K) ))
   // delegated_capital_cap for pool p = min (Lₚ, Bₚ)
@@ -2661,7 +2662,7 @@ message LeadershipElectionNonce {
 
 // Response type for GetElectionInfo.
 // Contains information related to validator election for a perticular block.
-// The `ElectionInfo` will be the same for all blocks in the same epoch. 
+// The `ElectionInfo` will be the same for all blocks in the same epoch.
 // Moreover, from protocol version 4, it is the same for all blocks in the same payday.
 message ElectionInfo {
   message Baker {
@@ -4207,7 +4208,7 @@ message RawFinalizationEntry {
     // successor of the finalized block.
     SuccessorProof successor_proof = 3;
   }
-  
+
 
 // The current round status.
 message RoundStatus {
