@@ -186,6 +186,12 @@ message MetaEvent {
   }
 }
 
+// Events originating from a meta-update transaction.
+message MetaEffect {
+  // The events.
+  repeated MetaEvent events = 1;
+}
+
 // Details provided by the token module in the event of rejecting a transaction.
 message TokenModuleRejectReason {
   // The Token ID of the protocol-level token.
