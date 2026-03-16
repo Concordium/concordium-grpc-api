@@ -656,6 +656,17 @@ message TokenInfoRequest {
   plt.TokenId token_id = 2;
 }
 
+// Request for information about a PLT lock.
+message LockInfoRequest {
+  BlockHashInput block_hash = 1;
+  plt.LockId lock_id = 2;
+}
+
+// Information about a PLT lock.
+message LockInfo {
+  plt.Cbor lock_info = 1;
+}
+
 // Information about a finalized block that is part of the streaming response.
 message FinalizedBlockInfo {
   // Hash of the block.

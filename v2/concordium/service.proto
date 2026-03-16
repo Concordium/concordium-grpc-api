@@ -41,6 +41,12 @@ service Queries {
   // Retrieve the information about the given token in the given block.
   rpc GetTokenInfo (TokenInfoRequest) returns (TokenInfo);
 
+  // Retrieve the information about the given lock in the given block.
+  rpc GetLockInfo (LockInfoRequest) returns (LockInfo);
+
+  // Retrieve the list of locks that exist in a given block.
+  rpc GetLockList (BlockHashInput) returns (stream concordium.v2.plt.LockId);
+
   // Retrieve the list of accounts that exist at the end of the given block.
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
 
