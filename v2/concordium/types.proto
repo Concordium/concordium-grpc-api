@@ -2204,6 +2204,8 @@ enum TransactionType {
   CONFIGURE_DELEGATION = 20;
   // Introduced in protocol version 9.
   TOKEN_UPDATE = 21;
+  // Introduced in protocol version 11.
+  META_UPDATE = 22;
 }
 
 // The different versions of the protocol.

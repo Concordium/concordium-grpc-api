@@ -37,10 +37,15 @@ message TokenId {
   string value = 1;
 }
 
-// Lock ID: a number that uniquely identifies an lock instance.
+// Lock ID: a trio of numbers that together uniquely identify a lock.
 message LockId {
-  // Unique identifier for a lock.
-  uint64 value = 1;
+  // The account index of the account that created the lock.
+  uint64 account_index = 1;
+  // The sequence number of the transaction that created the lock.
+  uint64 sequence_number = 2;
+  // The 0-based creation order of the lock within the transaction that
+  // created it.
+  uint64 creation_order = 3;
 }
 
 // A token module reference. This is always 32 bytes long.
@@ -85,6 +90,10 @@ message TokenModuleEvent {
   string type = 1;
   // The CBOR encoded event details.
   Cbor details = 2;
+  // The Token ID of the token generating the event. In the context of
+  // a `TokenEvent`, this should be absent (as it is already specified).
+  // In the context of a `MetaEvent`, this must be present.
+  optional TokenId token_id = 3;
 }
 
 // A token holder is an entity that can hold tokens. Currently, this is limited
@@ -118,6 +127,10 @@ message TokenTransferEvent {
   // identity of the lock assuming control of the funds. Absent when the
   // funds are sent to the available balance of the receiving account.
   optional LockId to_lock = 6;
+  // The token being transferred. In the context of a `TokenEvent`,
+  // which already specifies the token, this is absent. In the context
+  // of a `MetaEvent`, it must be present.
+  optional TokenId token_id = 7;
 }
 
 // An event emitted when the token supply is updated, i.e. by minting/burning
@@ -127,6 +140,10 @@ message TokenSupplyUpdateEvent {
   TokenHolder target = 1;
   // The balance difference to be applied to the target.
   TokenAmount amount = 2;
+  // The Token ID of the token generating the event. In the context of
+  // a `TokenEvent`, this should be absent (as it is already specified).
+  // In the context of a `MetaEvent`, this must be present.
+  optional TokenId token_id = 3;
 }
 
 // Token event originating from token transactions.
@@ -177,12 +194,20 @@ message MetaEvent {
   //
   // This field might be extended in future versions of the API.
   oneof event {
-    // A token-related event.
-    TokenEvent token_event = 1;
+    // An event emitted by the token module.
+    TokenModuleEvent module_event = 2;
+    // An event emitted when a transfer of tokens is performed.
+    TokenTransferEvent transfer_event = 3;
+    // An event emitted when the token supply is updated by minting tokens to a
+    // token holder.
+    TokenSupplyUpdateEvent mint_event = 4;
+    // An event emitted when the token supply is updated by burning tokens from
+    // the balance of a token holder.
+    TokenSupplyUpdateEvent burn_event = 5;
     // A lock creation event.
-    LockCreateEvent lock_create_event = 2;
+    LockCreateEvent lock_create_event = 6;
     // A lock destruction event.
-    LockDestroyEvent lock_destroy_event = 3;
+    LockDestroyEvent lock_destroy_event = 7;
   }
 }
 
