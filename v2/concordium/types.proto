@@ -658,12 +658,15 @@ message TokenInfoRequest {
 
 // Request for information about a PLT lock.
 message LockInfoRequest {
+  // Block in which to query the lock information.
   BlockHashInput block_hash = 1;
+  // Identifier or the lock to query.
   plt.LockId lock_id = 2;
 }
 
 // Information about a PLT lock.
 message LockInfo {
+  // CBOR-encoded lock information.
   plt.Cbor lock_info = 1;
 }
 

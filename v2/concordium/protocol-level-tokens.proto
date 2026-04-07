@@ -189,6 +189,7 @@ message LockDestroyEvent {
   LockId lock_id = 1;
 }
 
+// An event that can occur during execution of a meta-update transaction.
 message MetaEvent {
   // The type of the event.
   //
