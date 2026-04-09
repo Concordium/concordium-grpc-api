@@ -4413,3 +4413,11 @@ message AccountPending {
     AccountIndex account_index = 1;
     Timestamp first_timestamp = 2;
 }
+
+// The input for a token authorizations request.
+message TokenAuthorizationsRequest {
+  // Block in which to query the token information.
+  BlockHashInput block_hash = 1;
+  // Specification of the token identifier.
+  plt.TokenId token_id = 2;
+}

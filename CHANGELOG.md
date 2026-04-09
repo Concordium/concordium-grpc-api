@@ -3,6 +3,8 @@
 ## Unreleased changes
 
 - Extend `ProtocolVersion` enum with a protocol version 11 variant `PROTOCOL_VERSION_11`.
+- Extend `Service` with a new RPC `GetTokenAuthorizations` to enable querying token authorizations for a
+  given token.
 - Support for PLT locks:
   - `GetLockInfo` and `GetLockList` queries.
   - New `MetaEvent` and `MetaEffect` messages representing outcomes of meta-update transactions.

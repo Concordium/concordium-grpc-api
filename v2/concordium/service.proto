@@ -41,6 +41,9 @@ service Queries {
   // Retrieve the information about the given token in the given block.
   rpc GetTokenInfo (TokenInfoRequest) returns (TokenInfo);
 
+  // Retrieve the authorizations of a given token in the given block.
+  rpc GetTokenAuthorizations (TokenAuthorizationsRequest) returns (plt.TokenAuthorizations);
+  
   // Retrieve the information about the given lock in the given block.
   rpc GetLockInfo (LockInfoRequest) returns (LockInfo);
 
@@ -52,7 +55,7 @@ service Queries {
 
   // Retrieve the list of protocol level tokens that exist at the end of the
   // given block.
-  rpc GetTokenList (BlockHashInput) returns (stream concordium.v2.plt.TokenId);
+  rpc GetTokenList (BlockHashInput) returns (stream plt.TokenId);
 
   // Get a list of all smart contract modules. The stream will end
   // when all modules that exist in the state at the end of the given
