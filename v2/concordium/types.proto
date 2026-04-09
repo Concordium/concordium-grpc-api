@@ -656,6 +656,20 @@ message TokenInfoRequest {
   plt.TokenId token_id = 2;
 }
 
+// Request for information about a PLT lock.
+message LockInfoRequest {
+  // Block in which to query the lock information.
+  BlockHashInput block_hash = 1;
+  // Identifier or the lock to query.
+  plt.LockId lock_id = 2;
+}
+
+// Information about a PLT lock.
+message LockInfo {
+  // CBOR-encoded lock information.
+  plt.Cbor lock_info = 1;
+}
+
 // Information about a finalized block that is part of the streaming response.
 message FinalizedBlockInfo {
   // Hash of the block.
@@ -1578,6 +1592,8 @@ message AccountTransactionEffects {
     DelegationConfigured delegation_configured = 19;
     // Token update transaction effect.
     plt.TokenEffect token_update_effect = 20;
+    // Meta-update transaction effect.
+    plt.MetaEffect meta_update_effect = 21;
   }
 }
 
@@ -2191,6 +2207,8 @@ enum TransactionType {
   CONFIGURE_DELEGATION = 20;
   // Introduced in protocol version 9.
   TOKEN_UPDATE = 21;
+  // Introduced in protocol version 11.
+  META_UPDATE = 22;
 }
 
 // The different versions of the protocol.
