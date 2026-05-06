@@ -9,6 +9,7 @@
   - `GetLockInfo` and `GetLockList` queries.
   - New `MetaEvent` and `MetaEffect` messages representing outcomes of meta-update transactions.
   - `TokenTransferEvent` may include `from_lock` and `to_lock` fields indicating transfer from or to a lock.
+  - `RejectReason` extended with new reject reasons that may arise from lock operations.
 
 ## Node 10.0 API
 
