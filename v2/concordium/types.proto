@@ -897,6 +897,16 @@ message RejectReason {
     repeated CredentialRegistrationId ids = 1;
   }
 
+  message LockOperationNotAuthorized {
+    plt.LockId lock_id = 1;
+    AccountAddress account = 2;
+  }
+
+  message LockTokenImpermissible {
+    plt.LockId lock_id = 1;
+    plt.TokenId token_id = 2;
+  }
+
   // This field might be extended in future versions of the API.
   oneof reason {
     // Raised while validating a Wasm module that is not well formed.
@@ -1032,6 +1042,23 @@ message RejectReason {
     // The token update transaction failed.
     // Introduced in protocol version 9.
     plt.TokenModuleRejectReason token_update_transaction_failed = 56;
+    // The provided Lock ID does not match a lock that currently exists.
+    // Introduced in protocol version 11.
+    plt.LockId non_existent_lock_id = 57;
+    // The operation could not be compleded because the lock is expired.
+    plt.LockId lock_expired = 58;
+    // The account is not authorized to fund the lock.
+    LockOperationNotAuthorized lock_fund_not_authorized = 59;
+    // The account is not authorized to send funds controlled by the lock.
+    LockOperationNotAuthorized lock_send_not_authorized = 60;
+    // The account is not authorized to return funds controlled by the lock.
+    LockOperationNotAuthorized lock_return_not_authorized = 61;
+    // The account is not authorized to cancel the lock.
+    LockOperationNotAuthorized lock_cancel_not_authorized = 62;
+    // The lock does not allow funding with the particular token.
+    LockTokenImpermissible lock_token_impermissible = 63;
+    // The recipient is not permitted to receive funds controlled by the lock.
+    LockOperationNotAuthorized lock_recipient_impermissible = 64;
   }
 }
 
