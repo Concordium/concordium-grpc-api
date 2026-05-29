@@ -902,7 +902,7 @@ message RejectReason {
     AccountAddress account = 2;
   }
 
-  message LockTokenImpermissible {
+  message LockTokenNotPermitted {
     plt.LockId lock_id = 1;
     plt.TokenId token_id = 2;
   }
@@ -1056,9 +1056,9 @@ message RejectReason {
     // The account is not authorized to cancel the lock.
     LockOperationNotAuthorized lock_cancel_not_authorized = 62;
     // The lock does not allow funding with the particular token.
-    LockTokenImpermissible lock_token_impermissible = 63;
+    LockTokenNotPermitted lock_token_not_permitted = 63;
     // The recipient is not permitted to receive funds controlled by the lock.
-    LockOperationNotAuthorized lock_recipient_impermissible = 64;
+    LockOperationNotAuthorized lock_recipient_not_permitted = 64;
   }
 }
 
