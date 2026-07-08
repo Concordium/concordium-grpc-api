@@ -2079,6 +2079,8 @@ message UpdatePayload {
     ValidatorScoreParameters validator_score_parameters_update = 23;
     // Create a new protocol-level token.
     plt.CreatePLT create_plt_update = 24;
+    // The maximum relative duration for protocol-level token locks was updated.
+    Duration max_lock_duration_update = 25;
   }
 }
 
@@ -2194,6 +2196,7 @@ enum UpdateType {
     UPDATE_FINALIZATION_COMMITTEE_PARAMETERS = 19;
     UPDATE_VALIDATOR_SCORE_PARAMETERS = 20;
     UPDATE_CREATE_PLT = 21;
+    UPDATE_MAX_LOCK_DURATION = 22;
 }
 
 // The type of transaction.
