@@ -1059,6 +1059,8 @@ message RejectReason {
     LockTokenNotPermitted lock_token_not_permitted = 63;
     // The recipient is not permitted to receive funds controlled by the lock.
     LockOperationNotAuthorized lock_recipient_not_permitted = 64;
+    // The requested expiry exceeds the maximum permitted lock duration.
+    plt.LockId lock_duration_too_long = 65;
   }
 }
 

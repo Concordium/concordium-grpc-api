@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add the P11 `lock_duration_too_long` reject reason for PLT lock creation beyond `max_lock_duration`.
+
 - Add P11 `token_parameters` authorization, optional `max_lock_duration` chain parameter, `max_lock_duration_update` update payload, pending update effect, update type, and next update sequence number fields.
 - Extend `ProtocolVersion` enum with a protocol version 11 variant `PROTOCOL_VERSION_11`.
 - Extend `Service` with a new RPC `GetTokenAuthorizations` to enable querying token authorizations for a
