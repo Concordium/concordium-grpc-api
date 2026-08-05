@@ -1759,6 +1759,7 @@ message AuthorizationsV1 {
   // This is present from protocol version 9.
   optional AccessStructure create_plt = 4;
   // Access structure for updating token and lock-related chain parameters.
+  // This is present from protocol version 11.
   optional AccessStructure token_parameters = 5;
 }
 
