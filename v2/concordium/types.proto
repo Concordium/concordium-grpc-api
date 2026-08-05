@@ -1059,6 +1059,8 @@ message RejectReason {
     LockTokenNotPermitted lock_token_not_permitted = 63;
     // The recipient is not permitted to receive funds controlled by the lock.
     LockOperationNotAuthorized lock_recipient_not_permitted = 64;
+    // The requested expiry exceeds the maximum permitted lock duration.
+    plt.LockId lock_duration_too_long = 65;
   }
 }
 
@@ -1758,6 +1760,9 @@ message AuthorizationsV1 {
   // Access structure for creating a protocol level token.
   // This is present from protocol version 9.
   optional AccessStructure create_plt = 4;
+  // Access structure for updating token and lock-related chain parameters.
+  // This is present from protocol version 11.
+  optional AccessStructure token_parameters = 5;
 }
 
 // Description either of an anonymity revoker or identity provider.
@@ -2077,6 +2082,8 @@ message UpdatePayload {
     ValidatorScoreParameters validator_score_parameters_update = 23;
     // Create a new protocol-level token.
     plt.CreatePLT create_plt_update = 24;
+    // The maximum relative duration for protocol-level token locks was updated.
+    Duration max_lock_duration_update = 25;
   }
 }
 
@@ -2192,6 +2199,7 @@ enum UpdateType {
     UPDATE_FINALIZATION_COMMITTEE_PARAMETERS = 19;
     UPDATE_VALIDATOR_SCORE_PARAMETERS = 20;
     UPDATE_CREATE_PLT = 21;
+    UPDATE_MAX_LOCK_DURATION = 22;
 }
 
 // The type of transaction.
@@ -2983,6 +2991,8 @@ message PendingUpdate {
     FinalizationCommitteeParameters finalization_committee_parameters = 25;
     // Updates to the validator score parameters for chain parameters version 3.
     ValidatorScoreParameters validator_score_parameters = 26;
+    // Updates to the maximum relative duration for protocol-level token locks.
+    Duration max_lock_duration = 27;
   }
 }
 
@@ -3032,6 +3042,8 @@ message NextUpdateSequenceNumbers {
   SequenceNumber validator_score_parameters = 21;
   // Updates to the protocol level tokens. Introduced in protocol version 9.
   SequenceNumber protocol_level_tokens = 22;
+  // Updates to the maximum relative duration for protocol-level token locks.
+  SequenceNumber max_lock_duration = 23;
 }
 
 // A request to send a new block item to the chain.
@@ -3630,6 +3642,8 @@ message ChainParametersV3 {
   FinalizationCommitteeParameters finalization_committee_parameters = 15;
   // Validator score parameters
   ValidatorScoreParameters validator_score_parameters = 16;
+  // Maximum relative duration for protocol-level token locks.
+  optional Duration max_lock_duration = 17;
 }
 
 // Chain parameters.
