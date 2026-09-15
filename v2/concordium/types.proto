@@ -1051,8 +1051,8 @@ message RejectReason {
     LockOperationNotAuthorized lock_fund_not_authorized = 59;
     // The account is not authorized to send funds controlled by the lock.
     LockOperationNotAuthorized lock_send_not_authorized = 60;
-    // The account is not authorized to return funds controlled by the lock.
-    LockOperationNotAuthorized lock_return_not_authorized = 61;
+    // The account is not authorized to release funds controlled by the lock.
+    LockOperationNotAuthorized lock_release_not_authorized = 61;
     // The account is not authorized to cancel the lock.
     LockOperationNotAuthorized lock_cancel_not_authorized = 62;
     // The lock does not allow funding with the particular token.
