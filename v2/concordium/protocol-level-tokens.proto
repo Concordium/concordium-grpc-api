@@ -90,9 +90,8 @@ message TokenModuleEvent {
   string type = 1;
   // The CBOR encoded event details.
   Cbor details = 2;
-  // The Token ID of the token generating the event. In the context of
-  // a `TokenEvent`, this should be absent (as it is already specified).
-  // In the context of a `MetaEvent`, this must be present.
+  // The Token ID of the token generating the event. This is absent when the
+  // enclosing `TokenEvent` specifies the token ID, and present otherwise.
   optional TokenId token_id = 3;
 }
 
@@ -127,9 +126,8 @@ message TokenTransferEvent {
   // identity of the lock assuming control of the funds. Absent when the
   // funds are sent to the available balance of the receiving account.
   optional LockId to_lock = 6;
-  // The token being transferred. In the context of a `TokenEvent`,
-  // which already specifies the token, this is absent. In the context
-  // of a `MetaEvent`, it must be present.
+  // The token being transferred. This is absent when the enclosing
+  // `TokenEvent` specifies the token ID, and present otherwise.
   optional TokenId token_id = 7;
 }
 
@@ -140,57 +138,18 @@ message TokenSupplyUpdateEvent {
   TokenHolder target = 1;
   // The balance difference to be applied to the target.
   TokenAmount amount = 2;
-  // The Token ID of the token generating the event. In the context of
-  // a `TokenEvent`, this should be absent (as it is already specified).
-  // In the context of a `MetaEvent`, this must be present.
+  // The Token ID of the token generating the event. This is absent when the
+  // enclosing `TokenEvent` specifies the token ID, and present otherwise.
   optional TokenId token_id = 3;
 }
 
-// Token event originating from token transactions.
+// An event originating from a token update transaction.
 message TokenEvent {
-  // The Token ID.
-  TokenId token_id = 1;
-  // The type of the event.
-  //
-  // This field might be extended in future versions of the API.
-  oneof event {
-    // An event emitted by the token module.
-    TokenModuleEvent module_event = 2;
-    // An event emitted when a transfer of tokens is performed.
-    TokenTransferEvent transfer_event = 3;
-    // An event emitted when the token supply is updated by minting tokens to a
-    // token holder.
-    TokenSupplyUpdateEvent mint_event = 4;
-    // An event emitted when the token supply is updated by burning tokens from
-    // the balance of a token holder.
-    TokenSupplyUpdateEvent burn_event = 5;
-  }
-}
-
-// Token events originating from token transactions.
-message TokenEffect {
-  // Events emitted by the token.
-  repeated TokenEvent events = 1;
-}
-
-// A new lock was created.
-message LockCreateEvent {
-  // The Lock ID of the newly-created lock.
-  LockId lock_id = 1;
-  // The CBOR-encoded configuration of the lock.
-  Cbor lock_config = 2;
-}
-
-// A lock was destroyed.
-// Before this event can occur, the balance controlled by the lock
-// must be zero.
-message LockDestroyEvent {
-  // The Lock ID of the destroyed lock.
-  LockId lock_id = 1;
-}
-
-// An event that can occur during execution of a meta-update transaction.
-message MetaEvent {
+  // The Token ID. This is present for single-token updates and absent
+  // for token updates where specific token events specify it themselves. For
+  // protocol versions below 11 this is always present, as the token-less
+  // transaction format is only valid from protocol level 11.
+  optional TokenId token_id = 1;
   // The type of the event.
   //
   // This field might be extended in future versions of the API.
@@ -212,10 +171,26 @@ message MetaEvent {
   }
 }
 
-// Events originating from a meta-update transaction.
-message MetaEffect {
-  // The events.
-  repeated MetaEvent events = 1;
+// Events originating from token transactions.
+message TokenEffect {
+  // Events emitted by the token transaction.
+  repeated TokenEvent events = 1;
+}
+
+// A new lock was created.
+message LockCreateEvent {
+  // The Lock ID of the newly-created lock.
+  LockId lock_id = 1;
+  // The CBOR-encoded configuration of the lock.
+  Cbor lock_config = 2;
+}
+
+// A lock was destroyed.
+// Before this event can occur, the balance controlled by the lock
+// must be zero.
+message LockDestroyEvent {
+  // The Lock ID of the destroyed lock.
+  LockId lock_id = 1;
 }
 
 // Details provided by the token module in the event of rejecting a transaction.
