@@ -148,7 +148,7 @@ message TokenEvent {
   // The Token ID. This is present for single-token updates and absent
   // for token updates where specific token events specify it themselves. For
   // protocol versions below 11 this is always present, as the token-less
-  // transaction format is only valid from protocol level 11.
+  // transaction format is only valid from protocol version 11.
   optional TokenId token_id = 1;
   // The type of the event.
   //
