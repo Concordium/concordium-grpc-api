@@ -9,7 +9,7 @@
   given token.
 - Support for PLT locks:
   - `GetLockInfo` and `GetLockList` queries.
-  - New `MetaEvent` and `MetaEffect` messages representing outcomes of meta-update transactions.
+  - Extend `TokenEffect` and `TokenEvent` to represent token and lock outcomes of Token Update transactions.
   - `TokenTransferEvent` may include `from_lock` and `to_lock` fields indicating transfer from or to a lock.
   - `RejectReason` extended with new reject reasons that may arise from lock operations.
 
