@@ -158,9 +158,9 @@ message LockEvent {
     // An event emitted when a lock is destroyed.
     LockDestroyEvent lock_destroy_event = 2;
     // An amount moved from a locked balance to an available balance.
-    UnlockAmountEvent unlock_amount = 3;
+    UnlockAmountEvent unlock_amount_event = 3;
     // An amount moved from an available balance to a locked balance.
-    LockAmountEvent lock_amount = 4;
+    LockAmountEvent lock_amount_event = 4;
   }
 }
 
