@@ -9,8 +9,7 @@
   given token.
 - Support for PLT locks:
   - `GetLockInfo` and `GetLockList` queries.
-  - Extend `TokenEffect` and `TokenEvent` to represent token and lock outcomes of Token Update transactions.
-  - `TokenTransferEvent` may include `from_lock` and `to_lock` fields indicating transfer from or to a lock.
+  - Extend `TokenEffect` with token and lock outcomes of Token Update transactions while retaining the existing token event list.
   - `RejectReason` extended with new reject reasons that may arise from lock operations.
 
 ## Node 10.0 API
