@@ -670,6 +670,22 @@ message LockInfo {
   plt.Cbor lock_info = 1;
 }
 
+// Request for locks whose grants include an account at a selected block.
+message GetLocksByAccountRequest {
+  // Block in whose state to resolve the account and query locks.
+  BlockHashInput block_hash = 1;
+  // Account identifier used for the query..
+  AccountIdentifierInput account_identifier = 2;
+}
+
+// A lock's identifier and complete configuration.
+message LockConfiguration {
+  // Identifier of the lock.
+  plt.LockId lock_id = 1;
+  // CBOR-encoded configuration.
+  plt.Cbor lock_config = 2;
+}
+
 // Information about a finalized block that is part of the streaming response.
 message FinalizedBlockInfo {
   // Hash of the block.

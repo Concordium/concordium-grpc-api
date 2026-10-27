@@ -50,6 +50,11 @@ service Queries {
   // Retrieve the list of locks that exist in a given block.
   rpc GetLockList (BlockHashInput) returns (stream concordium.v2.plt.LockId);
 
+  // Retrieve each lock whose grants include the account at the selected block,
+  // exactly once, including grants with empty capabilities. Being a creator,
+  // recipient, or balance holder alone does not match.
+  rpc GetLocksByAccount (GetLocksByAccountRequest) returns (stream LockConfiguration);
+
   // Retrieve the list of accounts that exist at the end of the given block.
   rpc GetAccountList (BlockHashInput) returns (stream AccountAddress);
 
