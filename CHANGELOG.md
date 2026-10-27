@@ -9,6 +9,7 @@
   given token.
 - Support for PLT locks:
   - `GetLockInfo` and `GetLockList` queries.
+  - `GetLocksByAccount` query accepting a block selector and account identifier, streaming lock IDs and CBOR-encoded configurations for locks whose grants include the account.
   - Extend `TokenEffect` with token and lock outcomes of Token Update transactions while retaining the existing token event list.
   - `RejectReason` extended with new reject reasons that may arise from lock operations.
 
