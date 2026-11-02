@@ -671,10 +671,10 @@ message LockInfo {
 }
 
 // Request for locks whose grants include an account at a selected block.
-message GetLocksByAccountRequest {
+message GetLocksByGrantAccountRequest {
   // Block in whose state to resolve the account and query locks.
   BlockHashInput block_hash = 1;
-  // Account identifier used for the query..
+  // Account whose membership in the lock's grants is queried.
   AccountIdentifierInput account_identifier = 2;
 }
 
