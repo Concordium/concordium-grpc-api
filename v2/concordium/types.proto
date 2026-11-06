@@ -2942,6 +2942,10 @@ message BlockSpecialEvent {
     // The protocol primes validators for suspension due to inactivity.
     // The event can occur starting from protocol version 8.
     ValidatorPrimedForSuspension validator_primed_for_suspension = 10;
+    // A balance unlocked by automatic cancellation of an expired lock, starting in protocol version 11.
+    plt.UnlockAmountEvent unlock_amount = 11;
+    // A lock destroyed by automatic cancellation after expiry, starting in protocol version 11.
+    plt.LockDestroyEvent lock_destroyed = 12;
   }
 }
 
